@@ -1,0 +1,9 @@
+*.pyc
+*.jpg
+log/*.*
+env/
+__pycache__/
+db_repository/
+app/static/bootstrap/
+app/static/javascript/jQuery/
+

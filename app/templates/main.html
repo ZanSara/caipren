@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8">
+    <title>Prenotazioni - CAI Sovico</title>
+
+    <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/css/style.css" rel="stylesheet">
+
+  </head>
+  <body>
+
+    <span class="title"><h1>Prenotazioni Rifugio Del Grande Camerini</h1></span>
+
+     <span class="title"><h3>Gennaio</h3></span>
+      <div class="row">
+        <div id="calendar-box" class="col-md-8">
+          <div >
+            <div class="inner-box">
+
+            <table class="table table-hover table-bordered calendar">
+              {% for day in range(1, dayxmonth[1]+1) %}
+              <tr {% if today.day == day %} class="border" {% endif %}>
+                <td>{{day}}</td>
+                {% for pren in booked_days[day] %}
+                <td><b>{{ pren }}</b></td>
+                {% endfor %}
+                {% for empty in range(15-(booked_days[day]|length) ) %}
+                <td></td>
+                {% endfor %}
+              </tr>
+              {% endfor %}
+            </table>
+            </div>
+            </div>
+        </div>
+
+
+        <div id="data-box" class="col-md-4">
+          <div class="inner-box">
+              <h3>Dati del Cliente:</h3>
+              <p><b>Nome</b>: Sara Zanz</p>
+              <p><b>Telefono</b>: 333 3333333</p>
+              <p><b>Numero prenotazione</b>: 22</p>
+              <p><b>Prenotatore</b>: papà</p>
+
+
+            {{ booked_days }}
+
+          </div>
+        </div>
+      </div>
+
+
+    <script src="/static/javascript/jQuery/jquery-1.11.2.min.js"></script>     <!-- required for Bootstrap-->
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+</html>

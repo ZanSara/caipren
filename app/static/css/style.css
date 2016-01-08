@@ -1,0 +1,61 @@
+body {
+  color: white;
+  background: #333;
+}
+
+
+.title{
+  color: white;
+  text-align: center;
+  display: block;
+  margin: auto;
+}
+
+.inner-box{
+  width: 90%;
+  margin: auto;
+  padding: 5%;
+}
+
+#data-box{
+  position: absolute;
+  top: 150px;
+  right: 0;
+  width: 33%;
+}
+
+#calendar-box{
+  position:absolute;
+  bottom: 0;
+  top: 130px;
+  width: 66%;
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+.calendar{
+  table-layout: fixed;
+}
+
+.calendar tr td{
+  height: 60px;
+  text-align: center;
+
+}
+
+.calendar tr td:first-child{
+  width: 10%;
+  font-size: 22px;
+  #background: #eee;
+}
+
+
+
+
+
+
+
+
+.border{
+    border: 2px solid red;
+}
