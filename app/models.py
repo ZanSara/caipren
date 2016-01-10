@@ -8,6 +8,7 @@ class Visitatore(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(64))
     telefono = db.Column(db.String(15), index=True, unique=True)
+    note = db.Column(db.String(100))
     prenotazioni = db.relationship('Prenotazione')
 
     def __repr__(self):
@@ -17,11 +18,12 @@ class Prenotazione(db.Model):
     __tablename__ = 'prenotazioni'
     id = db.Column(db.Integer, primary_key=True)
     cliente = db.Column(db.Integer, db.ForeignKey('visitatori.id'))
+    posti = db.Column(db.Integer)
     giorno_inizio = db.Column(db.Integer)
     mese = db.Column(db.Integer)
-    stagione = db.Column(db.Integer)
     notti = db.Column(db.Integer)
     responsabile = db.Column(db.String(64))
+    colore = db.Column(db.String(64))
     note = db.Column(db.String(100))
 
     def __repr__(self):

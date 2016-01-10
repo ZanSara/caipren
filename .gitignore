@@ -1,6 +1,6 @@
 *.pyc
 *.jpg
-log/*.*
+app/log/*.*
 env/
 __pycache__/
 db_repository/

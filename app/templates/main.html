@@ -6,54 +6,161 @@
 
     <link href="/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="/static/css/style.css" rel="stylesheet">
+    <script src="/static/javascript/jQuery/jquery-1.11.2.min.js"></script>     <!-- required for Bootstrap-->
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+
+
+    <script>
+        function getData(pid){
+            $("#left-box").text("Loading...");
+            $.get('/data', {
+                prenid: pid
+            }).done(function(gotData) {
+                $("#left-box").text(gotData);
+            }).fail(function() {
+                alert('ERRORE! Il server non ha restituito i dati della prenotazione.');
+                $("#left-box").text("ERRORE");
+            });
+        };
+        function makeBooking(){
+            var div = document.createElement("div");
+            div.style.width = "100px";
+            div.style.height = "100px";
+            div.style.position = "absolute";
+            div.style.right = "40%";
+            div.style.zIndex = "50";
+            div.style.background = "red";
+            div.style.color = "white";
+            div.innerHTML = "Hello";
+            document.body.appendChild(div);
+            var child = document.createElement("div");
+            child.style.width = "50px";
+            child.style.height = "50px";
+            child.style.background = "green";
+            div.appendChild(child);
+
+            }
+    </script>
 
   </head>
   <body>
 
-    <span class="title"><h1>Prenotazioni Rifugio Del Grande Camerini</h1></span>
+    <span class="title"><h2>Prenotazioni</h2><h3>Rifugio Del Grande Camerini</h3></span>
 
-     <span class="title"><h3>Gennaio</h3></span>
+    <div class="row">
+      <div id="calendar-head" {% if ris == True %} class="two-third-no-bar" {% else %} class="full-no-bar" {% endif %}>
+        <table class="table calendar" >
+            <tr>
+              <th class='giorno'>Data</th>
+              {% if ris == True %}
+              <th class='gestore' >Gestore</th>
+              {% endif %}
+              <th class='letto'></th>
+              <th class='letto'></th>
+              <th class='letto'></th>
+              <th class='letto'></th>
+              <th class='letto'>Letto</th>
+              <th class='letto'></th>
+              <th class='letto'></th>
+              <th class='letto'></th>
+              <th class='letto'></th>
+              <th class="brandina" style="border-left: 1px solid #aaa;">Brandina</th>
+              <th class="brandina"></th>
+              <th class="materasso" style="border-left: 1px solid #aaa;"></th>
+              <th class="materasso">Materasso</th>
+              <th class="materasso"></th>
+              <th class="materasso"></th>
+            </tr>
+        </table>
+      </div>
+    </div>
+
       <div class="row">
-        <div id="calendar-box" class="col-md-8">
-          <div >
-            <div class="inner-box">
+        <div id="calendar-box" {% if ris == True %} class="two-third" {% endif %}>
 
-            <table class="table table-hover table-bordered calendar">
-              {% for day in range(1, dayxmonth[1]+1) %}
-              <tr {% if today.day == day %} class="border" {% endif %}>
-                <td>{{day}}</td>
-                {% for pren in booked_days[day] %}
-                <td><b>{{ pren }}</b></td>
+            <table id="tableid" class="table calendar">
+              <colgroup>
+                <col class='giorno'>
+                {% if ris == True %}
+                <col class='gestore'>
+                {% endif %}
+                <col class='letto'>
+                <col class='letto'>
+                <col class='letto'>
+                <col class='letto'>
+                <col class='letto'>
+                <col class='letto'>
+                <col class='letto'>
+                <col class='letto'>
+                <col class='letto'>
+                <col class="brandina">
+                <col class="brandina">
+                <col class="materasso">
+                <col class="materasso">
+                <col class="materasso">
+                <col class="materasso">
+              </colgroup>
+
+              <tbody>
+              <tr>
+                <td>0</td>
+              </tr>
+              {% for month in prenxmonth %}
+              {% for day in range(1, month["dayxmonth"][1]+1) %}
+              <tr id="{{ day }}-{{ month['month']}}" {% if today.day == day and today.month == month['month'] %} id="today" class="border" {% endif %}>
+                <td {% if day == 1 %} style="border-top:4px solid black;"{% endif %} >{{ day }}/{{ month['month'] }}</td>
+
+                {% if ris == True %}
+                <td {% if day == 1 %} style="border-top:4px solid black;"{% endif %}>
+                    <a id="{{ day }}-G" href='javascript:getData()'>G</a>
+                </td>
+                {% endif %}
+
+                {% set n = 1 %}
+                {% for pren in month['booked_days'][day] %}
+                <td class='booked' style="background:{{pren[2]}}" {% if day == 1 %} style="border-top:4px solid black;"{% endif %}>
+                    <a id="{{ day }}-{{ n }}" href='javascript:getData({{ pren[0] }})'>
+                        <b>{{ pren[0] }}</b>
+                    </a>
+                </td>
+                {% set n = n+1 %}
                 {% endfor %}
-                {% for empty in range(15-(booked_days[day]|length) ) %}
-                <td></td>
+
+                {% for empty in range(15-(month['booked_days'][day]|length) ) %}
+                <td {% if day == 1 %} style="border-top:4px solid black;"{% endif %} ></td>
                 {% endfor %}
+
               </tr>
               {% endfor %}
+              {% endfor %}
+              </tbody>
             </table>
-            </div>
-            </div>
+
         </div>
 
 
-        <div id="data-box" class="col-md-4">
-          <div class="inner-box">
+        {% if ris == True %}
+
+        <div id="data-box" class="one-third">
+          <div class="inner-box center">
+              <button type="button" class="btn btn-primary" onclick="javascript:makeBooking()">Nuova Prenotazione</button>
+          </div>
+
+          <div id="left-box" class="inner-box white">
               <h3>Dati del Cliente:</h3>
               <p><b>Nome</b>: Sara Zanz</p>
               <p><b>Telefono</b>: 333 3333333</p>
               <p><b>Numero prenotazione</b>: 22</p>
               <p><b>Prenotatore</b>: papà</p>
-
-
-            {{ booked_days }}
-
+              <button type="button" class="btn btn-success" onclick="javascript:makeBooking()">Modifica Dati</button>
+              <button type="button" class="btn btn-danger" onclick="javascript:makeBooking()">Elimina Prenotazione</button>
           </div>
         </div>
+
+
+        {% endif %}
+
       </div>
-
-
-    <script src="/static/javascript/jQuery/jquery-1.11.2.min.js"></script>     <!-- required for Bootstrap-->
-    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
 
   </body>
 </html>
