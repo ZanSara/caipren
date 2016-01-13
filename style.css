@@ -50,13 +50,14 @@ body {
   border-top: 1px solid #aaa;
 }
 
-.calendar{
+table.calendar{
   background: #fff;
   table-layout: fixed;
+  width: 100%;
 }
 
 .calendar tr td{
-  padding: 0;
+  padding: 5px;
   text-align: center;
   border: 1px solid #aaa;
 }
@@ -87,11 +88,16 @@ body {
   background: #FFFEB3;
 }
 .bivacco{
-  background: #B3FFC3;
+  background: #D6E2FF;
 }
 .materasso{
   background: #FFC8B3;
 }
+.blackline{
+  border-top: 4px solid black; !important
+}
+
+
 
 
 .full-no-bar{
