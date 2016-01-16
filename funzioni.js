@@ -7,7 +7,7 @@ function getData(pid, gest){
         $("#left-box-durata").text('');
         $("#left-box-posti").text('');
         $("#left-box-resp").text('');
-        $.get('/cai/dati.php', {
+        $.get('dati.php', {
             gestione : gest,
             prenid: pid
         }).done(function(gotData) {
