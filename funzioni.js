@@ -11,11 +11,7 @@ function getData(pid, gest){
             gestione : gest,
             prenid: pid
         }).done(function(gotData) {
-            //print(gotData);
-            //alert(gotData);
-            $('#calendario-box').addClass('two-third');
-            $('#calendario-box').removeClass('full-no-bar');
-            $('#data-box').show();
+            showBox();
             var data = JSON.parse(gotData);
             if (gest == 1){
                 $("#left-box-num").html('Gestione № ' + data.prenid);
@@ -37,18 +33,16 @@ function getData(pid, gest){
     };
 
 
+function showBox(){
+    $('#data-box').addClass('data-shown');
+    $('#data-box').removeClass('data-hidden');
+    $('#calendario-box').addClass('cal-moved');
+    $('#calendario-box').removeClass('cal-full');
+}
 
 function hideBox(){
-    $('#data-box').hide();
-    $('#calendario-box').removeClass('two-third');
-    $('#calendario-box').addClass('full-no-bar');
-}
-
-function hideBooking(){
-    $('#new-booking').hide();
-    document.getElementById("form").reset();
-}
-
-function makeBooking(){
-    $('#new-booking').show();
+    $('#data-box').removeClass('data-shown');
+    $('#data-box').addClass('data-hidden');
+    $('#calendario-box').removeClass('cal-moved');
+    $('#calendario-box').addClass('cal-full');
 }

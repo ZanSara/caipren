@@ -30,7 +30,7 @@
 
     <div class="row">
 
-        <div id="calendario-box" class="calendario-outer-box shadow2">
+        <div id="calendario-box" class="cal-full calendario-outer-box shadow2">
 
           <table id="tableid" style="overflow:hidden;">
               <tr><td>
@@ -89,20 +89,13 @@
                   <tbody>
     <?
 
-    $today = array();
+    $today = [];
     $today['absday'] = '5';
     $firstweekday = 4;
 
     $daysum = 122;
-    $calendario = array();
-    $gestioni = array();
-    for($i=0; $i<$daysum; $i++){
-        $gestioni[$i] = array(0, "Nessuno!");
-        $calendario[$i] = array();
-    }
-
-
-    // Fetch tha data from the database
+    $lista = [];
+    $listag = [];
 
     $username = "6786_utentesql";
     $password = "databasecai";
@@ -112,30 +105,6 @@
      or die("Unable to connect to MySQL");
     $selected = mysql_select_db("6786_pernottamenti", $dbhandle)
       or die("Could not select database");
-
-    $lista = array();
-    for($absday=0; $absday<$daysum; $absday++){
-        $listadb = mysql_query("SELECT * FROM Pernottamenti WHERE (giorno_inizio=".$absday.")");
-        while ($row = mysql_fetch_array($listadb)) {
-            $lista[] = $row;
-        }
-        for($n=0; $n<count($lista); $n++){
-            for($i=0; $i<$lista[$n]['posti']; $i++){
-                $calendario[$absday][] = array( $lista[$n]['id'], $lista[$n]['colore'], $lista[$n]['gestione'] );
-            }
-            //echo(var_dump($calendario[$absday]));
-            //echo("<br>");
-            if ($lista[$n]['gestione'] == 1){
-                $gestione[$absday] = array($lista[$n]['id'], $lista[$n]['nome']);
-            }
-            if ($lista[$n]['giorno_inizio']+ $lista[$n]['durata']-1 <= $absday){
-                unset($lista[$n]);  // pop from array
-                $lista = array_values($lista); // normalize indexes (moves all to the left)
-            }
-        }
-    }
-    mysql_close($dbhandle);
-
 
 
     // Start building the table
@@ -166,7 +135,7 @@
         // Building tr
         echo("<tr id='".$day."-".$month."'");
         if( $day == 1 ) echo ("style='border-top: 4px solid black;'");
-        if( $absday == $daysum-1 ) echo ("style='border-bottom: 4px solid grey;'");
+        if( $absday == $daysum-1 ) echo ("style='border-bottom: 4px solid #000;'");
         if( $today['absday'] == $absday) echo("id='today' class='border'");
         echo(">");
 
@@ -177,35 +146,59 @@
         echo(">".$day." ".$monthname); //." / ".$absday);
         echo("</td>");
 
+
         // Building Gestore td
         if ($ris == 1){
-            echo("<td ");
-            echo(">");
-            echo("<a id='".$absday."-G' href='javascript:getData(".$gestioni[$absday][0].", 1)' onblur='javascript:hideBox()'><div>");
-            echo($gestioni[$absday][1]);
-            echo("</div></a>");
-            echo("</td>");
+            $listagest = mysql_query("SELECT * FROM Pernottamenti WHERE (gestione=1 AND giorno_inizio=".$absday.")");
+            while ($row = mysql_fetch_array($listagest)) {
+                $listag[] = $row; // This appends the NEW bookings to $lista, which is usually NOT empty!
+            }
+            if (count($listag) == 0 ){
+                echo("<td>Nessuno!</td>");
+            }
+            for($n=0; $n<count($listag); $n++){
+                if ($listag[$n]['gestione'] == 1){
+                    echo("<td>");
+                    echo("<a id='".$absday."-G' href='javascript:getData(".$listag[$n]['id'].", 1)' onblur='javascript:hideBox()'><div>");
+                    echo($listag[$n]['nome']);
+                    echo("</div></a>");
+                    echo("</td>");
+                }
+                if ($listag[$n]['giorno_inizio']+ $listag[$n]['durata']-1 <= $absday){
+                    unset($listag[$n]);  // pop from array
+                    $listag = array_values($listag); // normalize indexes (moves all to the left)
+                }
+            }
         }
 
         // Filling the rest of the table
-        for($i=0; $i<16; $i++){
-            while ($i<count($calendario[$absday])){
-                echo("<td style='background:".$calendario[$absday][$i][1].";'>");
-                if ($ris == 1 ) echo("<a id='".$absday."-".$i."' onblur='javascript:hideBox()' href='javascript:getData(".$calendario[$absday][$i][0].",");
-                if ($calendario[$absday][$i][2] == 1){
-                    echo('1');
-                }else{
-                    echo('0');
-                }
-                echo(")'><div>");
-                echo("<b>");
-                if ($calendario[$absday][$i][2] == 1) echo('Gest. ');
-                echo($calendario[$absday][$i][0]."</b></div></a></td>");
-                $i++;
-            };
-            echo ("<td></td>");
+        $listadb = mysql_query("SELECT * FROM Pernottamenti WHERE (gestione=0 AND giorno_inizio=".$absday.")");
+        while ($row = mysql_fetch_array($listadb)) {
+            $lista[] = $row; // This appends the NEW bookings to $lista, which is usually NOT empty!
+        }
+        $tot = 0;
+        for($n=0; $n<count($lista); $n++){
+
+            for($i=0;$i<$lista[$n]['posti']; $i++. $tot++){
+                echo("<td style='background:".$lista[$n]['colore'].";'>");
+                if ($ris == 1 ) echo("<a id='".$absday."-".$i."' onblur='javascript:hideBox()' href='javascript:getData(".$lista[$n]['id'].",0)'><div>");
+                echo('<b>'.$lista[$n]['id'].'</b>');
+                if ($ris == 1 ) echo("</div></a></td>");
+                //$calendario[$absday][] = array( $lista[$n]['id'], $lista[$n]['colore'], $lista[$n]['gestione'] );
+            }
+            if ($lista[$n]['giorno_inizio']+ $lista[$n]['durata']-1 <= $absday){
+                unset($lista[$n]);  // pop from array
+                $lista = array_values($lista); // normalize indexes (moves all to the left)
             }
         }
+        for(;$tot<16; $tot++){
+            echo ("<td></td>");
+        }
+
+    }
+
+    mysql_close($dbhandle);
+
     ?>
                 </tr>
               </tbody>
@@ -220,7 +213,7 @@
 
     <? if ($ris==1){ ?>
 
-        <div id="data-box" class="one-third" style="display:none;">
+        <div id="data-box" class="data-hidden">
           <div id="left-box" class="inner-box white shadow2">
               <h3 id='left-box-num'>Prenotazione № </h3>
               <p id='left-box-nome'><b>Nome Cliente</b>:</p>
@@ -235,29 +228,6 @@
         </div>
 
     <? } ?>
-
-
-
-        <div id="new-booking" class="float-center white shadow1">
-          <div id="form-box" class="inner-box">
-              <div class="center">
-                <h2>Nuova Prenotazione</h2>
-              </div>
-              <form id='form'>
-                  <input type="text" name="nome" placeholder="Nome Cliente">
-                  <input type="text" name="telefono" placeholder="№ Telefono">
-                  <input type="text" name="arrivo" placeholder="Data Arrivo" id="datepick">
-                  <input type="text" name="durata" placeholder="Durata (notti)">
-                  <input type="text" name="posti" placeholder="Posti prenotati">
-                  <input type="text" name="responsabile" placeholder="Responsabile">
-                  <button type="button" class="btn btn-success" onclick="javascript:submitBooking()">Salva</button>
-                  <button type="button" class="btn btn-danger" onclick="javascript:hideBooking()">Annulla</button>
-              </form>
-          </div>
-        </div>
-
-
-
 
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
@@ -275,7 +245,7 @@
                     <input type="text" class="form-control" id="telefono" placeholder="№ Telefono">
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" id="arrivo" placeholder="Data di Arrivo">
+                    <input type="date" class="form-control" id="arrivo" placeholder="Data di Arrivo">
                   </div>
                   <div class="form-group">
                     <input type="text" class="form-control" id="durata" placeholder="Durata del Soggiorno">
@@ -330,8 +300,7 @@
         <footer>
           <div class="footer-div">
             <? if ($ris == 1){ ?>
-            <a href="javascript:makeBooking()" class="btn btn-success">Nuova Prenotazione Mio</a>
-            <a href="javascript:makeBooking()" class="btn btn-danger" data-toggle="modal" data-target="#myModal">Nuova Prenotazione Bootstrap</a>
+            <a href="javascript:makeBooking()" class="btn btn-success" data-toggle="modal" data-target="#myModal">Nuova Prenotazione</a>
             <a href="main.php?ris=0" class="btn btn-danger" style='position:relative;float:right;'</a>Logout</a>
             <? }else{ ?>
             <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>

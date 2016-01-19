@@ -3,6 +3,7 @@ html {
   min-height: 100%;
 }
 body {
+  overflow-x:hidden;
   color: black;
   background: white;
 }
@@ -37,9 +38,16 @@ body {
   position: absolute;
   top: 160px;
   bottom: 50px;
-  right: 3%;
+  rright: 3%;
   overflow: auto;
+
+  transition: all 2s;
 }
+#calendario-box{
+  width: default;
+  transition: width 2s;
+}
+
 
 
 .calendario-outer-box{
@@ -107,35 +115,24 @@ body {
 }
 
 
+.data-shown{
+  left: 70%;
+  opacity: 1;
+}
+.data-hidden{
+  left: 101%;
+  opacity: 0.3;
+}
 
-.full-no-bar{
-  width: unset;
+.cal-full{
+  width: default;
 }
-.two-third-no-bar{
-  width: 65%;
-}
-.two-third{
+.cal-moved{
   width: 66%;
 }
-.one-third{
-  width: 27%;
-  z-index: 20;
-}
 
-#new-booking{
-  display: none;
-  position: absolute;
-  text-align: center;
-  top: 20px;
-  width: 30%;
-  left: 35%;
-  z-index: 20;
-}
-#new-booking input{
-  width: 90%;
-  display:block;
-  margin: 20px;
-}
+
+
 
 footer {
   position: absolute;
