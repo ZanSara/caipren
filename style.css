@@ -38,16 +38,19 @@ body {
   position: absolute;
   top: 160px;
   bottom: 50px;
-  rright: 3%;
   overflow: auto;
-
-  transition: all 2s;
+  width: 30%;
+  transition: all 0.5s;
 }
 #calendario-box{
-  width: default;
-  transition: width 2s;
+  right: default;
+  transition: right 0.5s;
 }
-
+#loading{
+  width: 50%;
+  position: relative;
+  margin: auto;
+}
 
 
 .calendario-outer-box{
@@ -125,10 +128,10 @@ body {
 }
 
 .cal-full{
-  width: default;
+  right: default;
 }
 .cal-moved{
-  width: 66%;
+  right: 33%;
 }
 
 
