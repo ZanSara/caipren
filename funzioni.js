@@ -15,14 +15,14 @@ function hideBox(){
 
 
 function getData(pid, gest){
-    $("#left-box-num").text("");
     $("#loading").show()
-    $("#left-box-nome").text('');
-    $("#left-box-tel").text('');
-    $("#left-box-arrivo").text('');
-    $("#left-box-durata").text('');
-    $("#left-box-posti").text('');
-    $("#left-box-resp").text('');
+    $("#left-box-title").hide();
+    $("#left-box-pn").hide();
+    $("#left-box-pt").hide();
+    $("#left-box-pa").hide();
+    $("#left-box-pd").hide();
+    $("#left-box-pp").hide();
+    $("#left-box-pr").hide();
     $("#modify-btn").hide()
     $("#delete-btn").hide()
     $("#err-btn").hide();
@@ -31,49 +31,81 @@ function getData(pid, gest){
         gestione : gest,
         prenid: pid
     }).done(function(gotData) {
+        $('#loading').hide();
         try{
             var data = JSON.parse(gotData);
         }catch (Exception) {
-            alert('ERRORE! Il server non ha restituito i dati della prenotazione. Contatta il webmaster.' + gotData);
-            $('#loading').hide();
-            $("#left-box-num").text("ERRORE");
+            alert('ERRORE INTERNO. Contatta il webmaster.' + gotData);
+            $("#left-box-title").show();
+            $("#left-span-bt").text("ERRORE");
+            $("#left-span-num").text("");
             $("#err-btn").show();
+            return;
         };
-        $('#loading').hide();
         if (gest == 1){
-            $("#left-box-num").html('Gestione № ' + data.prenid);
-            $("#left-box-nome").html('<b>Nome Gestore</b>: ' + data.nome);
-            $("#left-box-durata").html('<b>Durata pernottamento</b>: ' + data.durata);
+            $("#left-box-title").show();
+            $("#left-box-pn").show();
+            $("#left-box-pd").show();
+            $("#left-span-bt").text('Gestione № ');
+            $("#left-span-num").text(data.prenid);
+            $("#left-bn").text('Nome Gestore: ');
+            $("#left-span-nome").text(data.nome);
+            $("#left-span-durata").html(data.durata);
+            $("#modify-btn").data('gestione', 1);
         }else{
-            $("#left-box-num").html('Prenotazione № ' + data.prenid);
-            $("#left-box-nome").html('<b>Nome Cliente</b>: ' + data.nome);
-            $("#left-box-durata").html('<b>Durata soggiorno</b>: ' + data.durata);
-            $("#left-box-resp").html('<b>Responsabile</b>: ' + data.resp);
+            $("#left-box-title").show();
+            $("#left-box-pn").show();
+            $("#left-box-pd").show();
+            $("#left-box-pr").show();
+            $("#left-span-bt").text('Prenotazione № ');
+            $("#left-span-num").text(data.prenid);
+            $("#left-bn").html('Nome Cliente: ');
+            $("#left-span-nome").text(data.nome);
+            $("#left-span-durata").text(data.durata);
+            $("#left-span-resp").text(data.resp);
+            $("#modify-btn").data('gestione', 0);
         }
-        $("#left-box-tel").html('<b>№ Telefono</b>: ' + data.tel);
-        $("#left-box-arrivo").html('<b>Data arrivo</b>: ' + data.arrivo);
-        $("#left-box-posti").html('<b>Posti prenotati</b>: ' + data.posti);
+        $("#left-box-pt").show();
+        $("#left-box-pa").show();
+        $("#left-box-pp").show();
+        $("#left-span-tel").text(data.tel);
+        $("#left-span-arrivo").text(data.arrivo);
+        $("#left-span-posti").text(data.posti);
         $("#err-btn").hide();
         $("#modify-btn").show()
         $("#delete-btn").show()
+        $("#modify-btn").data('num', data.prenid);
 
     }).fail(function(gotData) {
-        alert('ATTENZIONE! Il server non ha restituito i dati della prenotazione. Contatta il webmaster.');
+        alert('ATTENZIONE! Il server non ha restituito i dati. Contatta il webmaster.');
         $('#loading').hide();
-        $("#left-box-num").text("ERRORE");
+        $("#left-box-*").hide();
+        $("#left-box-title").show();
+        $("#left-span-bt").text("ERRORE");
+        $("#left-span-num").text("");
         $("#err-btn").show();
     });
 };
 
 
+function retrieveData(gest, pid){
+    var someData;
+    return JSON.parse(
+        $.ajax({
+            dataType: "json",
+            url: 'dati.php?gestione='+gest+'&prenid='+pid,
+            data: someData,
+            async: false,  // -------------------> How can I avoid this?
+            success: function(someData) {
+                        //console.log(someData);
+                        //return someData;
+                    }
+        }).responseText
+    )
+};
 
-function makeBooking(){
-    //var button = $(event.relatedTarget) // Button that triggered the modal
-    //var recipient = button.data('whatever') // Extract info from data-* attributes
-    //   If necessary, you could initiate an AJAX request here (and then do the updating in a callback).
-    //   Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
-    var modal = $(this)
-    //modal.find('.modal-title').text('New message to ' + recipient)
-    var content = modal.find('.modal-body input').text()
-    alert(content);
-}
+
+function deleteBooking(){
+    return 0;
+
+    }

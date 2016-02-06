@@ -1,4 +1,3 @@
-
 <?
 // Server-side PHP for the AJAX calls
 
@@ -12,12 +11,11 @@ $password = "databasecai";
 $hostname = "localhost";
 
 $dbhandle = mysqli_connect($hostname, $username, $password)
-  or die("Unable to connect to MySQL");
+  or die( json_encode(array( "error"=> "Unable to connect to MySQL") ) );
 $selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
-  or die("Could not select database");
+  or die( json_encode(array("error"=> "Could not select database") ) );
 
 $data = mysqli_fetch_array( mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE (id=".$prenid.")") );
-
 
 echo( json_encode(
     array(
@@ -31,7 +29,5 @@ echo( json_encode(
         "note" => $data['note']
 )) );
 
-
 mysqli_close($dbhandle);
-
 ?>

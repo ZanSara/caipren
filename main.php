@@ -19,8 +19,31 @@
         $ris = $_GET['ris'];
     };
 
-    // Make a reservation
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+
+        if (isset($_POST['newbooking'])){
+            try{
+                makeReservation();
+            }catch (Exception $e){
+                echo('<script>
+                        alert("ERRORE1!\n'.$e->getMessage().'");
+                      </script>');
+            }
+        }else{
+            try{
+                updateReservation((int)$_POST['prenid']);
+            }catch (Exception $e){
+                echo('<script>
+                        alert("ERRORE2!\n'.$e->getMessage().'");
+                      </script>');
+            }
+        }
+    }
+
+
+    // *************** MAKE RESERVATION *******************************
+
+    function makeReservation(){
 
         $username = "6786_utentesql";
         $password = "databasecai";
@@ -31,81 +54,122 @@
         $selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
           or die("Could not select database");
 
-
-        // Validate input HERE!
-
-        if ($_POST['nome']== '')  die( json_encode( array( 'ERROR' => "Inserire il nome del cliente.") ));
-        if (strlen($_POST['nome'])> 100)  die( json_encode( array( 'ERROR' => "Inserire solo il nome del cliente nella prima riga!") ));
-        $nome = mysqli_real_escape_string($dbhandle, $_POST['nome']);
-
-        if ($_POST['telefono']== '')  die( json_encode( array( 'ERROR' => "Inserire un numero di telefono.") ));
-        if (strlen($_POST['telefono'])> 15)  die( json_encode( array( 'ERROR' => "Inserire un numero di telefono valido.") ));
-        $telefono = mysqli_real_escape_string($dbhandle, $_POST['telefono']);
-
-        // Here I should check the date format and convert it to its absolute day value T-T
-        if ($_POST['arrivo']== '')  die( json_encode( array( 'ERROR' => "Inserire una data di arrivo valida.") ));
-        $arrivo = mysqli_real_escape_string($dbhandle, $_POST['arrivo']);
-
-        if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122)  die( json_encode( array( 'ERROR' => "La durata del soggiorno non e' valida.") ));
-        $durata = (int)mysqli_real_escape_string($dbhandle, $_POST['durata']);
-
-        if ((int)($_POST['posti'])<= 0 or (int)($_POST['durata'])>= 15)  die( json_encode( array( 'ERROR' => "Inserire un numero di posti prenotati valido.") ));
-        $posti = mysqli_real_escape_string($dbhandle, $_POST['posti']);
-
-        if (strlen($_POST['note'])> 1000)  die( json_encode( array( 'ERROR' => "Note troppo lunghe! Massimo 1000 caratteri.") ));
-        $note = mysqli_real_escape_string($dbhandle, $_POST['note']);
-
-        $gestione = 0;
-        if (isset($_POST['gestione'])) {
-           $gestione = 1;
-        }
-
-        if ($_POST['responsabile']== '' and $gestione == 0) die( json_encode( array( 'ERROR' => "Inserire il nome del responsabile della prenotazione.") ));
-        if (strlen($_POST['responsabile'])> 100)  die( json_encode( array( 'ERROR' => "Nome del responsabile della prenotazione troppo lungo!") ));
-        $resp = mysqli_real_escape_string($dbhandle, $_POST['responsabile']);
-
-
-        // Retrieve color's list
-        $coloridb = mysql_query("SELECT * FROM Colori");
-        echo("<script>alert('Colori: ".var_dump($coloridb)."');</script>");
-        while ($row = mysql_fetch_array($coloridb)) {
-            $listaColori[] = $row;
-
-            if ($row['last'] == 1) {
-                $lastColor = $row;
-            }
-        }
-        echo("<script>alert('Colori: ".var_dump($listaColori)."');</script>");
-        if ($lastColor['ID'] >= count($listaColori)-1){
-            $nextColor = $listaColori[0];
+        $validData = validate($dbhandle);
+        if (isset($validData['ERROR'])){
+            echo("<script>alert('".$validData['ERROR']."');</script>");
         }else{
-            $nextColor = $listaColori[$lastColor['ID']+1];
+
+            // Retrieve colors
+            $lastColor = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT ID FROM Colori WHERE last IN (SELECT MAX(last) FROM Colori)") )[0];
+            $colorNum = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT COUNT(*) FROM Colori") )[0];
+            if ($lastColor >= $colorNum-1 ){
+                $newColor = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT ID FROM Colori WHERE ID = 0"))[0];
+            }else{
+                $newColor = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT ID FROM Colori WHERE ID = ".($lastColor+1)) )[0];
+            }
+
+            // Actually write reservation in DB
+            $values = "(NULL, '".$validData['nome']."', '".
+                        $validData['telefono']."', '".
+                        $validData['arrivo']."', '".
+                        $validData['durata']."', '".
+                        $validData['posti']."', '".
+                        $validData['note']."', '".
+                        $validData['gestione']."', '".
+                        $validData['resp']."', '".
+                        $newColor."')";
+            $result = mysqli_query($dbhandle, "INSERT INTO `Pernottamenti`
+                                    (`id`, `nome`, `tel`, `giorno_inizio`, `durata`, `posti`, `note`, `gestione`, `responsabile`, `colore`)
+                                    VALUES".$values);
+            if ($result == 1){
+                // Update Last Color
+                $maxLast = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT MAX(last) FROM Colori") )[0];
+
+                $result2 = mysqli_query( $dbhandle, "UPDATE Colori SET last = ".($maxLast+1)." WHERE ID = ".$newColor);
+                if ($result2 == 0) throw new Exception('Color update failed!');
+
+            }else{
+                mysqli_close($dbhandle);
+                throw new Exception('Registration failed!');
+                }
         }
-
-
-        //$dbLastColor = mysqli_fetch_array( mysqli_query($dbhandle, "SELECT ID FROM Colori WHERE last = 1") );
-        //$dbNewColor = mysqli_fetch_array( mysqli_query($dbhandle, "SELECT ID FROM Colori WHERE ID = ".($dbLastColor['ID']+1)) );
-
-        // Actually write reservation in DB
-        $values = "(NULL, '".$nome."', '".$telefono."', '".$arrivo."', '".$durata."', '".$posti."', '".$note."', '".$gestione."', '".$resp."', '".$nextColor."')";
-        $result = mysqli_query($dbhandle, "INSERT INTO `Pernottamenti`
-                                (`id`, `nome`, `tel`, `giorno_inizio`, `durata`, `posti`, `note`, `gestione`, `responsabile`, `colore`)
-                                VALUES".$values);
-        if ($result == 1){
-            // Update Last Color
-            $result2 = mysqli_query( $dbhandle, "UPDATE Colori SET last = 1 WHERE ID = ".$dbNewColor);
-            $result3 = mysqli_query( $dbhandle, "UPDATE Colori SET last = 0 WHERE ID = ".$dbLastColor);
-            if ($result2 == 0 or $result3 == 0){
-                echo('Color update failed!');
-            }
-        }else{
-            echo('Registration failed!');
-            }
-
 
         mysqli_close($dbhandle);
-
     }
+
+    function validate($dbhandle) {
+            if ($_POST['nome']== '')  throw new Exception("Inserire il nome del cliente.");
+            if (strlen($_POST['nome'])> 100)  throw new Exception("Inserire solo il nome del cliente nella prima riga!");
+
+            if ($_POST['telefono']== '')  throw new Exception("Inserire un numero di telefono.");
+            if (strlen($_POST['telefono'])> 15)  throw new Exception("Inserire un numero di telefono valido.");
+
+            // Here I should check the date format and convert it to its absolute day value T-T
+            if ($_POST['arrivo']== '')  throw new Exception("Inserire una data di arrivo valida.");
+
+            if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("La durata del soggiorno non e' valida.");
+
+            if ((int)($_POST['posti'])<= 0 or (int)($_POST['durata'])>= 15) throw new Exception("Inserire un numero di posti prenotati valido.");
+
+            if (strlen($_POST['note'])> 1000) throw new Exception("Note troppo lunghe! Massimo 1000 caratteri.");
+
+            $gestione = 0;
+            if (isset($_POST['gestione'])) {
+               $gestione = 1;
+            }
+
+            if ($_POST['responsabile']== '' and $gestione == 0) throw new Exception("Inserire il nome del responsabile della prenotazione.");
+            if (strlen($_POST['responsabile'])> 100) throw new Exception("Nome del responsabile della prenotazione troppo lungo!");
+
+            return array(
+                'nome' => mysqli_real_escape_string($dbhandle, $_POST['nome']),
+                'telefono' => mysqli_real_escape_string($dbhandle, $_POST['telefono']),
+                'arrivo' => mysqli_real_escape_string($dbhandle, $_POST['arrivo']),
+                'durata' => (int)mysqli_real_escape_string($dbhandle, $_POST['durata']),
+                'posti' => mysqli_real_escape_string($dbhandle, $_POST['posti']),
+                'note' => mysqli_real_escape_string($dbhandle, $_POST['note']),
+                'gestione' => $gestione,
+                'resp' => mysqli_real_escape_string($dbhandle, $_POST['responsabile']),
+            );
+    }  // closes validate()
+
+
+
+    function updateReservation($prenid){
+        $username = "6786_utentesql";
+        $password = "databasecai";
+        $hostname = "localhost";
+
+        $dbhandle = mysqli_connect($hostname, $username, $password)
+          or die("Unable to connect to MySQL");
+        $selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
+          or die("Could not select database");
+
+        $validData = validate($dbhandle);
+        if (isset($validData['ERROR'])){
+            echo("<script>alert('".$validData['ERROR']."');</script>");
+        }else{
+
+            // Update reservation in DB
+            $result = mysqli_query($dbhandle, "UPDATE Pernottamenti SET
+                                    nome = '".$validData['nome'].
+                                    "', tel = '".$validData['telefono'].
+                                    "', giorno_inizio = ".$validData['arrivo'].
+                                    ", durata = ".$validData['durata'].
+                                    ", posti = ".$validData['posti'].
+                                    ", note = '".$validData['note'].
+                                    "', gestione = ".$validData['gestione'].
+                                    ", responsabile = '".$validData['resp'].
+                                    "' WHERE ID = ".$prenid);
+            if ($result == False){
+                mysqli_close($dbhandle);
+                throw new Exception('Update failed! '.$result);
+                }
+        }
+
+        mysqli_close($dbhandle);
+    }
+
 
     ?>
 
@@ -184,40 +248,31 @@
 
     $daysum = 122;
     $lista = [];
-    $listag = [];
+    $gest = 0;
+    $gestdb = [];
 
     $username = "6786_utentesql";
     $password = "databasecai";
     $hostname = "localhost";
 
-    $dbhandle = mysql_connect($hostname, $username, $password)
+    $dbhandle = mysqli_connect($hostname, $username, $password)
      or die("Unable to connect to MySQL");
-    $selected = mysql_select_db("6786_pernottamenti", $dbhandle)
+    $selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
       or die("Could not select database");
-
-    // Retrieve color's list
-    $coloridb = mysql_query("SELECT * FROM Colori");
-    while ($row = mysql_fetch_array($coloridb)) {
-        $listaColori[] = $row;
-        if ($row['last'] == 1) {
-            $lastColor = $row;
-        }
-    }
-    if ($lastColor['ID'] >= count($listaColori)-1){
-        $nextColor = $listaColori[0];
-    }else{
-        $nextColor = $listaColori[$lastColor['ID']+1];
-    }
 
     /*
     echo('<tr><td></td><td>DEBUG: Colors</td>');
+    $coloridb = mysqli_query($dbhandle, "SELECT * FROM Colori");
+    while ($row = mysqli_fetch_array($coloridb)) {
+        $listaColori[] = $row;
+        if ($row['last'] == 1) {
+            $lastColor = $row;
+        }}
     foreach ($listaColori as $color){
         echo("<td style='background:".$color['colore'].";'>");
         echo('<b>'.$color['ID'].'</b>');
         echo("</td>");
-    }
-    echo('</tr>');
-    */
+    } echo('</tr>');   */
 
 
     // Start building the table
@@ -263,45 +318,44 @@
 
         // Building Gestore td
         if ($ris == 1){
-            $listagest = mysql_query("SELECT * FROM Pernottamenti WHERE (gestione=1 AND giorno_inizio=".$absday.")");
-            while ($row = mysql_fetch_array($listagest)) {
-                $listag[] = $row; // This appends the NEW bookings to $lista, which is usually NOT empty!
+            // WARNING! Does not deal with overlapping
+            if ($gest == 0){
+                $gestdb =  mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE (gestione=1 AND giorno_inizio=".$absday.")");
+                $gest = mysqli_fetch_array($gestdb);
             }
-            if (count($listag) == 0 ){
-                echo("<td>Nessuno!</td>");
+            if ( ($gest['giorno_inizio'] + $gest['durata']) <= $absday){
+                $gest = 0;
             }
-            for($n=0; $n<count($listag); $n++){
-                if ($listag[$n]['gestione'] == 1){
-                    echo("<td>");
-                    echo("<a id='".$absday."-G' href='javascript:getData(".$listag[$n]['id'].", 1)' onblur='javascript:hideBox()'><div>");
-                    echo($listag[$n]['nome']);
-                    echo("</div></a>");
-                    echo("</td>");
-                }
-                if ($listag[$n]['giorno_inizio']+ $listag[$n]['durata']-1 <= $absday){
-                    unset($listag[$n]);  // pop from array
-                    $listag = array_values($listag); // normalize indexes (moves all to the left)
-                }
+            if ($gest == 0){
+                echo("<td>Vuoto</td>");
+            }else{
+                echo("<td>");
+                echo("<a id='".$absday."-G' href='javascript:getData(".$gest['id'].", 1)' onblur='javascript:hideBox()'><div>");
+                echo($gest['nome']);//.' '.var_dump($listag[0]) );
+                echo("</div></a>");
+                echo("</td>");
             }
+
         }
 
         // Filling the rest of the table
-        $listadb = mysql_query("SELECT * FROM Pernottamenti WHERE (gestione=0 AND giorno_inizio=".$absday.")");
-        while ($row = mysql_fetch_array($listadb)) {
+        $listadb = mysqli_query($dbhandle, "SELECT *
+                                            FROM Pernottamenti AS p INNER JOIN Colori AS c ON p.colore = c.ID
+                                            WHERE (p.gestione=0 AND p.giorno_inizio=".$absday.")");
+        while ($row = mysqli_fetch_array($listadb)) {
             $lista[] = $row; // This appends the NEW bookings to $lista, which is usually NOT empty!
         }
         $tot = 0;
         foreach($lista as $pren){
             for($i=0; $i<$pren['posti']; $i++, $tot++){
-                echo("<td style='background:".$listaColori[ $pren['colore'] ][1].";'>");
+                echo("<td style='background:".$pren['colore'].";'>");
                     if ($ris == 1 ) echo("<a id='".$absday."-".$i."' onblur='javascript:hideBox()' href='javascript:getData(".$pren['id'].",0)'><div>");
                 echo('<b>P '.$pren['id'].'</b>');
                     if ($ris == 1 ) echo("</div></a>");
                 echo("</td>");
             }
             if ($pren['giorno_inizio']+ $pren['durata']-1 <= $absday){
-                //echo($pren['id'].': '.$n.' '.($pren['giorno_inizio']+ $pren['durata']-$absday-1).'------');
-                $key = array_search($pren, $lista);  // need to look for it, because the index is full of holes...
+                $key = array_search($pren, $lista);  // need to look for it, because the index is not normalized...
                 unset($lista[$key]);  // pop from array
             }
         }
@@ -309,12 +363,14 @@
             echo ("<td></td>");
         }
 
+        // Close tr
+        echo ("</tr>");
+
     }
 
-    mysql_close($dbhandle);
+    mysqli_close($dbhandle);
 
     ?>
-                </tr>
               </tbody>
             </table>
             </div>
@@ -330,54 +386,62 @@
         <div id="data-box" class="data-hidden">
           <div id="left-box" class="inner-box white shadow2">
               <img id="loading" src="static/images/spinningwheel.gif" style='display:none;' />
-              <h3 id='left-box-num'>Prenotazione № </h3>
-              <p id='left-box-nome'><b>Nome Cliente</b>:</p>
-              <p id='left-box-tel'><b>№ Telefono</b>:</p>
-              <p id='left-box-arrivo'><b>Data Arrivo</b>:</p>
-              <p id='left-box-durata'><b>Durata</b>:</p>
-              <p id='left-box-posti'><b>Posti prenotati</b>:</p>
-              <p id='left-box-resp'><b>Responsabile</b>:</p>
+              <h3 id='left-box-title'><span id='left-span-bt'>Prenotazione № </span><span id='left-span-num'></span></h3>
+              <p id='left-box-pn'><b id='left-bn'>Nome Cliente</b>: <span id='left-span-nome'></span></p>
+              <p id='left-box-pt'><b>№ Telefono</b>: <span id='left-span-tel'></span></p>
+              <p id='left-box-pa'><b>Data Arrivo</b>: <span id='left-span-arrivo'><></span></p>
+              <p id='left-box-pd'><b>Durata</b>: <span id='left-span-durata'></span></p>
+              <p id='left-box-pp'><b>Posti prenotati</b>: <span id='left-span-posti'></span></p>
+              <p id='left-box-pr'><b>Responsabile</b>: <span id='left-span-resp'></span></p>
               <button id='err-btn' type='button' class='btn btn-danger' onclick='javascript:hideBox()'>Chiudi</button>
-              <button id='modify-btn' type="button" class="btn btn-success" onclick="javascript:modifyBooking()">Modifica Dati</button>
-              <button id='delete-btn' type="button" class="btn btn-danger" onclick="javascript:deleteBooking()">Elimina Prenotazione</button>
+              <a id='modify-btn' class="btn btn-success" data-toggle="modal"  data-fillme=1 data-title="Modifica" data-gestione='0' data-target="#newB_Modal">Modifica Dati</a>
+              <button id='delete-btn' type='button' class='btn btn-danger' onclick='javascript:deleteBooking()'>Elimina Prenotazione</button>
           </div>
         </div>
 
-    <? } ?>
-
-        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+        <div class="modal fade" id="newB_Modal" tabindex="-1" role="dialog" aria-labelledby="newB_ModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-header center">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h2 class="modal-title" id="myModalLabel">Nuova Prenotazione</h2>
+                <h2 id='modal-title' class="modal-title">Prenotazione</h2>
               </div>
               <form method='POST'>
                 <div class="modal-body">
-                  <div class="form-group">
-                    <input type="text" class="form-control" name="nome" placeholder="Nome Cliente">
+                  <div class="form-group" >
+                    <input type="text" class="form-control" name="nome" id='mod_nome' placeholder="Nome Cliente">
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" name="telefono" placeholder="№ Telefono">
+                    <input type="text" class="form-control" name="telefono" id='mod_tel' placeholder="№ Telefono">
                   </div>
                   <div class="form-group">
-                    <input type="date" class="form-control" name="arrivo" placeholder="Data di Arrivo">
+                    <input type="date" class="form-control" name="arrivo" id='mod_arrivo' placeholder="Data di Arrivo">
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" name="durata" placeholder="Durata del Soggiorno">
+                    <input type="text" class="form-control" name="durata" id='mod_durata' placeholder="Durata del Soggiorno">
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" name="posti" placeholder="Posti Prenotati">
+                    <input type="text" class="form-control" name="posti" id='mod_posti' placeholder="Posti Prenotati">
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" name="responsabile" placeholder="Responsabile Prenotazione">
+                    <input type="text" class="form-control" name="responsabile" id='mod_resp' placeholder="Responsabile Prenotazione">
                   </div>
                   <div class="form-group">
-                    <input type="textarea" class="form-control" name="note" placeholder="Note...">
+                    <input type="textarea" class="form-control" name="note" id='mod_note'placeholder="Note...">
                   </div>
                   <div class="checkbox">
                     <label>
-                      <input name='gestione' type="checkbox"> Sono gestori
+                      <input name='gestione' id='mod_gest' type="checkbox"> Sono gestori
+                    </label>
+                  </div>
+                  <div class="hidden checkbox">
+                    <label>
+                      <input name='newbooking' id='mod_new' type="checkbox" checked='true'> Nuova Prenotazione
+                    </label>
+                  </div>
+                  <div class="hidden">
+                    <label>
+                      <input name='prenid' id='mod_prenid' type="text">
                     </label>
                   </div>
                 </div>
@@ -390,28 +454,55 @@
           </div>
         </div>
 
+    <? } ?>
 
         <footer>
           <div class="footer-div">
             <? if ($ris == 1){ ?>
-            <a href="javascript:makeBooking()" class="btn btn-success" data-toggle="modal" data-target="#myModal">Nuova Prenotazione</a>
+            <a class="btn btn-success" data-toggle="modal" data-fillme=0 data-title="Nuova" data-gestione='0' data-target="#newB_Modal">Nuova Prenotazione</a>
             <a href="javascript:getData()" class="btn btn-success" >XX</a>
-            <a href="main.php?ris=0" class="btn btn-danger" style='position:relative;float:right;'</a>Logout</a>
+            <a href="main.php?ris=0" class="btn btn-danger" style='position:relative;float:right;'>Logout</a>
             <? }else{ ?>
             <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
             <? } ?>
           </div>
         </footer>
 
-      </div>
 
-        <link href="static/css/datepickr.css" rel="stylesheet">
-        <script type="text/javascript" src="static/javascript/datepickr.min.js"></script>
-        <script type="text/javascript">
-            new datepickr('arrivo', {
-                'dateFormat': 'd/m/Y'
-            });
-        </script>
+
+    <script type="text/javascript">
+
+    // Fill the modal when loaded
+        $('#newB_Modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);  // Button that triggered the modal
+            var title = button.data('title') + ' Prenotazione';  // Extract info from data-* attributes
+
+            if(button.data('fillme')==1) {
+                var decoded = retrieveData(button.data('gestione'), button.data('num'));
+                var modal = $(this);
+                title = title + ' №' + button.data('num')
+                $('#mod_prenid').val(button.data('num'));
+                $('#mod_nome').val(decoded.nome);
+                $('#mod_tel').val(decoded.tel);
+                $('#mod_arrivo').val(decoded.arrivo);
+                $('#mod_durata').val(decoded.durata);
+                $('#mod_posti').val(decoded.posti);
+                $('#mod_resp').val(decoded.resp);
+                $('#mod_note').val(decoded.note);
+                $('#mod_gest').prop('checked', button.data('gestione'));
+                $('#mod_new').prop('checked', false);
+            }
+            $('#modal-title').text(title);
+        });
+
+    // Reset the modal when closed
+        $('#newB_Modal').on('hide.bs.modal', function (event) {
+            var title = 'Nuova Prenotazione';
+            $(this).find('form')[0].reset()
+        });
+
+    </script>
+
 
   </body>
 </html>
