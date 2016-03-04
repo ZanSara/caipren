@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jan 23, 2016 at 11:09 下午
+-- Generation Time: Mar 04, 2016 at 10:36 上午
 -- Server version: 10.1.9-MariaDB
 -- PHP Version: 5.6.15
 
@@ -37,18 +37,18 @@ CREATE TABLE `Colori` (
 --
 
 INSERT INTO `Colori` (`ID`, `colore`, `last`) VALUES
-(0, '#0061D1', 0),
-(1, '#00A823', 0),
-(2, '#DA38FF', 0),
-(3, '#FFD02E', 0),
-(4, '#B0B0B0', 0),
-(5, '#A84B00', 0),
-(6, '#7E38FF', 0),
-(7, '#00D1C5', 0),
-(8, '#EFEFEF', 1),
-(9, '#FF0D0A', 0),
-(10, '#FF7AA6', 0),
-(11, '#FF781A', 0);
+(0, '#0061D1', 11),
+(1, '#00A823', 12),
+(2, '#DA38FF', 13),
+(3, '#FFD02E', 14),
+(4, '#B0B0B0', 15),
+(5, '#A84B00', 16),
+(6, '#7E38FF', 5),
+(7, '#00D1C5', 6),
+(8, '#CFCFCF', 7),
+(9, '#FF0D0A', 8),
+(10, '#FF7AA6', 9),
+(11, '#FF781A', 10);
 
 -- --------------------------------------------------------
 
@@ -74,15 +74,19 @@ CREATE TABLE `Pernottamenti` (
 --
 
 INSERT INTO `Pernottamenti` (`id`, `nome`, `tel`, `giorno_inizio`, `durata`, `posti`, `note`, `gestione`, `responsabile`, `colore`) VALUES
-(3, 'gestore', '222222222', 4, 7, 2, 'niente da dire', 1, NULL, '0'),
-(12, 'primo', '22222', 2, 5, 1, '', 0, 'sara', '1'),
-(13, 'secondo', '22222', 3, 5, 1, '', 0, 'sara', '2'),
-(15, 'terzo', '22222', 3, 5, 1, '', 0, 'sara', '3'),
-(16, 'quarto', '22222', 1, 5, 1, '', 0, 'sara', '4'),
-(17, 'quinto', '22222', 2, 5, 1, '', 0, 'sara', '5'),
-(18, 'sesto', '22222', 4, 1, 1, '', 0, 'sara', '6'),
-(19, 'settimo', '22222', 2, 5, 1, '', 0, 'sara', '7'),
-(20, 'ottavo', '22222', 2, 5, 1, '', 0, 'sara', '8');
+(3, 'gestore', '222222222', 156, 7, 2, 'niente da dire', 1, 'gestore', '0'),
+(4, 'cliente1', '222222222', 157, 2, 2, NULL, 0, 'io', '1'),
+(42, 'cliente2', '3333333333', 158, 3, 1, '', 0, 'io', '2'),
+(44, 'gestore2', '1111', 167, 7, 1, '', 1, '', '5'),
+(45, 'nuovo3', '333333', 159, 2, 1, '', 0, 'io', '6'),
+(48, 'ciauuuuu', '33333', 156, 2, 3, '', 0, 'sara', '9'),
+(49, 'Icy', '2356457643', 165, 3, 3, '', 0, 'sara', '11'),
+(50, 'Picco de''Paperis', '12345678', 167, 2, 4, 'nessuna nota', 0, 'pippo', '0'),
+(51, 'xxx', '11111', 169, 2, 2, '', 0, 'vv', '1'),
+(52, 'zz', '11', 170, 2, 2, '', 0, 'ss', '2'),
+(53, 'dd', '22', 167, 2, 3, '', 0, 'sss', '3'),
+(54, 'sara', '4444', 187, 4, 2, '', 0, 'io', '4'),
+(55, 'io', '3333', 153, 2, 1, '', 0, 'io', '5');
 
 --
 -- Indexes for dumped tables
@@ -108,7 +112,7 @@ ALTER TABLE `Pernottamenti`
 -- AUTO_INCREMENT for table `Pernottamenti`
 --
 ALTER TABLE `Pernottamenti`
-  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(5) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=56;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
