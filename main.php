@@ -446,9 +446,45 @@
               </form>
           </div>
         </div>
+        
+        
+        
+    <div class="modal fade" id="LeftBox_Modal" tabindex="-1" role="dialog" aria-labelledby="LeftBox_ModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header center">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h2 id='modal-title' class="modal-title">Prenotazione № </h2>
+              </div>
+              
+              <p id='left-box-pn'><b id='left-bn'>Nome Cliente</b>: <span id='left-span-nome'></span></p>
+              <p id='left-box-pt'><b>№ Telefono</b>: <span id='left-span-tel'></span></p>
+              <p id='left-box-pa'><b>Data Arrivo</b>: <span id='left-span-arrivo'></span></p>
+              <p id='left-box-pd'><b>Durata</b>: <span id='left-span-durata'></span></p>
+              <p id='left-box-pp'><b>Posti prenotati</b>: <span id='left-span-posti'></span></p>
+              <p id='left-box-pr'><b>Responsabile</b>: <span id='left-span-resp'></span></p>
+             
+              
+              
+              <div class="modal-footer center">
+                  <a id='modify-btn' class="btn btn-success" data-toggle="modal"  data-fillme=1 data-title="Modifica" data-gestione='0' data-target="#newB_Modal">Modifica Dati</a>
+                  <form method='POST'>
+                    <div class="hidden">
+                      <input type="checkbox" name='delbooking' id='chk_del'  checked='true'>
+                    </div>
+                    <div class="hidden">
+                      <input type="text" name='prenid' id='left-prenid' >
+                    </div>
+                    <input type='submit' id='delete-btn' class='btn btn-danger' onclick='javascript:deleteBooking()' value='Elimina Prenotazione'>
+                  </form> 
+              </div>
+              
+            </div>
+          </div>
+        </div>
 
 
-    <!-- MODAL -->
+    <!-- MODAL NEW BOOKING -->
         <div class="modal fade" id="newB_Modal" tabindex="-1" role="dialog" aria-labelledby="newB_ModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -532,6 +568,7 @@
           <div class="footer-div">
             <? if ($ris == 1){ ?>
             <a class="btn btn-success" data-toggle="modal" data-fillme=0 data-title="Nuova" data-gestione='0' data-target="#newB_Modal">Nuova Prenotazione</a>
+            <a class="btn btn-success" data-toggle="modal" data-fillme=0 data-title="Nuova" data-gestione='0' data-target="#LeftBox_Modal">LEFT BOX</a>
             <a href="main.php?ris=0" class="btn btn-danger" style='position:relative;float:right;'>Logout</a>
             <? }else{ ?>
             <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
