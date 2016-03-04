@@ -25,7 +25,6 @@ function getData(pid, gest){
     $("#left-box-pr").hide();
     $("#modify-btn").hide()
     $("#delete-btn").hide()
-    $("#err-btn").hide();
     showBox();
     $.get('dati.php', {
         gestione : gest,
@@ -39,7 +38,6 @@ function getData(pid, gest){
             $("#left-box-title").show();
             $("#left-span-bt").text("ERRORE");
             $("#left-span-num").text("");
-            $("#err-btn").show();
             return;
         };
         if (gest == 1){
@@ -106,6 +104,5 @@ function retrieveData(gest, pid){
 
 
 function deleteBooking(){
-    return 0;
-
-    }
+    $('#left-prenid').val( $('#left-span-num').text() );
+}

@@ -21,21 +21,31 @@
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
-        if (isset($_POST['newbooking'])){
+        if (isset($_POST['delbooking'])){
             try{
-                makeReservation();
+                deleteReservation((int)$_POST['prenid']);
             }catch (Exception $e){
                 echo('<script>
-                        alert("ERRORE1!\n'.$e->getMessage().'");
+                        alert("ERRORE Cancellazione!\n'.$e->getMessage().'");
                       </script>');
             }
         }else{
-            try{
-                updateReservation((int)$_POST['prenid']);
-            }catch (Exception $e){
-                echo('<script>
-                        alert("ERRORE2!\n'.$e->getMessage().'");
-                      </script>');
+            if (isset($_POST['newbooking'])){
+                try{
+                    makeReservation();
+                }catch (Exception $e){
+                    echo('<script>
+                            alert("ERRORE Prenotazione!\n'.$e->getMessage().'");
+                          </script>');
+                }
+            }else{
+                try{
+                    updateReservation((int)$_POST['prenid']);
+                }catch (Exception $e){
+                    echo('<script>
+                            alert("ERRORE Aggiornamento!\n'.$e->getMessage().'");
+                          </script>');
+                }
             }
         }
     }
@@ -97,43 +107,8 @@
         mysqli_close($dbhandle);
     }
 
-    function validate($dbhandle) {
-            if ($_POST['nome']== '')  throw new Exception("Inserire il nome del cliente.");
-            if (strlen($_POST['nome'])> 100)  throw new Exception("Inserire solo il nome del cliente nella prima riga!");
 
-            if ($_POST['telefono']== '')  throw new Exception("Inserire un numero di telefono.");
-            if (strlen($_POST['telefono'])> 15)  throw new Exception("Inserire un numero di telefono valido.");
-
-            // Here I should check the date format and convert it to its absolute day value T-T
-            if ($_POST['arrivo']== '')  throw new Exception("Inserire una data di arrivo valida.");
-
-            if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("La durata del soggiorno non e' valida.");
-
-            if ((int)($_POST['posti'])<= 0 or (int)($_POST['durata'])>= 15) throw new Exception("Inserire un numero di posti prenotati valido.");
-
-            if (strlen($_POST['note'])> 1000) throw new Exception("Note troppo lunghe! Massimo 1000 caratteri.");
-
-            $gestione = 0;
-            if (isset($_POST['gestione'])) {
-               $gestione = 1;
-            }
-
-            if ($_POST['responsabile']== '' and $gestione == 0) throw new Exception("Inserire il nome del responsabile della prenotazione.");
-            if (strlen($_POST['responsabile'])> 100) throw new Exception("Nome del responsabile della prenotazione troppo lungo!");
-
-            return array(
-                'nome' => mysqli_real_escape_string($dbhandle, $_POST['nome']),
-                'telefono' => mysqli_real_escape_string($dbhandle, $_POST['telefono']),
-                'arrivo' => mysqli_real_escape_string($dbhandle, $_POST['arrivo']),
-                'durata' => (int)mysqli_real_escape_string($dbhandle, $_POST['durata']),
-                'posti' => mysqli_real_escape_string($dbhandle, $_POST['posti']),
-                'note' => mysqli_real_escape_string($dbhandle, $_POST['note']),
-                'gestione' => $gestione,
-                'resp' => mysqli_real_escape_string($dbhandle, $_POST['responsabile']),
-            );
-    }  // closes validate()
-
-
+// *************** UPDATE RESERVATION *******************************
 
     function updateReservation($prenid){
         $username = "6786_utentesql";
@@ -171,6 +146,67 @@
     }
 
 
+// *************** DELETE RESERVATION *******************************
+
+    function deleteReservation($prenid){
+        $username = "6786_utentesql";
+        $password = "databasecai";
+        $hostname = "localhost";
+
+        $dbhandle = mysqli_connect($hostname, $username, $password)
+          or die("Unable to connect to MySQL");
+        $selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
+          or die("Could not select database");
+
+        // Delete reservation in DB
+        $result = mysqli_query($dbhandle, "DELETE FROM Pernottamenti WHERE ID = ".$prenid);
+        if ($result == False){
+            mysqli_close($dbhandle);
+            throw new Exception('Deletion failed! '.$result);
+        }
+
+        mysqli_close($dbhandle);
+    }
+
+
+// *************** VALIDATION ****************************************
+
+    function validate($dbhandle) {
+        if ($_POST['nome']== '')  throw new Exception("Inserire il nome del cliente.");
+        if (strlen($_POST['nome'])> 100)  throw new Exception("Inserire solo il nome del cliente nella prima riga!");
+
+        if ($_POST['telefono']== '')  throw new Exception("Inserire un numero di telefono.");
+        if (strlen($_POST['telefono'])> 15)  throw new Exception("Inserire un numero di telefono valido.");
+
+        if ((int)$_POST['arrivo']== '')  throw new Exception("Inserire una data di arrivo valida.");
+        $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($_POST['arrivo'])-1));
+
+        if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("La durata del soggiorno non e' valida.");
+
+        if ((int)($_POST['posti'])<= 0 or (int)($_POST['durata'])>= 15) throw new Exception("Inserire un numero di posti prenotati valido.");
+
+        if (strlen($_POST['note'])> 1000) throw new Exception("Note troppo lunghe! Massimo 1000 caratteri.");
+
+        $gestione = 0;
+        if (isset($_POST['gestione'])) {
+           $gestione = 1;
+        }
+
+        if ($_POST['responsabile']== '' and $gestione == 0) throw new Exception("Inserire il nome del responsabile della prenotazione.");
+        if (strlen($_POST['responsabile'])> 100) throw new Exception("Nome del responsabile della prenotazione troppo lungo!");
+
+        return array(
+            'nome' => mysqli_real_escape_string($dbhandle, $_POST['nome']),
+            'telefono' => mysqli_real_escape_string($dbhandle, $_POST['telefono']),
+            'arrivo' => $absdate,
+            'durata' => (int)mysqli_real_escape_string($dbhandle, $_POST['durata']),
+            'posti' => mysqli_real_escape_string($dbhandle, $_POST['posti']),
+            'note' => mysqli_real_escape_string($dbhandle, $_POST['note']),
+            'gestione' => $gestione,
+            'resp' => mysqli_real_escape_string($dbhandle, $_POST['responsabile']),
+        );
+    }
+
     ?>
 
     <div class="title shadow1">
@@ -181,10 +217,10 @@
         concordata con i gestori una volta giunti al Rifugio.</p>
     </div>
 
+
+    <!-- MAIN TABLE -->
     <div class="row">
-
         <div id="calendario-box" class="cal-full calendario-outer-box shadow2">
-
           <table id="tableid" style="overflow:hidden;">
               <tr><td>
                 <div class='scrollable'>
@@ -242,11 +278,14 @@
                   <tbody>
     <?
 
-    $today = [];
-    $today['absday'] = '5';
-    $firstweekday = 4;
+    // BE CAREFUL HERE - I SET EVERYWHERE A FIXED 2016
 
-    $daysum = 122;
+    $firstday = date('z', strtotime('01-06-2016')-1); //   ONLY dd-mm-yyyy OR mm/dd/yyyy are recognized correctly
+    $lastday = date('z', strtotime('1-10-2016')-1);   // -1 is due to an apparent incompatible conversion between strtotime() and format()
+    $today = date('z', strtotime('05-06-2016')-1);
+    //$today = date('z') - $firstday;
+
+
     $lista = [];
     $gest = 0;
     $gestdb = [];
@@ -277,42 +316,44 @@
 
     // Start building the table
 
-    for($absday = 0; $absday<$daysum; $absday++){
-        if ($absday - 30 >= 0){
-            if ($absday - 61 >= 0){
-                if ($absday - 92 >= 0){
-                    $month = 9;
-                    $monthname = "Set";
-                    $day = $absday - 91;
-                }else{
-                    $month = 8;
-                    $monthname = "Ago";
-                    $day = $absday - 60;
-                }
-            }else{
-                $month = 7;
-                $monthname = "Lug";
-                $day = $absday - 29;
-            }
-        }else{
-            $month = 6;
-            $monthname = "Giu";
-            $day = $absday + 1;
-        }
+    for($absday = $firstday; $absday<$lastday; $absday++){
+
+        $absdate = DateTime::createFromFormat('z', $absday);
+
+        $day = $absdate->format('j');
+        $weekday = $absdate->format('N');
+        $month = $absdate->format('n');
+
+        switch ($month):
+            case '6':
+                $monthname = 'Giu';
+                break;
+            case '7':
+                $monthname = 'Lug';
+                break;
+            case '8':
+                $monthname = 'Ago';
+                break;
+            case '9':
+                $monthname = 'Set';
+                break;
+            default:
+                $monthname = 'ERR';
+        endswitch;
 
         // Building tr
         echo("<tr id='".$day."-".$month."'");
             if( $day == 1 ) echo ("style='border-top: 4px solid black;'");
-            if( $absday == $daysum-1 ) echo ("style='border-bottom: 4px solid #000;'");
-            if( $today['absday'] == $absday) echo("id='today' class='border'");
+            if( $absday == $lastday-1 ) echo ("style='border-bottom: 4px solid #000;'");
+            if( $today == $absday) echo("id='today' class='border'");
         echo(">");
 
         // Building Date td
         echo("<td ");
-            if( ($firstweekday+$absday-1) % 7 == 6 ) echo("style='color:red;'");
+            if( $weekday == 7 ) echo("style='color:red;'");
             if( $month == 8 and $day==15 ) echo("style=color:red;");
         echo(">");
-            echo($day." ".$monthname); //." / ".$absday);
+            echo($day." ".$monthname." / ".$absday);
         echo("</td>");
 
 
@@ -327,10 +368,10 @@
                 $gest = 0;
             }
             if ($gest == 0){
-                echo("<td>Vuoto</td>");
+                echo("<td style='background:#EFB8A3'>Nessuno!</td>");
             }else{
                 echo("<td>");
-                echo("<a id='".$absday."-G' href='javascript:getData(".$gest['id'].", 1)' onblur='javascript:hideBox()'><div>");
+                echo("<a id='".$absday."-G' href='javascript:getData(".$gest['id'].", 1)' ><div>");
                 echo($gest['nome']);//.' '.var_dump($listag[0]) );
                 echo("</div></a>");
                 echo("</td>");
@@ -349,7 +390,7 @@
         foreach($lista as $pren){
             for($i=0; $i<$pren['posti']; $i++, $tot++){
                 echo("<td style='background:".$pren['colore'].";'>");
-                    if ($ris == 1 ) echo("<a id='".$absday."-".$i."' onblur='javascript:hideBox()' href='javascript:getData(".$pren['id'].",0)'><div>");
+                    if ($ris == 1 ) echo("<a id='".$absday."-".$i."' href='javascript:getData(".$pren['id'].",0)'><div>");
                 echo('<b>P '.$pren['id'].'</b>');
                     if ($ris == 1 ) echo("</div></a>");
                 echo("</td>");
@@ -367,9 +408,7 @@
         echo ("</tr>");
 
     }
-
     mysqli_close($dbhandle);
-
     ?>
               </tbody>
             </table>
@@ -381,24 +420,35 @@
           </div>
         </div>
 
-    <? if ($ris==1){ ?>
 
+    <!-- LEFT BOX -->
+    <? if ($ris==1){ ?>
         <div id="data-box" class="data-hidden">
+          <a id='close-btn' onclick='javascript:hideBox()'>CHIUDI</a>
           <div id="left-box" class="inner-box white shadow2">
               <img id="loading" src="static/images/spinningwheel.gif" style='display:none;' />
               <h3 id='left-box-title'><span id='left-span-bt'>Prenotazione № </span><span id='left-span-num'></span></h3>
               <p id='left-box-pn'><b id='left-bn'>Nome Cliente</b>: <span id='left-span-nome'></span></p>
               <p id='left-box-pt'><b>№ Telefono</b>: <span id='left-span-tel'></span></p>
-              <p id='left-box-pa'><b>Data Arrivo</b>: <span id='left-span-arrivo'><></span></p>
+              <p id='left-box-pa'><b>Data Arrivo</b>: <span id='left-span-arrivo'></span></p>
               <p id='left-box-pd'><b>Durata</b>: <span id='left-span-durata'></span></p>
               <p id='left-box-pp'><b>Posti prenotati</b>: <span id='left-span-posti'></span></p>
               <p id='left-box-pr'><b>Responsabile</b>: <span id='left-span-resp'></span></p>
-              <button id='err-btn' type='button' class='btn btn-danger' onclick='javascript:hideBox()'>Chiudi</button>
               <a id='modify-btn' class="btn btn-success" data-toggle="modal"  data-fillme=1 data-title="Modifica" data-gestione='0' data-target="#newB_Modal">Modifica Dati</a>
-              <button id='delete-btn' type='button' class='btn btn-danger' onclick='javascript:deleteBooking()'>Elimina Prenotazione</button>
+              <form method='POST'>
+                <div class="hidden">
+                  <input type="checkbox" name='delbooking' id='chk_del'  checked='true'>
+                </div>
+                <div class="hidden">
+                  <input type="text" name='prenid' id='left-prenid' >
+                </div>
+                <input type='submit' id='delete-btn' class='btn btn-danger' onclick='javascript:deleteBooking()' value='Elimina Prenotazione'>
+              </form>
           </div>
         </div>
 
+
+    <!-- MODAL -->
         <div class="modal fade" id="newB_Modal" tabindex="-1" role="dialog" aria-labelledby="newB_ModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -406,43 +456,64 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h2 id='modal-title' class="modal-title">Prenotazione</h2>
               </div>
-              <form method='POST'>
+              <form class='form-horizontal' method='POST'>
                 <div class="modal-body">
                   <div class="form-group" >
-                    <input type="text" class="form-control" name="nome" id='mod_nome' placeholder="Nome Cliente">
+                    <label class="col-sm-3 control-label">Nome Cliente</label>
+                    <div class="col-sm-9" >
+                        <input type="text" class="form-control" name="nome" id='mod_nome' placeholder="Nome Cliente">
+                    </div>
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" name="telefono" id='mod_tel' placeholder="№ Telefono">
+                    <label class="col-sm-3 control-label">№ Telefono</label>
+                    <div class="col-sm-9" >
+                        <input type="text" class="form-control" name="telefono" id='mod_tel' placeholder="№ Telefono">
+                    </div>
+                  </div>
+                  <hr/>
+                  <div class="form-group">
+                    <label class="col-sm-3 control-label">Data di Arrivo</label>
+                    <div class="col-sm-9" >
+                        <input type="date" class="form-control" name="arrivo" id='mod_arrivo' placeholder="Giorno-Mese-Anno">
+                    </div>
                   </div>
                   <div class="form-group">
-                    <input type="date" class="form-control" name="arrivo" id='mod_arrivo' placeholder="Data di Arrivo">
+                    <label class="col-sm-3 control-label">Durata del Soggiorno</label>
+                    <div class="col-sm-9" >
+                        <input type="text" class="form-control" name="durata" id='mod_durata' placeholder="Durata del Soggiorno">
+                    </div>
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" name="durata" id='mod_durata' placeholder="Durata del Soggiorno">
+                    <label class="col-sm-3 control-label">Posti Prenotati</label>
+                    <div class="col-sm-9" >
+                        <input type="text" class="form-control" name="posti" id='mod_posti' placeholder="Posti Prenotati">
+                    </div>
+                  </div>
+                  <hr/>
+                  <div class="form-group">
+                    <label class="col-sm-3 control-label">Responsabile Prenotazione</label>
+                    <div class="col-sm-9" >
+                        <input type="text" class="form-control" name="responsabile" id='mod_resp' placeholder="Responsabile Prenotazione">
+                    </div>
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" name="posti" id='mod_posti' placeholder="Posti Prenotati">
+                    <label class="col-sm-3 control-label">Note</label>
+                    <div class="col-sm-9" >
+                        <input type="textarea" class="form-control" name="note" id='mod_note'placeholder="Note...">
+                    </div>
                   </div>
                   <div class="form-group">
-                    <input type="text" class="form-control" name="responsabile" id='mod_resp' placeholder="Responsabile Prenotazione">
-                  </div>
-                  <div class="form-group">
-                    <input type="textarea" class="form-control" name="note" id='mod_note'placeholder="Note...">
-                  </div>
-                  <div class="checkbox">
-                    <label>
-                      <input name='gestione' id='mod_gest' type="checkbox"> Sono gestori
-                    </label>
+                      <div class="col-sm-offset-3 col-sm-9 checkbox">
+                        <label>
+                          <input name='gestione' id='mod_gest' type="checkbox"> Sono gestori
+                        </label>
+                      </div>
                   </div>
                   <div class="hidden checkbox">
-                    <label>
-                      <input name='newbooking' id='mod_new' type="checkbox" checked='true'> Nuova Prenotazione
-                    </label>
+                    <input name='newbooking' id='mod_new' type="checkbox" checked='true'> Nuova Prenotazione
                   </div>
                   <div class="hidden">
-                    <label>
-                      <input name='prenid' id='mod_prenid' type="text">
-                    </label>
+                    <input name='prenid' id='mod_prenid' type="text">
                   </div>
                 </div>
                 <div class="modal-footer center">
@@ -456,11 +527,11 @@
 
     <? } ?>
 
+    <!-- FOOTER -->
         <footer>
           <div class="footer-div">
             <? if ($ris == 1){ ?>
             <a class="btn btn-success" data-toggle="modal" data-fillme=0 data-title="Nuova" data-gestione='0' data-target="#newB_Modal">Nuova Prenotazione</a>
-            <a href="javascript:getData()" class="btn btn-success" >XX</a>
             <a href="main.php?ris=0" class="btn btn-danger" style='position:relative;float:right;'>Logout</a>
             <? }else{ ?>
             <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
@@ -480,7 +551,7 @@
             if(button.data('fillme')==1) {
                 var decoded = retrieveData(button.data('gestione'), button.data('num'));
                 var modal = $(this);
-                title = title + ' №' + button.data('num')
+                title = title + ' № ' + button.data('num')
                 $('#mod_prenid').val(button.data('num'));
                 $('#mod_nome').val(decoded.nome);
                 $('#mod_tel').val(decoded.tel);
