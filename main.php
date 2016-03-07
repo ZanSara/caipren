@@ -179,7 +179,13 @@
         if (strlen($_POST['telefono'])> 15)  throw new Exception("Inserire un numero di telefono valido.");
 
         if ((int)$_POST['arrivo']== '')  throw new Exception("Inserire una data di arrivo valida.");
-        $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($_POST['arrivo'])-1));
+        $replaced = str_replace("/", "-", $_POST['arrivo']);
+        $replaced = str_replace(".", "-", $replaced);
+        $replaced = str_replace("\\", "-", $replaced);
+        $replaced = str_replace(" ", "-", $replaced);
+        echo $replaced;
+        echo $_POST['arrivo'];
+        $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($replaced)-1));
 
         if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("La durata del soggiorno non e' valida.");
 
@@ -371,7 +377,7 @@
                 echo("<td style='background:#EFB8A3'>Nessuno!</td>");
             }else{
                 echo("<td>");
-                echo("<a id='".$absday."-G' href='javascript:getData(".$gest['id'].", 1)' ><div>");
+                echo("<a id='".$absday."-G' data-toggle='modal' data-id=".$gest['id']." data-gestione='1' data-target='#LeftBox_Modal' ><div>");
                 echo($gest['nome']);//.' '.var_dump($listag[0]) );
                 echo("</div></a>");
                 echo("</td>");
@@ -390,7 +396,7 @@
         foreach($lista as $pren){
             for($i=0; $i<$pren['posti']; $i++, $tot++){
                 echo("<td style='background:".$pren['colore'].";'>");
-                    if ($ris == 1 ) echo("<a id='".$absday."-".$i."' href='javascript:getData(".$pren['id'].",0)'><div>");
+                    if ($ris == 1 ) echo("<a id='".$absday."-".$i."' data-toggle='modal' data-id=".$pren['id']." data-gestione='0' data-target='#LeftBox_Modal' ><div>"); //echo("<a id='".$absday."-".$i."' href='javascript:getData(".$pren['id'].",0)'><div>");
                 echo('<b>P '.$pren['id'].'</b>');
                     if ($ris == 1 ) echo("</div></a>");
                 echo("</td>");
@@ -421,8 +427,10 @@
         </div>
 
 
-    <!-- LEFT BOX -->
+
     <? if ($ris==1){ ?>
+
+        <!-- LEFT BOX   -->
         <div id="data-box" class="data-hidden">
           <a id='close-btn' onclick='javascript:hideBox()'>CHIUDI</a>
           <div id="left-box" class="inner-box white shadow2">
@@ -446,45 +454,53 @@
               </form>
           </div>
         </div>
-        
-        
-        
+
+
+    <!-- DATA MODAL -->
     <div class="modal fade" id="LeftBox_Modal" tabindex="-1" role="dialog" aria-labelledby="LeftBox_ModalLabel">
-          <div class="modal-dialog" role="document">
+          <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
               <div class="modal-header center">
+
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h2 id='modal-title' class="modal-title">Prenotazione № </h2>
+                <h3 id='loadingTitle' class="modal-title">Caricamento...</h3>
+                <h3 id='leftmodal-title' class="modal-title"></h3>
+                <h3 id='lefts-num' class="modal-title"></h3>
               </div>
-              
-              <p id='left-box-pn'><b id='left-bn'>Nome Cliente</b>: <span id='left-span-nome'></span></p>
-              <p id='left-box-pt'><b>№ Telefono</b>: <span id='left-span-tel'></span></p>
-              <p id='left-box-pa'><b>Data Arrivo</b>: <span id='left-span-arrivo'></span></p>
-              <p id='left-box-pd'><b>Durata</b>: <span id='left-span-durata'></span></p>
-              <p id='left-box-pp'><b>Posti prenotati</b>: <span id='left-span-posti'></span></p>
-              <p id='left-box-pr'><b>Responsabile</b>: <span id='left-span-resp'></span></p>
-             
-              
-              
-              <div class="modal-footer center">
-                  <a id='modify-btn' class="btn btn-success" data-toggle="modal"  data-fillme=1 data-title="Modifica" data-gestione='0' data-target="#newB_Modal">Modifica Dati</a>
+              <div class="modal-body">
+
+                <img id="loadingL" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
+                <p id='message' style='display:none;'></p>
+
+                <div id='left-databox' class="form-group" style='display:none;'>
+                  <p id='left-pn'><b>Nome Cliente</b>: <span id='lefts-nome'></span></p>
+                  <p id='left-pt'><b>№ Telefono</b>: <span id='lefts-tel'></span></p>
+                  <p id='left-pa'><b>Data Arrivo</b>: <span id='lefts-arrivo'></span></p>
+                  <p id='left-pd'><b>Durata</b>: <span id='lefts-durata'></span></p>
+                  <p id='left-pp'><b>Posti prenotati</b>: <span id='lefts-posti'></span></p>
+                  <p id='left-pr'><b>Responsabile</b>: <span id='lefts-resp'></span></p>
+                </div>
+
+              </div>
+              <div id='left-footer' class="modal-footer center" style='display:none;'>
+
                   <form method='POST'>
+                    <a id='modify-btn' class="btn btn-success" data-id=0 data-fillme=1 data-title="Modifica" data-gestione='0' data-target="#newB_Modal" style='margin-bottom:5px;'>Modifica Dati</a>
                     <div class="hidden">
                       <input type="checkbox" name='delbooking' id='chk_del'  checked='true'>
-                    </div>
-                    <div class="hidden">
                       <input type="text" name='prenid' id='left-prenid' >
                     </div>
                     <input type='submit' id='delete-btn' class='btn btn-danger' onclick='javascript:deleteBooking()' value='Elimina Prenotazione'>
-                  </form> 
+                  </form>
+
               </div>
-              
+
             </div>
           </div>
         </div>
 
 
-    <!-- MODAL NEW BOOKING -->
+    <!-- NEW BOOKING MODAL -->
         <div class="modal fade" id="newB_Modal" tabindex="-1" role="dialog" aria-labelledby="newB_ModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -494,6 +510,9 @@
               </div>
               <form class='form-horizontal' method='POST'>
                 <div class="modal-body">
+
+                    <img id="loadingB" src="static/images/spinningwheel.gif" style='display:none;' />
+
                   <div class="form-group" >
                     <label class="col-sm-3 control-label">Nome Cliente</label>
                     <div class="col-sm-9" >
@@ -568,7 +587,7 @@
           <div class="footer-div">
             <? if ($ris == 1){ ?>
             <a class="btn btn-success" data-toggle="modal" data-fillme=0 data-title="Nuova" data-gestione='0' data-target="#newB_Modal">Nuova Prenotazione</a>
-            <a class="btn btn-success" data-toggle="modal" data-fillme=0 data-title="Nuova" data-gestione='0' data-target="#LeftBox_Modal">LEFT BOX</a>
+            <a class="btn btn-success" data-toggle="modal" data-fillme=0 data-title="LEFT" data-gestione='0' data-target="#LeftBox_Modal">LEFT BOX</a>
             <a href="main.php?ris=0" class="btn btn-danger" style='position:relative;float:right;'>Logout</a>
             <? }else{ ?>
             <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
@@ -580,13 +599,22 @@
 
     <script type="text/javascript">
 
-    // Fill the modal when loaded
+    // Fill the Booking modal when loaded
         $('#newB_Modal').on('show.bs.modal', function (event) {
             var button = $(event.relatedTarget);  // Button that triggered the modal
             var title = button.data('title') + ' Prenotazione';  // Extract info from data-* attributes
 
             if(button.data('fillme')==1) {
-                var decoded = retrieveData(button.data('gestione'), button.data('num'));
+                $('loading').show();
+                var decoded = JSON.parse(
+                                $.ajax({
+                                    dataType: "json",
+                                    url: 'dati.php?gestione='+button.data('gestione')+'&prenid='+button.data('num'),
+                                    //data: someData,
+                                    success: function() {
+                                                $('loading').hide()
+                                            }
+                                }).responseText);
                 var modal = $(this);
                 title = title + ' № ' + button.data('num')
                 $('#mod_prenid').val(button.data('num'));
@@ -603,10 +631,82 @@
             $('#modal-title').text(title);
         });
 
-    // Reset the modal when closed
-        $('#newB_Modal').on('hide.bs.modal', function (event) {
+        // Fill the LeftBox modal when loaded
+        $('#LeftBox_Modal').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget);  // Button that triggered the modal
+            var decoded = 0;
+            $('#loadingL').show();
+            $.get('dati.php', {
+                    gestione : button.data('gestione'),
+                    prenid: button.data('id')
+                }).done(function(gotData) {
+                    try{
+                        var decoded = JSON.parse(gotData);
+                    }catch (Exception) {
+                        $('#loadingL').hide();
+                        $('#loadingTitle').hide();
+                        $('#message').show();
+                        $('#message').text('ERRORE INTERNO. Contatta il webmaster.' + gotData);
+                        $("#leftmodal-title").text("ERRORE");
+                        return;
+                    };
+                    $('#loadingL').hide();
+                    $('#loadingTitle').hide();
+                    if(button.data('gestione')==1) {
+                        $('#leftmodal-title').text('Gestione');
+                    }else{
+                        $('#leftmodal-title').text('Prenotazione');
+                    }
+                    $("#lefts-num").text('№ '+ decoded.prenid);
+                    $('#left-databox').show();
+                    $('#left-footer').show();
+                    $('#lefts-nome').text(decoded.nome);
+                    $('#lefts-tel').text(decoded.tel);
+                    $('#lefts-arrivo').text(decoded.arrivo);
+                    $('#lefts-durata').text(decoded.durata);
+                    $('#lefts-posti').text(decoded.posti);
+                    $('#lefts-resp').text(decoded.resp);
+                    $('#lefts-note').text(decoded.note);
+
+                    //$('modify-btn').data('id') = button.data('id');
+                    $('modify-btn').data('id') = decoded.prenid;
+
+
+            });
+        });
+
+        // Open modal from modal
+        //$("#modify-btn").click(function () {
+        function openModBook(){
+            $("#newB_Modal").dialog({
+                modal: true
+            });
+            $("#LeftBox_Modal").dialog("close");
+        }
+
+        //});
+
+        $(document).on('click','a[data-target="#newB_Modal"]', function(ev) {
+            $("#newB_Modal .modal-body").load(target, function() {
+                $("#newB_Modal").modal("show");
+            });
+        });
+
+    // Reset the modals when closed
+        $('#newB_Modal').on('hidden.bs.modal', function (event) {
             var title = 'Nuova Prenotazione';
             $(this).find('form')[0].reset()
+        });
+
+        $('#LeftBox_Modal').on('hidden.bs.modal', function (event) {
+            $("#leftmodal-title").text('');
+            $("#lefts-num").text('');
+            $('#left-databox').hide();
+            $('#left-footer').hide();
+            $('#loadingL').show();
+            $('#loadingTitle').show();
+            $('#message').hide();
+            $('#message').text('');
         });
 
     </script>

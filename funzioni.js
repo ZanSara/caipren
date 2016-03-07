@@ -93,11 +93,7 @@ function retrieveData(gest, pid){
             dataType: "json",
             url: 'dati.php?gestione='+gest+'&prenid='+pid,
             data: someData,
-            async: false,  // -------------------> How can I avoid this?
-            success: function(someData) {
-                        //console.log(someData);
-                        //return someData;
-                    }
+            //async: false,  // -------------------> How can I avoid this?
         }).responseText
     )
 };
