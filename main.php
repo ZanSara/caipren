@@ -33,7 +33,7 @@
 
         if (isset($_POST['delbooking'])){
             try{
-                deleteReservation((int)$_POST['prenid']);
+                deleteReservation($dbhandle, (int)$_POST['prenid']);
             }catch (Exception $e){
                 echo('<script>
                         alert("ERRORE Cancellazione!\n'.$e->getMessage().'");
@@ -42,7 +42,7 @@
         }else{
             if (isset($_POST['newbooking'])){
                 try{
-                    makeReservation();
+                    makeReservation($dbhandle);
                 }catch (Exception $e){
                     echo('<script>
                             alert("ERRORE Prenotazione!\n'.$e->getMessage().'");
@@ -50,7 +50,7 @@
                 }
             }else{
                 try{
-                    updateReservation((int)$_POST['prenid']);
+                    updateReservation($dbhandle, (int)$_POST['prenid']);
                 }catch (Exception $e){
                     echo('<script>
                             alert("ERRORE Aggiornamento!\n'.$e->getMessage().'");
@@ -65,7 +65,7 @@
 
     // *************** MAKE RESERVATION *******************************
 
-    function makeReservation(){
+    function makeReservation($dbhandle){
 
         $validData = validate($dbhandle);
         checkAssertions($validData);
@@ -113,7 +113,7 @@
 
 // *************** UPDATE RESERVATION *******************************
 
-    function updateReservation($prenid){
+    function updateReservation($dbhandle, $prenid){
 
         $validData = validate($dbhandle);
         checkAssertions($validData);
@@ -143,7 +143,7 @@
 
 // *************** DELETE RESERVATION *******************************
 
-    function deleteReservation($prenid){
+    function deleteReservation($dbhandle, $prenid){
 
         $result = mysqli_query($dbhandle, "DELETE FROM Pernottamenti WHERE ID = ".$prenid);
         if ($result == False){
@@ -430,14 +430,13 @@
               <div class="modal-header center">
 
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 id='loadingL-title' class="modal-title">Caricamento...</h3>
-                <h3 id='leftmodal-title' class="modal-dataTitle modal-title"></h3>
-                <h3 id='lefts-num' class="modal-title"></h3>
+                <h3 class="loadingTitle modal-title">Caricamento...</h3>
+                <h3 class="modal-dataTitle modal-title"></h3>
               </div>
               <div class="modal-body">
 
-                <img id="loadingL" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
-                <p id='messageL' style='display:none;'></p>
+                <img class="loading" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
+                <p class='message' style='display:none;'></p>
 
                 <div class="modal-databox form-group" style='display:none;'>
                   <p id='left-pn'><b>Nome Cliente</b>: <span class='mod-nome'></span></p>
@@ -452,8 +451,8 @@
               </div>
               <div id='left-footer' class="modal-footer center" style='display:none;'>
 
-                <a id='modify-btn' class="btn btn-success" onclick='javascript:switch2NewBModal(0, 0, 0)' >Modifica Dati</a>
-                <a id='delete-btn' class='btn btn-danger' onclick='javascript:deleteBooking(0, 0)' >Elimina Prenotazione</a>
+                <a id='modify-btn' class="btn btn-success" onclick='javascript:switch2NewBModal(0, 0, 0)' >Modifica</a>
+                <a id='delete-btn' class='btn btn-danger' onclick='javascript:deleteBooking(0, 0)' >Elimina</a>
 
               </div>
 
@@ -468,14 +467,14 @@
             <div class="modal-content">
               <div class="modal-header center">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h2 id='loadingNB-title' class="modal-title">Caricamento...</h2>
+                <h2 class="loadingTitle modal-title">Caricamento...</h2>
                 <h2 id='newB_ModalTitle' class="modal-dataTitle modal-title">Prenotazione</h2>
               </div>
               <form class='form-horizontal' method='POST'>
                 <div class="modal-body">
 
-                  <img id="loadingNB" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
-                  <p id='messageNB' style='display:none;'></p>
+                  <img class="loading" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
+                  <p class='message' style='display:none;'></p>
 
                 <div class="modal-databox" >
                   <div class="form-group" >
@@ -569,12 +568,11 @@
 
     // Reset NewB_Modal when closed
         $('#newB_Modal').on('hidden.bs.modal', function (event) {
-            $(this).find('form')[0].reset()
+            $('#newB_Modal form')[0].reset();
         });
 
         $('#LeftBox_Modal').on('hidden.bs.modal', function (event) {
-            $("#leftmodal-title").text('');
-            $("#lefts-num").text('');
+            //$("#leftmodal-title").text('');
             $('#modal-databox').hide();
             $('#left-footer').hide();
             $('#loadingL').show();
