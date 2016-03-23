@@ -1,4 +1,136 @@
 
+function deleteBooking(prenid){
+    //$('#left-prenid').val( $('#left-span-num').text() );
+}
+
+
+
+
+function switch2NewBModal(fillme, prenid, gestione){
+    $('#LeftBox_Modal').modal('hide');
+    openNewBModal(fillme, prenid, gestione);
+}
+
+
+function openNewBModal(fillme, prenid, gestione){
+    var modal = $('#newB_Modal');
+    var title = $('#newB_ModalTitle').text();
+
+    if(gestione == 1){
+         $('#newB_ModalTitle').text('Gestione');
+    }
+    modal.modal('show');
+
+    getData(gestione, prenid, $('#loadingNB'), $('#loadingNB-title'), $('#messageNB'), $("#newB_ModalTitle"));
+
+
+    //var button = $(event.relatedTarget);  // Button that triggered the modal
+    //var title = button.data('title') + ' Prenotazione';  // Extract info from data-* attributes
+
+    /*
+    if(fillme == 1) {
+        $('#loadingNB').show();
+
+        var decoded = JSON.parse(
+                        $.ajax({
+                            dataType: "json",
+                            url: 'dati.php?gestione='+ gestione+'&prenid='+prenid,
+                            //data: someData,
+                            async: false,
+                            success: function() {
+                                        $('loadingNB').hide()
+                                    }
+                        }).responseText);
+
+        title = title + ' № ' + prenid;
+        $('#mod_prenid').val(modal.data('prenid'));
+        $('#mod_nome').val(decoded.nome);
+        $('#mod_tel').val(decoded.tel);
+        $('#mod_arrivo').val(decoded.arrivo);
+        $('#mod_durata').val(decoded.durata);
+        $('#mod_posti').val(decoded.posti);
+        $('#mod_resp').val(decoded.resp);
+        $('#mod_note').val(decoded.note);
+        $('#mod_gest').prop('checked', modal.data('gestione'));
+        $('#mod_new').prop('checked', false);
+    }else{
+        title = 'Nuova ' + title;
+    }
+    $('#newB_ModalTitle').text(title);
+
+
+    */
+}
+
+function prepareLeftModal(prenid, gestione){
+    $('#modify-btn').attr('onclick', 'javascript:switch2NewBModal(1, '+prenid+', '+gestione+')');
+    $('#delete-btn').attr('onclick', 'javascript:deleteBooking('+prenid+')');
+
+    $('#LeftBox_Modal').modal('show');
+
+    getData(gestione, prenid, $('#loadingL'), $('#loadingL-title'), $('#messageL'), $("#leftmodal-title"));
+
+}
+
+
+function getData(gestione, prenid, loadingGif, loadingTitle, messageBox, modalTitle, fillingFunction){
+
+    // Hide everything
+    $('.modal-dataTitle').text('Prenotazione');
+
+    $('.modal-databox').hide();
+    $('.modal-footer').hide();
+    $('#loadingsL').show();
+    $('#loadingTitle').show();
+    $('#message').hide();
+    $('#message').text('');
+
+    var decoded = 0;
+    loadingGif.show();
+    $.get('dati.php', {
+            gestione : gestione,
+            prenid: prenid
+        }).done(function(gotData) {
+            try{
+                var decoded = JSON.parse(gotData);
+            }catch (Exception) {
+                loadingGif.hide();
+                loadingTitle.hide();
+                messageBox.show();
+                messageBox.html('<h5>ERRORE INTERNO.</h5><p>Contatta il webmaster.<p>' + gotData);
+                modalTitle.text("ERRORE");
+                return;
+            };
+            loadingGif.hide();
+            loadingTitle.hide();
+            if(gestione == 1) {
+                modalTitle.text('Gestione');
+            }else{
+                modalTitle.text('Prenotazione');
+            }
+
+            $(".modal-dataTitle").append(' № '+ decoded.prenid);
+            $('.modal-databox').show();
+            $('.modal-footer').show();
+            $('.mod-nome').text(decoded.nome).val(decoded.nome);
+            $('.mod-tel').text(decoded.tel).val(decoded.tel);
+            $('.mod-arrivo').text(decoded.arrivo).val(decoded.arrivo);
+            $('.mod-durata').text(decoded.durata).val(decoded.durata);
+            $('.mod-posti').text(decoded.posti).val(decoded.posti);
+            $('.mod-resp').text(decoded.resp).val(decoded.resp);
+            $('.mod-note').text(decoded.note).val(decoded.note);
+            $('.mod-prenid').text(decoded.prenid).val(decoded.prenid);
+            $('.mod_gest').prop('checked', modal.data('gestione'));
+            $('.mod_new').prop('checked', fillme);
+
+            $('#modify-btn').attr('data-id', decoded.prenid);
+
+    });
+}
+
+
+
+/*
 function showBox(){
     $('#data-box').addClass('data-shown');
     $('#data-box').removeClass('data-hidden');
@@ -97,8 +229,4 @@ function retrieveData(gest, pid){
         }).responseText
     )
 };
-
-
-function deleteBooking(){
-    $('#left-prenid').val( $('#left-span-num').text() );
-}
+*/

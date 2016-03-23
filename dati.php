@@ -30,7 +30,8 @@ echo( json_encode(
         "durata" => $data['durata'],
         "posti" => $data['posti'],
         "resp" => $data['responsabile'],
-        "note" => $data['note']
+        "note" => $data['note'],
+        "gestione" => $data['gestione']
 )) );
 
 mysqli_close($dbhandle);
