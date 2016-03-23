@@ -1,9 +1,63 @@
 
-function deleteBooking(prenid){
-    //$('#left-prenid').val( $('#left-span-num').text() );
+function validate_and_send(prenid, gestione){
+
+    var form = $('#booking-form');
+    var alertbox = $('#message-alert');
+    var haderror = false
+
+    //alert($('.mod-nome').val());
+    //alert($('.mod-nome').value);
+    //alert($('.mod-nome').prop('value'));
+
+    if( $('.mod-nome').val() == undefined ){
+        haderror = true;
+        alertbox.text("Inserire il nome del cliente.")
+    }
+    else if( $('.mod-nome').val().lenght > 100 ){
+        haderror = true;
+        alertbox.text("Inserire solo il nome del cliente nella prima riga (massimo 100 caratteri).");
+    }
+    else if( $('.mod-tel').val() == undefined ){
+        haderror = true;
+        alertbox.text("Inserire un numero di telefono.");
+    }
+    else if( $('.mod-tel').val().lenght > 15 ){
+        haderror = true;
+        alertbox.text("Inserire un numero di telefono valido.");
+    }
+    // Controllare che il numero di telefono sia composto di sole cifre!!
+    else if( $('.mod-durata').val() < 1 || $('.mod-durata').val() > 122 ){
+        haderror = true;
+        alertbox.text("Inserire una durata del pernottamento valida.");
+    }
+    else if( $('.mod-arrivo').val() == undefined ){
+        haderror = true;
+        alertbox.text("Inserire una data di arrivo.");
+    }else if( $('.mod-posti').val() < 1 || $('.mod-posti').val() > 16 ){
+        haderror = true;
+        alertbox.text("Inserire un numero di posti prenotati valido. Attenzione: sono disponibili al massimo 16 posti letto.");
+    }
+    else if( $('.mod-note').val() != undefined ){
+        if( $('.mod-note').val().lenght > 1000 ){
+            haderror = true;
+            alertbox.text("Attenzione! La nota è troppo lunga (massimo 1000 caratteri)");
+        }
+    }
+    else if( $('.mod-resp').val() == undefined && $('.mod-gest').prop('checked') != 'checked' ){
+        haderror = true;
+        alertbox.text("Inserisci il tuo nome nel campo 'Responsabile della Prenotazione'.");
+    }
+
+
+    if( haderror ){
+        alertbox.show();
+        haderror = false;
+
+    }else{
+        form.submit();
+        $('#newB_Modal').modal('hide');
+    }
 }
-
-
 
 
 function switch2NewBModal(fillme, prenid, gestione){
@@ -32,8 +86,10 @@ function openNewBModal(fillme, prenid, gestione){
         $('#message').hide();
         $('#message').text('');
         $('.mod-new').prop('checked', 'checked' );
-
     }
+
+    $('#new-btn').attr('onclick', 'javascript:validate_and_send('+prenid+', '+gestione+')');
+
 
 }
 
@@ -107,106 +163,3 @@ function getData(gestione, prenid){
 
     });
 }
-
-
-
-/*
-function showBox(){
-    $('#data-box').addClass('data-shown');
-    $('#data-box').removeClass('data-hidden');
-    $('#calendario-box').addClass('cal-moved');
-    $('#calendario-box').removeClass('cal-full');
-}
-
-function hideBox(){
-    $('#data-box').removeClass('data-shown');
-    $('#data-box').addClass('data-hidden');
-    $('#calendario-box').removeClass('cal-moved');
-    $('#calendario-box').addClass('cal-full');
-}
-
-
-function getData(pid, gest){
-    $("#loading").show()
-    $("#left-box-title").hide();
-    $("#left-box-pn").hide();
-    $("#left-box-pt").hide();
-    $("#left-box-pa").hide();
-    $("#left-box-pd").hide();
-    $("#left-box-pp").hide();
-    $("#left-box-pr").hide();
-    $("#modify-btn").hide()
-    $("#delete-btn").hide()
-    showBox();
-    $.get('dati.php', {
-        gestione : gest,
-        prenid: pid
-    }).done(function(gotData) {
-        $('#loading').hide();
-        try{
-            var data = JSON.parse(gotData);
-        }catch (Exception) {
-            alert('ERRORE INTERNO. Contatta il webmaster.' + gotData);
-            $("#left-box-title").show();
-            $("#left-span-bt").text("ERRORE");
-            $("#left-span-num").text("");
-            return;
-        };
-        if (gest == 1){
-            $("#left-box-title").show();
-            $("#left-box-pn").show();
-            $("#left-box-pd").show();
-            $("#left-span-bt").text('Gestione № ');
-            $("#left-span-num").text(data.prenid);
-            $("#left-bn").text('Nome Gestore: ');
-            $("#left-span-nome").text(data.nome);
-            $("#left-span-durata").html(data.durata);
-            $("#modify-btn").data('gestione', 1);
-        }else{
-            $("#left-box-title").show();
-            $("#left-box-pn").show();
-            $("#left-box-pd").show();
-            $("#left-box-pr").show();
-            $("#left-span-bt").text('Prenotazione № ');
-            $("#left-span-num").text(data.prenid);
-            $("#left-bn").html('Nome Cliente: ');
-            $("#left-span-nome").text(data.nome);
-            $("#left-span-durata").text(data.durata);
-            $("#left-span-resp").text(data.resp);
-            $("#modify-btn").data('gestione', 0);
-        }
-        $("#left-box-pt").show();
-        $("#left-box-pa").show();
-        $("#left-box-pp").show();
-        $("#left-span-tel").text(data.tel);
-        $("#left-span-arrivo").text(data.arrivo);
-        $("#left-span-posti").text(data.posti);
-        $("#err-btn").hide();
-        $("#modify-btn").show()
-        $("#delete-btn").show()
-        $("#modify-btn").data('num', data.prenid);
-
-    }).fail(function(gotData) {
-        alert('ATTENZIONE! Il server non ha restituito i dati. Contatta il webmaster.');
-        $('#loading').hide();
-        $("#left-box-*").hide();
-        $("#left-box-title").show();
-        $("#left-span-bt").text("ERRORE");
-        $("#left-span-num").text("");
-        $("#err-btn").show();
-    });
-};
-
-
-function retrieveData(gest, pid){
-    var someData;
-    return JSON.parse(
-        $.ajax({
-            dataType: "json",
-            url: 'dati.php?gestione='+gest+'&prenid='+pid,
-            data: someData,
-            //async: false,  // -------------------> How can I avoid this?
-        }).responseText
-    )
-};
-*/

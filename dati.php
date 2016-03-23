@@ -4,7 +4,7 @@
 $gestione = $_GET['gestione'];
 $prenid = $_GET['prenid'];
 
-sleep(1);
+sleep(1);   //----------------> REMOVE ME WHEN DEPLOYING!!
 
 $username = "6786_utentesql";
 $password = "databasecai";
