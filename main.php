@@ -280,57 +280,6 @@
           </div>
         </div>
 
-
-    <!-- DATA MODAL -->
-        <div class="modal fade" id="LeftBox_Modal" tabindex="-1" role="dialog" aria-labelledby="LeftBox_ModalLabel">
-          <div class="modal-dialog modal-sm" role="document">
-            <div class="modal-content">
-              <div class="modal-header center">
-
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="loadingTitle modal-title" style='display:none;'>Caricamento...</h3>
-                <h3 class="modal-dataTitle modal-title"></h3>
-              </div>
-              <div class="modal-body">
-
-                <img class="loading" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
-                <p class='message' style='display:none;'></p>
-
-                <div class="modal-databox form-group" style='display:none;'>
-                  <p id='left-pn'><b>Nome Cliente</b>: <span class='mod-nome'></span></p>
-                  <p id='left-pt'><b>№ Telefono</b>: <span class='mod-tel'></span></p>
-                  <p id='left-pa'><b>Data Arrivo</b>: <span class='mod-arrivo'></span></p>
-                  <p id='left-pd'><b>Durata</b>: <span class='mod-durata'></span></p>
-                  <p id='left-pp'><b>Posti prenotati</b>: <span class='mod-posti'></span></p>
-                  <p id='left-pr'><b>Responsabile</b>: <span class='mod-resp'></span></p>
-                  <p id='left-pno'><b>Note</b>: <span class='mod-note'></span></p>
-                </div>
-
-              </div>
-              <div id='left-footer' class="modal-footer center" style='display:none;'>
-
-
-                <form class='form-horizontal' method='POST'>
-
-                    <a id='modify-btn' class="btn btn-success" onclick='javascript:switch2NewBModal(0, 0, 0)' >Modifica</a>
-
-                    <div class="hidden checkbox">
-                    <input name='delbooking' class='mod-del' type="checkbox" checked='checked'>
-                  </div>
-                    <div class="hidden">
-                      <input name='prenid' class='mod-prenid' type="text">
-                    </div>
-                    <input type='submit' class='btn btn-danger' value='Elimina'>
-
-                </form>
-
-              </div>
-
-            </div>
-          </div>
-        </div>
-
-
     <!-- NEW BOOKING MODAL -->
         <div class="modal fade" id="newB_Modal" tabindex="-1" role="dialog" aria-labelledby="newB_ModalLabel" data-fillme=0, data-prenid=0, data-gestione=0>
           <div class="modal-dialog" role="document">
@@ -338,79 +287,81 @@
               <div class="modal-header center">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h2 class="loadingTitle modal-title" style='display:none;'>Caricamento...</h2>
-                <h2 id='newB_ModalTitle' class="modal-dataTitle modal-title">Prenotazione</h2>
+                <h2 id='newB_ModalTitle..' class="modal-dataTitle modal-title">Prenotazione</h2> 
               </div>
               <form id='booking-form' class='form-horizontal' method='POST'>
                 <div class="modal-body">
 
                   <img class="loading" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
+                  
+                  <div id="message-alert" class="alert alert-danger" role="alert" style='display:none;'></div>
 
-                <div class="modal-databox" >
-                  <div class="form-group" >
-
-                    <div id="message-alert" class="alert alert-danger" role="alert" style='display:none;'></div>
-
-                    <label class="col-sm-3 control-label">Nome Cliente</label>
-                    <div class="col-sm-9" >
-                        <input type="text" class="mod-nome form-control" name="nome" placeholder="Nome Cliente" minlength="1" type="text" required>
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">№ Telefono</label>
-                    <div class="col-sm-9" >
-                        <input type="text" class="mod-tel form-control" name="telefono" placeholder="№ Telefono">
-                    </div>
-                  </div>
-                  <hr/>
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">Data di Arrivo</label>
-                    <div class="col-sm-9" >
-                        <input type="date" class="mod-arrivo form-control" name="arrivo"placeholder="Giorno-Mese-Anno">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">Durata del Soggiorno</label>
-                    <div class="col-sm-9" >
-                        <input type="text" class="mod-durata form-control" name="durata" placeholder="Durata del Soggiorno">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">Posti Prenotati</label>
-                    <div class="col-sm-9" >
-                        <input type="text" class="mod-posti form-control" name="posti" placeholder="Posti Prenotati">
-                    </div>
-                  </div>
-                  <hr/>
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">Responsabile Prenotazione</label>
-                    <div class="col-sm-9" >
-                        <input type="text" class="mod-resp form-control" name="responsabile" placeholder="Responsabile Prenotazione">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                    <label class="col-sm-3 control-label">Note</label>
-                    <div class="col-sm-9" >
-                        <input type="textarea" class="mod-note form-control" name="note" placeholder="Note...">
-                    </div>
-                  </div>
-                  <div class="form-group">
-                      <div class="col-sm-offset-3 col-sm-9 checkbox">
-                        <label>
-                          <input name='gestione' class='mod-gest' type="checkbox"> Sono gestori
-                        </label>
+                  <div class="modal-databox" >
+                    <div class="form-group" >
+                      <label class="col-sm-3 control-label">Nome Cliente</label>
+                      <div class="col-sm-9" >
+                          <input type="text" class="mod-nome form-control" name="nome" placeholder="Nome Cliente" readonly="readonly">
                       </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label">№ Telefono</label>
+                      <div class="col-sm-9" >
+                          <input type="text" class="mod-tel form-control" name="telefono" placeholder="№ Telefono" readonly="readonly">
+                      </div>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label">Data di Arrivo</label>
+                      <div class="col-sm-9" >
+                          <input type="date" class="mod-arrivo form-control" name="arrivo"placeholder="Giorno-Mese-Anno" readonly="readonly">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label">Durata del Soggiorno</label>
+                      <div class="col-sm-9" >
+                          <input type="text" class="mod-durata form-control" name="durata" placeholder="Durata del Soggiorno" readonly="readonly">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label">Posti Prenotati</label>
+                      <div class="col-sm-9" >
+                          <input type="text" class="mod-posti form-control" name="posti" placeholder="Posti Prenotati" readonly="readonly">
+                      </div>
+                    </div>
+                    <hr/>
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label">Responsabile Prenotazione</label>
+                      <div class="col-sm-9" >
+                          <input type="text" class="mod-resp form-control" name="responsabile" placeholder="Responsabile Prenotazione" readonly="readonly">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="col-sm-3 control-label">Note</label>
+                      <div class="col-sm-9" >
+                          <input type="textarea" class="mod-note form-control" name="note" placeholder="Note..." readonly="readonly">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-3 col-sm-9 checkbox">
+                          <label>
+                            <input name='gestione' class='mod-gest' type="checkbox" readonly="readonly"> Sono gestori
+                          </label>
+                        </div>
+                    </div>
+                    <div class="hidden checkbox">
+                      <input name='newbooking' class='mod-new' type="checkbox" checked='checked' readonly="readonly">
+                    </div>
+                    <div class="hidden">
+                      <input name='prenid' class='mod-prenid' type="text" readonly="readonly">
+                    </div>
                   </div>
-                  <div class="hidden checkbox">
-                    <input name='newbooking' class='mod-new' type="checkbox" checked='checked'>
-                  </div>
-                  <div class="hidden">
-                    <input name='prenid' class='mod-prenid' type="text">
-                  </div>
-                </div>
-                <div class="modal-footer center">
-                  <a id="new-btn" class="btn btn-primary" >Salva</a> <!-- onclick="javascript:validate_and_send(0,0);" -->
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
-                </div> <!-- modal-databox -->
+
+                  <div class="modal-footer center">
+                    <a id="enable-btn" class="btn btn-warning" href="javascript:enableEditing();">Modifica</a>
+                    <button id="new-btn" class="btn btn-primary" disabled="disabled" >Salva</button> <!-- onclick="javascript:validate_and_send(0,0);" -->
+                    <button class="btn btn-default" data-dismiss="modal">Chiudi</button>
+                    
+                  </div> <!-- modal-databox -->
                 </div>
               </form>
             </div>
@@ -566,7 +517,7 @@
                 echo("<td style='background:#EFB8A3'>Nessuno!</td>");
             }else{
                 echo("<td>");
-                echo("<a id='".$absday."-G' onclick='javascript:prepareLeftModal(".$gest['id'].", 1);' ><div>");
+                echo("<a id='".$absday."-G' onclick='javascript:openNewBModal(1, ".$gest['id'].", 1);' ><div>");
                 echo($gest['nome']);//.' '.var_dump($listag[0]) );
                 echo("</div></a>");
                 echo("</td>");
@@ -585,7 +536,7 @@
         foreach($lista as $pren){
             for($i=0; $i<$pren['posti']; $i++, $tot++){
                 echo("<td style='background:".$pren['colore'].";'>");
-                    if ($ris == 1 ) echo("<a id='".$absday."-".$i."' onclick='javascript:prepareLeftModal(".$pren['id'].", 0);' ><div>"); //echo("<a id='".$absday."-".$i."' href='javascript:getData(".$pren['id'].",0)'><div>");
+                    if ($ris == 1 ) echo("<a id='".$absday."-".$i."' onclick='javascript:openNewBModal(1, ".$pren['id'].", 0);' ><div>"); //echo("<a id='".$absday."-".$i."' href='javascript:getData(".$pren['id'].",0)'><div>");
                 echo('<b>P '.$pren['id'].'</b>');
                     if ($ris == 1 ) echo("</div></a>");
                 echo("</td>");
@@ -623,7 +574,7 @@
           <div class="footer-div">
             <? if ($ris == 1){ ?>
             <a class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</a>
-            <a class="btn btn-success" onclick='javascript:openLeftModal(1, 0, 0)'>LEFT BOX</a>
+            <a class="btn btn-success" onclick='javascript:openNewBModal(1, 0, 0)'>LEFT BOX</a>
             <a href="main.php?ris=0" class="btn btn-danger" style='position:relative;float:right;'>Logout</a>
             <? }else{ ?>
             <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
@@ -635,7 +586,7 @@
 
     <script type="text/javascript">
 
-
+      /*
         $('new').click( function() {
 
             var form = $('#booking-form');
@@ -692,11 +643,12 @@
         return false;
         } );
 
-
+      */
 
         // Reset NewB_Modal when closed
         $('#newB_Modal').on('hidden.bs.modal', function (event) {
             $('#message-alert').hide();
+            $('.modal-dataTitle').text("Prenotazione");
             $('#newB_Modal form')[0].reset();
         });
 
@@ -709,7 +661,7 @@
             $('#message').text('');
         });
 
-        // Open Error_Modal in case of errors
+        // Open Error_Modal in case of errors  -- fallback error catcher, I may think about removing this...
         if( $('#Error_Modal').data('error') ){
             $('#Error_Modal').modal('show');
         }

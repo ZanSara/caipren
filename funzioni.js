@@ -60,32 +60,87 @@ function validate_and_send(prenid, gestione){
 }
 
 
-function switch2NewBModal(fillme, prenid, gestione){
-    $('#LeftBox_Modal').modal('hide');
-    openNewBModal(fillme, prenid, gestione);
+function enableEditing(){
+    $('input').prop('readonly', false);
+    $('#new-btn').prop('disabled', false);
+    $('#enable-btn').hide();
 }
 
 
-function openNewBModal(fillme, prenid, gestione){
-    var modal = $('#newB_Modal');
-    var title = $('#newB_ModalTitle').text();
 
-    if(gestione == 1){
-         $('#newB_ModalTitle').text('Gestione');
-    }
-    modal.modal('show');
+function openNewBModal(fillme, prenid, gestione){
+    
+    $('#newB_Modal').modal('show');
 
     if(fillme) {
-        getData(gestione, prenid);
+
+        $('.modal-dataTitle').hide();
+        $('.modal-databox').hide();
+        $('.modal-footer').hide();
+        $('.loading').show();
+        $('.loadingTitle').show();
+        $('.message').hide();
+        $('.message').text('');
+
+        var decoded = 0;
+        $('.loading').show();
+        $.get('dati.php', {
+                gestione : gestione,
+                prenid: prenid
+            }).done(function(gotData) {
+                try{
+                    var decoded = JSON.parse(gotData);
+                }catch (Exception) {
+                    $('.loading').hide();
+                    $('.loadingTitle').hide();
+                    $('.message-alert').show();
+                    $('.message-alert').text('<h5>ERRORE INTERNO.</h5><p>Contatta il webmaster.<p>' + gotData);
+                    $('.modal-dataTitle').text("ERRORE");
+                    return;
+                };
+                $('.loading').hide();
+                $('.loadingTitle').hide();
+                if(gestione == 1) {
+                    $('.modal-dataTitle').text('Gestione');
+                }else{
+                    $('.modal-dataTitle').text('Prenotazione');
+                }
+
+                $(".modal-dataTitle").append(' № '+ decoded.prenid);
+                $('.modal-dataTitle').show();
+                $('.modal-databox').show();
+                $('.modal-footer').show();
+                $('.mod-nome').val(decoded.nome);
+                $('.mod-tel').val(decoded.tel);
+                $('.mod-arrivo').val(decoded.arrivo);
+                $('.mod-durata').val(decoded.durata);
+                $('.mod-posti').val(decoded.posti);
+                $('.mod-resp').val(decoded.resp);
+                $('.mod-note').val(decoded.note);
+                $('.mod-prenid').val(decoded.prenid);
+                $('.mod-new').prop('checked', gestione );
+                if(gestione){
+                    //alert('qui!');
+                    $('.mod-gest').prop('checked', 'checked');
+                }
+                $('.mod-new').prop('checked', '' );
+
+                $('#modify-btn').attr('data-id', decoded.prenid);
+
+        });
+        
     }else{
-        $('#newB_ModalTitle').text('Nuova Prenotazione');
-        $('.modal-databox').show();
-        $('.modal-footer').show();
+        
         $('#loadingNB').hide();
         $('#loadingTitle').hide();
         $('#message').hide();
         $('#message').text('');
+        $('.modal-dataTitle').text('Nuova Prenotazione');
+        $('.modal-databox').show();
+        $('.modal-footer').show();
         $('.mod-new').prop('checked', 'checked' );
+        
+        enableEditing();
     }
 
     //$('#new-btn').attr('onclick', 'javascript:validate_and_send('+prenid+', '+gestione+')');
@@ -93,73 +148,4 @@ function openNewBModal(fillme, prenid, gestione){
 
 }
 
-function prepareLeftModal(prenid, gestione){
-    $('#modify-btn').attr('onclick', 'javascript:switch2NewBModal(1, '+prenid+', '+gestione+')');
-    $('#delete-btn').attr('onclick', 'javascript:deleteBooking('+prenid+')');
 
-    $('#LeftBox_Modal').modal('show');
-
-    getData(gestione, prenid);
-
-}
-
-
-function getData(gestione, prenid){
-
-    // Hide everything
-    $('.modal-dataTitle').text('Prenotazione');
-    $('.modal-dataTitle').hide();
-    $('.modal-databox').hide();
-    $('.modal-footer').hide();
-    $('.loading').show();
-    $('.loadingTitle').show();
-    $('.message').hide();
-    $('.message').text('');
-
-    var decoded = 0;
-    $('.loading').show();
-    $.get('dati.php', {
-            gestione : gestione,
-            prenid: prenid
-        }).done(function(gotData) {
-            try{
-                var decoded = JSON.parse(gotData);
-            }catch (Exception) {
-                $('.loading').hide();
-                $('.loadingTitle').hide();
-                $('.message').show();
-                $('.message').html('<h5>ERRORE INTERNO.</h5><p>Contatta il webmaster.<p>' + gotData);
-                $('.modal-dataTitle').text("ERRORE");
-                return;
-            };
-            $('.loading').hide();
-            $('.loadingTitle').hide();
-            if(gestione == 1) {
-                $('.modal-dataTitle').text('Gestione');
-            }else{
-                $('.modal-dataTitle').text('Prenotazione');
-            }
-
-            $(".modal-dataTitle").append(' № '+ decoded.prenid);
-            $('.modal-dataTitle').show();
-            $('.modal-databox').show();
-            $('.modal-footer').show();
-            $('.mod-nome').text(decoded.nome).val(decoded.nome);
-            $('.mod-tel').text(decoded.tel).val(decoded.tel);
-            $('.mod-arrivo').text(decoded.arrivo).val(decoded.arrivo);
-            $('.mod-durata').text(decoded.durata).val(decoded.durata);
-            $('.mod-posti').text(decoded.posti).val(decoded.posti);
-            $('.mod-resp').text(decoded.resp).val(decoded.resp);
-            $('.mod-note').text(decoded.note).val(decoded.note);
-            $('.mod-prenid').text(decoded.prenid).val(decoded.prenid);
-            $('.mod-new').prop('checked', gestione );
-            if(gestione){
-                //alert('qui!');
-                $('.mod-gest').prop('checked', 'checked');
-            }
-            $('.mod-new').prop('checked', '' );
-
-            $('#modify-btn').attr('data-id', decoded.prenid);
-
-    });
-}
