@@ -10,6 +10,45 @@
     <script src="static/javascript/jQuery/jquery.validate.min.js"></script>
     <script src="static/bootstrap/js/bootstrap.min.js"></script>
     <script src="funzioni.js"></script>
+    
+    <script type="text/javascript">
+
+
+	    $.validator.addMethod("customData", function(value) {
+	    // test this terrible regex here http://www.regular-expressions.info/javascriptexample.html
+	    // Matches only days between 1 June and 30 Sept
+	    
+	    // SHOULD CHECK THE CURRENT YEAR TOO!!
+	    var re = new RegExp("^(((0[1-9]|1[0-9]|2[0-9]|30)-(0[6-9]))|((31)-(0[7-8])))-20[0-9][0-9]$")
+		    return re.test(value);
+	    }, 'Inserire una data di arrivo valida (GG-MM-AAAA) compresa tra 01-06-2016 e 30-09-2016');
+	    
+	    $.validator.addMethod("customDurata", function(value) {
+		    return (value < 122 && value > 0);
+	    }, 'Inserire una durata del soggiorno valida');
+	    
+	    $.validator.addMethod("customPosti", function(value) {
+		    return (value < 17 && value > 0);
+	    }, 'Inserire un numero di posti letto valido');
+
+
+	    $().ready(function() {
+		    $("#booking-form").validate({
+			    //debug: true,
+			    errorElement: "li",
+			    errorContainer: $("#message-alert"),
+			    errorPlacement: function(error) {
+			      $("#message-alert").show();
+				    $("#message-alert").append(error);
+			    }
+		    });
+
+	    });
+          
+      
+      
+      
+    </script>
 
   </head>
   <body>
@@ -159,43 +198,36 @@
 // *************** DATA VALIDATION ****************************************
 
     function validate($dbhandle) {
-
+        
+        echo("here!!");
+        
         $firstday = date('z', strtotime('01-06-2016')-1); //   ONLY dd-mm-yyyy OR mm/dd/yyyy are recognized correctly
         $lastday = date('z', strtotime('1-10-2016')-1);
 
-        if ($_POST['nome']== '')  throw new Exception("Inserire il nome del cliente.");
-        if (strlen($_POST['nome'])> 100)  throw new Exception("Inserire solo il nome del cliente nella prima riga!");
+        if ($_POST['nome']== '')  throw new Exception("Nome del cliente non valido!");
+        
+        if ($_POST['telefono']== '')  throw new Exception("Numero di telefono non valido!");
+        
+        if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("Durata della prenotazione non valida!");
 
-        if ($_POST['telefono']== '')  throw new Exception("Inserire un numero di telefono.");
-        if (strlen($_POST['telefono'])> 15)  throw new Exception("Inserire un numero di telefono valido.");
+        if ((int)$_POST['arrivo']= '')  throw new Exception("Data di arrivo non valida!");
+        $absdate = date('z', strtotime($_POST['arrivo'])-1);
+        echo(strtotime($_POST['arrivo']));
+        echo($_POST['arrivo']);
 
-        if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("La durata della prenotazione non e' valida.");
-
-        //if ((int)$_POST['arrivo']= '')  throw new Exception("Inserire una data di arrivo valida.");
-        $replaced = str_replace("/", "-", (int)$_POST['arrivo']);
-        $replaced = str_replace(".", "-", $replaced);
-        $replaced = str_replace("\\", "-", $replaced);
-        $replaced = str_replace(" ", "-", $replaced);
-        //echo $replaced;
-        //echo $_POST['arrivo'];
-        $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($replaced)-1));
-
-        if ((int)($_POST['posti'])<= 0 or (int)($_POST['posti'])>= 15) throw new Exception("Inserire un numero di posti prenotati valido.");
-
-        if (strlen($_POST['note'])> 1000) throw new Exception("Note troppo lunghe! Massimo 1000 caratteri.");
+        if ((int)($_POST['posti'])<= 0 or (int)($_POST['posti'])>= 15) throw new Exception("Numero di posti prenotati non valido!");
 
         $gestione = 0;
         if (isset($_POST['gestione'])) {
            $gestione = 1;
         }
 
-        if ($_POST['responsabile']== '' and $gestione == 0) throw new Exception("Inserire il nome del responsabile della prenotazione.");
-        if (strlen($_POST['responsabile'])> 100) throw new Exception("Nome del responsabile della prenotazione troppo lungo!");
-
+        if ($_POST['responsabile']== '' and $gestione == 0) throw new Exception("Nome del responsabile non valido!");
+        
         return array(
             'nome' => mysqli_real_escape_string($dbhandle, $_POST['nome']),
             'telefono' => mysqli_real_escape_string($dbhandle, $_POST['telefono']),
-            'arrivo' => (int)mysqli_real_escape_string($dbhandle, $_POST['arrivo']+150),//$absdate,
+            'arrivo' => (int)mysqli_real_escape_string($dbhandle, $absdate),
             'durata' => (int)mysqli_real_escape_string($dbhandle, $_POST['durata']),
             'posti' => mysqli_real_escape_string($dbhandle, $_POST['posti']),
             'note' => mysqli_real_escape_string($dbhandle, $_POST['note']),
@@ -236,9 +268,9 @@
 
             mysqli_close($dbhandle);
             if (!$data['gestione']){
-                throw new Exception("Impossibile prenotare!<br>Il Rifugio è già pieno nelle date:".$errorstring);
+                throw new Exception("Impossibile prenotare!<br>Il Rifugio è già pieno nelle date:".$errorstring."<br>La prenotazione NON è stata registrata.");
             }else{
-                throw new Exception("Attenzione!<br>C'è già un gestore in queste date: ".$errorstring);
+                throw new Exception("Attenzione!<br>C'è già un gestore in queste date: ".$errorstring."<br>La prenotazione NON è stata registrata.");
             }
 
         }
@@ -260,7 +292,7 @@
     <? if ($ris==1){ ?>
 
     <!-- ERROR ALERT -->
-    <div class="modal fade" id="Error_Modal" data-error=<? if($error) {?>1<?}else{?>0<?}?> tabindex="-1" role="dialog" aria-labelledby="Error_ModalLabel">
+    <div class="modal fade" id="Error_Modal" data-error="<? if($error) {?>1<?}else{?>0<?}?>" tabindex="-1" role="dialog" aria-labelledby="Error_ModalLabel">
           <div class="modal-dialog modal-sm" role="document">
             <div class="modal-content">
               <div class="modal-header center">
@@ -294,74 +326,83 @@
 
                   <img class="loading" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
                   
-                  <div id="message-alert" class="alert alert-danger" role="alert" style='display:none;'></div>
+                  <div id="error-alert" class="alert alert-danger" role="alert" style='display:none; text-align:center;'></div>
+                  <div id="message-alert" class="alert alert-danger" role="alert" style='display:none; padding-left:10%;padding-right:10%;'></div>
 
                   <div class="modal-databox" >
                     <div class="form-group" >
                       <label class="col-sm-3 control-label">Nome Cliente</label>
                       <div class="col-sm-9" >
-                          <input type="text" class="mod-nome form-control" name="nome" placeholder="Nome Cliente" readonly="readonly">
+                          <input id="modnome" type="text" class="mod-nome form-control" name="nome" placeholder="Nome Cliente" readonly="readonly" data-rule-required="true" data-msg-required="Inserire il nome del cliente">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-sm-3 control-label">№ Telefono</label>
                       <div class="col-sm-9" >
-                          <input type="text" class="mod-tel form-control" name="telefono" placeholder="№ Telefono" readonly="readonly">
+                          <input id="modtel" type="text" class="mod-tel form-control" name="telefono" placeholder="№ Telefono" readonly="readonly" data-rule-required="true" data-msg-required="Inserire il numero di telefono" data-rule-digits="true" data-msg-digits="Inserire unnumero di telefono valido">
                       </div>
                     </div>
                     <hr/>
                     <div class="form-group">
                       <label class="col-sm-3 control-label">Data di Arrivo</label>
                       <div class="col-sm-9" >
-                          <input type="date" class="mod-arrivo form-control" name="arrivo"placeholder="Giorno-Mese-Anno" readonly="readonly">
+                          <input id="modarrivo" type="text" class="mod-arrivo form-control" name="arrivo" placeholder="Giorno-Mese-Anno" readonly="readonly" data-rule-required="true" data-msg-required="Inserire una data di arrivo" data-rule-customData="true">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-sm-3 control-label">Durata del Soggiorno</label>
                       <div class="col-sm-9" >
-                          <input type="text" class="mod-durata form-control" name="durata" placeholder="Durata del Soggiorno" readonly="readonly">
+                          <input id="moddurata" type="text" class="mod-durata form-control" name="durata" placeholder="Durata del Soggiorno" readonly="readonly" data-rule-required="true" data-msg-required="Inserire la durata del soggiorno" data-rule-digits="true" data-msg-digits="Inserire una durata del soggiorno valida" data-rule-customDurata="true">
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-sm-3 control-label">Posti Prenotati</label>
                       <div class="col-sm-9" >
-                          <input type="text" class="mod-posti form-control" name="posti" placeholder="Posti Prenotati" readonly="readonly">
+                          <input id="modposti" type="text" class="mod-posti form-control" name="posti" placeholder="Posti Prenotati" readonly="readonly" data-rule="true" data-msg-required="Inserire il numero di posti letto prenotati" data-rule-digits="true" data-msg-digits="Inserire un numero di posti letto valido" data-rule-customPosti="true">
                       </div>
                     </div>
                     <hr/>
                     <div class="form-group">
                       <label class="col-sm-3 control-label">Responsabile Prenotazione</label>
                       <div class="col-sm-9" >
-                          <input type="text" class="mod-resp form-control" name="responsabile" placeholder="Responsabile Prenotazione" readonly="readonly">
+                          <input id="modresp" type="text" class="mod-resp form-control" name="responsabile" placeholder="Responsabile Prenotazione" readonly="readonly" data-rule-required="true" data-msg-required='Inserisci il tuo nome nel campo "Responsabile della prenotazione"'>
                       </div>
                     </div>
                     <div class="form-group">
                       <label class="col-sm-3 control-label">Note</label>
                       <div class="col-sm-9" >
-                          <input type="textarea" class="mod-note form-control" name="note" placeholder="Note..." readonly="readonly">
+                          <input id="modnote" type="textarea" class="mod-note form-control" name="note" placeholder="Note..." readonly="readonly">
                       </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-3 col-sm-9 checkbox">
                           <label>
-                            <input name='gestione' class='mod-gest' type="checkbox" readonly="readonly"> Sono gestori
+                            <input id="modgest" name='gestione' class='mod-gest' type="checkbox" readonly="readonly"> Sono gestori
                           </label>
                         </div>
                     </div>
                     <div class="hidden checkbox">
-                      <input name='newbooking' class='mod-new' type="checkbox" checked='checked' readonly="readonly">
+                      <input id="modnew" name='newbooking' class='mod-new' type="checkbox" checked='checked' readonly="readonly">
+                    </div>
+                    <div class="hidden checkbox">
+                      <input id="moddel" name='delbooking' class='mod-del' type="checkbox" readonly="readonly">
                     </div>
                     <div class="hidden">
-                      <input name='prenid' class='mod-prenid' type="text" readonly="readonly">
+                      <input id="modprenid" name='prenid' class='mod-prenid' type="text" readonly="readonly">
                     </div>
-                  </div>
+                  </div> <!-- modal-databox -->
 
                   <div class="modal-footer center">
-                    <a id="enable-btn" class="btn btn-warning" href="javascript:enableEditing();">Modifica</a>
-                    <button id="new-btn" class="btn btn-primary" disabled="disabled" >Salva</button> <!-- onclick="javascript:validate_and_send(0,0);" -->
+                    <a id="enable-btn" class="btn btn-warning" href="javascript:enableEditing(0);">Modifica</a>
+                    <input id="del-btn" class="btn btn-danger" disabled="disabled" type="submit" value="Elimina" style='display:none;'>
+                    <input id="new-btn" class="btn btn-primary" disabled="disabled" type="submit" value="Salva">
+                    <!-- onclick="javascript:validate_and_send(0,0);" -->
                     <button class="btn btn-default" data-dismiss="modal">Chiudi</button>
-                    
-                  </div> <!-- modal-databox -->
+                  </div>
+                  <div class="modal-errfooter center" style='display:none;'>
+                    <button class="btn btn-danger" data-dismiss="modal">Chiudi</button>
+                  </div>
+                  
                 </div>
               </form>
             </div>
@@ -585,6 +626,7 @@
 
 
     <script type="text/javascript">
+    
 
       /*
         $('new').click( function() {
@@ -648,17 +690,17 @@
         // Reset NewB_Modal when closed
         $('#newB_Modal').on('hidden.bs.modal', function (event) {
             $('#message-alert').hide();
+            $('#error-alert').hide();
+            $('.modal-errfooter').hide();
+            
             $('.modal-dataTitle').text("Prenotazione");
             $('#newB_Modal form')[0].reset();
-        });
-
-        $('#LeftBox_Modal').on('hidden.bs.modal', function (event) {
-            $('#modal-databox').hide();
-            $('#left-footer').hide();
-            $('#loadingL').show();
-            $('#loadingTitle').show();
-            $('#message').hide();
-            $('#message').text('');
+            
+            $('input').prop('readonly', true);
+            $('#new-btn').prop('disabled', true);
+            $('#del-btn').hide();
+            $('#del-btn').prop('disabled', true);
+            $('#enable-btn').show();
         });
 
         // Open Error_Modal in case of errors  -- fallback error catcher, I may think about removing this...

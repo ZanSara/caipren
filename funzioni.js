@@ -1,71 +1,14 @@
 
-function validate_and_send(prenid, gestione){
-
-    var form = $('#booking-form');
-    var alertbox = $('#message-alert');
-    var haderror = false
-
-    //alert($('.mod-nome').val());
-    //alert($('.mod-nome').value);
-    //alert($('.mod-nome').prop('value'));
-
-    if( $('.mod-nome').val() == undefined ){
-        haderror = true;
-        alertbox.text("Inserire il nome del cliente.")
-    }
-    else if( $('.mod-nome').val().lenght > 100 ){
-        haderror = true;
-        alertbox.text("Inserire solo il nome del cliente nella prima riga (massimo 100 caratteri).");
-    }
-    else if( $('.mod-tel').val() == undefined ){
-        haderror = true;
-        alertbox.text("Inserire un numero di telefono.");
-    }
-    else if( $('.mod-tel').val().lenght > 15 ){
-        haderror = true;
-        alertbox.text("Inserire un numero di telefono valido.");
-    }
-    // Controllare che il numero di telefono sia composto di sole cifre!!
-    else if( $('.mod-durata').val() < 1 || $('.mod-durata').val() > 122 ){
-        haderror = true;
-        alertbox.text("Inserire una durata del pernottamento valida.");
-    }
-    else if( $('.mod-arrivo').val() == undefined ){
-        haderror = true;
-        alertbox.text("Inserire una data di arrivo.");
-    }else if( $('.mod-posti').val() < 1 || $('.mod-posti').val() > 16 ){
-        haderror = true;
-        alertbox.text("Inserire un numero di posti prenotati valido. Attenzione: sono disponibili al massimo 16 posti letto.");
-    }
-    else if( $('.mod-note').val() != undefined ){
-        if( $('.mod-note').val().lenght > 1000 ){
-            haderror = true;
-            alertbox.text("Attenzione! La nota è troppo lunga (massimo 1000 caratteri)");
-        }
-    }
-    else if( $('.mod-resp').val() == undefined && $('.mod-gest').prop('checked') != 'checked' ){
-        haderror = true;
-        alertbox.text("Inserisci il tuo nome nel campo 'Responsabile della Prenotazione'.");
-    }
-
-
-    if( haderror ){
-        alertbox.show();
-        haderror = false;
-
-    }else{
-        form.submit();
-        $('#newB_Modal').modal('hide');
-    }
-}
-
-
-function enableEditing(){
+function enableEditing(fillme){
     $('input').prop('readonly', false);
     $('#new-btn').prop('disabled', false);
     $('#enable-btn').hide();
+    
+    if(fillme){
+        $('#del-btn').show();
+        $('#del-btn').prop('disabled', false);
+    }
 }
-
 
 
 function openNewBModal(fillme, prenid, gestione){
@@ -91,11 +34,7 @@ function openNewBModal(fillme, prenid, gestione){
                 try{
                     var decoded = JSON.parse(gotData);
                 }catch (Exception) {
-                    $('.loading').hide();
-                    $('.loadingTitle').hide();
-                    $('.message-alert').show();
-                    $('.message-alert').text('<h5>ERRORE INTERNO.</h5><p>Contatta il webmaster.<p>' + gotData);
-                    $('.modal-dataTitle').text("ERRORE");
+                    renderError(Exception, gotData);
                     return;
                 };
                 $('.loading').hide();
@@ -125,27 +64,35 @@ function openNewBModal(fillme, prenid, gestione){
                 }
                 $('.mod-new').prop('checked', '' );
 
-                $('#modify-btn').attr('data-id', decoded.prenid);
+                $('#enable-btn').attr("href", "javascript:enableEditing("+fillme+");");
 
+        }).fail(function() {
+            renderError("[$.get().fail() message]", "[$.get().fail() message]")
         });
         
     }else{
         
         $('#loadingNB').hide();
         $('#loadingTitle').hide();
-        $('#message').hide();
-        $('#message').text('');
         $('.modal-dataTitle').text('Nuova Prenotazione');
         $('.modal-databox').show();
         $('.modal-footer').show();
         $('.mod-new').prop('checked', 'checked' );
         
-        enableEditing();
+        enableEditing(0);
     }
 
     //$('#new-btn').attr('onclick', 'javascript:validate_and_send('+prenid+', '+gestione+')');
-
-
 }
 
+
+function renderError(Exception, gotData){
+    $('.loading').hide();
+    $('.loadingTitle').hide();
+    $(".modal-dataTitle").show();
+    $(".modal-errfooter").show();
+    $('#error-alert').show();
+    $('#error-alert').html('<h4>ERRORE INTERNO.</h4><p>Contatta il webmaster (Codice RE).<p>' + gotData); // + " ## " + Exception);
+    $('.modal-dataTitle').text("ERRORE");
+}
 
