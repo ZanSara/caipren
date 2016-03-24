@@ -88,7 +88,7 @@ function openNewBModal(fillme, prenid, gestione){
         $('.mod-new').prop('checked', 'checked' );
     }
 
-    $('#new-btn').attr('onclick', 'javascript:validate_and_send('+prenid+', '+gestione+')');
+    //$('#new-btn').attr('onclick', 'javascript:validate_and_send('+prenid+', '+gestione+')');
 
 
 }

@@ -7,6 +7,7 @@
     <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <script src="static/javascript/jQuery/jquery-1.11.2.min.js"></script>
+    <script src="static/javascript/jQuery/jquery.validate.min.js"></script>
     <script src="static/bootstrap/js/bootstrap.min.js"></script>
     <script src="funzioni.js"></script>
 
@@ -351,7 +352,7 @@
 
                     <label class="col-sm-3 control-label">Nome Cliente</label>
                     <div class="col-sm-9" >
-                        <input type="text" class="mod-nome form-control" name="nome" placeholder="Nome Cliente">
+                        <input type="text" class="mod-nome form-control" name="nome" placeholder="Nome Cliente" minlength="1" type="text" required>
                     </div>
                   </div>
                   <div class="form-group">
@@ -407,7 +408,7 @@
                   </div>
                 </div>
                 <div class="modal-footer center">
-                  <a id="new-btn" class="btn btn-primary" onclick="javascript:validate_and_send(0,0);">Salva</a>
+                  <a id="new-btn" class="btn btn-primary" >Salva</a> <!-- onclick="javascript:validate_and_send(0,0);" -->
                   <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
                 </div> <!-- modal-databox -->
                 </div>
