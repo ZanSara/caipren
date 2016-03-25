@@ -6,11 +6,6 @@
   </head>
   <body style="margin:20px;text-align:center;">
     <h2>SVUOTA DATABASE</h2>
-    <script>
-    if (!confirm('Sei SICURO di voler cancellare completamente il database?\n\nQuesta operazione è IRREVERSIBILE e comporta la perdita di TUTTI i dati della stagione corrente.\n\nClicca OK per proseguire, Cancel per tornare indietro.')) {
-      document.location = "main.php?ris=1";
-    }
-    </script>
 
 <?
 

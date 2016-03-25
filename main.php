@@ -10,40 +10,40 @@
     <script src="static/javascript/jQuery/jquery.validate.min.js"></script>
     <script src="static/bootstrap/js/bootstrap.min.js"></script>
     <script src="funzioni.js"></script>
-    
+
     <script type="text/javascript">
     // jQuery validation plugin settings
 
-	    $.validator.addMethod("customData", function(value) {
-	    // test this terrible regex here http://www.regular-expressions.info/javascriptexample.html
-	    // Matches only days between 1 June and 30 Sept
-	    
-	    // SHOULD CHECK THE CURRENT YEAR TOO!!
-	    var re = new RegExp("^(((0[1-9]|1[0-9]|2[0-9]|30)-(0[6-9]))|((31)-(0[7-8])))-20[0-9][0-9]$")
-		    return re.test(value);
-	    }, 'Inserire una data di arrivo valida (GG-MM-AAAA) compresa tra 01-06-2016 e 30-09-2016');
-	    
-	    $.validator.addMethod("customDurata", function(value) {
-		    return (value < 122 && value > 0);
-	    }, 'Inserire una durata del soggiorno valida');
-	    
-	    $.validator.addMethod("customPosti", function(value) {
-		    return (value < 17 && value > 0);
-	    }, 'Inserire un numero di posti letto valido');
+        $.validator.addMethod("customData", function(value) {
+        // test this terrible regex here http://www.regular-expressions.info/javascriptexample.html
+        // Matches only days between 1 June and 30 Sept
+
+        // SHOULD CHECK THE CURRENT YEAR TOO!!
+        var re = new RegExp("^(((0[1-9]|1[0-9]|2[0-9]|30)-(0[6-9]))|((31)-(0[7-8])))-20[0-9][0-9]$")
+            return re.test(value);
+        }, 'Inserire una data di arrivo valida (GG-MM-AAAA) compresa tra 01-06-2016 e 30-09-2016');
+
+        $.validator.addMethod("customDurata", function(value) {
+            return (value < 122 && value > 0);
+        }, 'Inserire una durata del soggiorno valida');
+
+        $.validator.addMethod("customPosti", function(value) {
+            return (value < 17 && value > 0);
+        }, 'Inserire un numero di posti letto valido');
 
 
-	    $().ready(function() {
-		    $("#booking-form").validate({
-			    //debug: true,
-			    errorElement: "li",
-			    errorContainer: $("#message-alert"),
-			    errorPlacement: function(error) {
-			      $("#message-alert").show();
-				    $("#message-alert").append(error);
-			    }
-		    });
+        $().ready(function() {
+            $("#booking-form").validate({
+                //debug: true,
+                errorElement: "li",
+                errorContainer: $("#message-alert"),
+                errorPlacement: function(error) {
+                  $("#message-alert").show();
+                    $("#message-alert").append(error);
+                }
+            });
 
-	    }); 
+        });
     </script>
 
   </head>
@@ -181,11 +181,11 @@
 // *************** DELETE RESERVATION *******************************
 
     function deleteReservation($dbhandle, $prenid){
-    
+
         echo('HERE!!');
 
         $result = mysqli_query($dbhandle, "DELETE FROM Pernottamenti WHERE ID = ".$prenid);
-        
+
         if ($result == False){
             mysqli_close($dbhandle);
             throw new Exception("Errore interno al server.<br>La prenotazione NON è stato cancellata.<br>Avverti il webmaster (Codice D).");//.$result);
@@ -200,7 +200,7 @@
 
         if ($_POST['nome']== '')  throw new Exception("Nome del cliente non valido!");
         if ($_POST['telefono']== '')  throw new Exception("Numero di telefono non valido!");
-        if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("Durata della prenotazione non valida!"); 
+        if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("Durata della prenotazione non valida!");
         if ($_POST['arrivo']== '')  throw new Exception("Inserire una data di arrivo valida.");
          $replaced = str_replace("/", "-", $_POST['arrivo']);
          $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($replaced)-1));
@@ -213,7 +213,7 @@
         }
 
         if ($_POST['responsabile']== '' and $gestione == 0) throw new Exception("Nome del responsabile non valido!");
-        
+
         return array(
             'nome' => mysqli_real_escape_string($dbhandle, $_POST['nome']),
             'telefono' => mysqli_real_escape_string($dbhandle, $_POST['telefono']),
@@ -258,7 +258,7 @@
             }
         }
     }
-    
+
     ?>
 
     <div class="title shadow1">
@@ -292,7 +292,7 @@
         </div>
       </div>
     </div>
-    
+
     <!-- ADVANCED MODAL -->
     <div class="modal fade" id="Adv_Modal" tabindex="-1" role="dialog" aria-labelledby="Adv_ModalLabel">
       <div class="modal-dialog" role="document">
@@ -304,7 +304,7 @@
           </div>
 
           <div class="modal-body">
-          
+
             <div style="padding-left:5%;padding-right:5%;" >
               <div class="row">
                 <a class="col-sm-4 btn btn-info" href="gen-tabella-ospiti.php">Genera Tabella Ospiti</a>
@@ -312,16 +312,16 @@
               </div>
 
               <hr>
-              
+
               <div class="row">
-                <a class="col-sm-4 btn btn-danger" href="erase-database.php">Svuota Database</a>
+                <a class="col-sm-4 btn btn-danger" href="javascript:eraseDB();">Svuota Database</a>
                 <p class="col-sm-8 pull-right">Svuota completamente il database delle prenotazioni.<br>ATTENZIONE! Questa operazione è IRREVERSIBILE!</p>
               </div>
-              
+
             </div>
 
           </div>
-          
+
           <div class="modal-footer center">
               <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
           </div>
@@ -334,13 +334,13 @@
     <div class="modal fade" id="newB_Modal" tabindex="-1" role="dialog" aria-labelledby="newB_ModalLabel" data-fillme=0, data-prenid=0, data-gestione=0>
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-        
+
           <div class="modal-header center">
             <h2 class="loadingTitle modal-title" style='display:none;'>Caricamento...</h2>
             <h2 class="modal-dataTitle modal-title">Prenotazione</h2>
             <a id="enable-btn" class="btn btn-warning modify-btn" href="javascript:enableEditing(0);">Modifica</a>
           </div>
-          
+
           <form id='booking-form' class='form-horizontal' method='POST'>
             <div class="modal-body">
 
@@ -359,9 +359,9 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">№ Telefono</label>
                   <div class="col-sm-9" >
-                      <input id="modtel" type="text" class="mod-tel form-control" name="telefono" placeholder="№ Telefono" readonly="readonly" 
-                      data-rule-required="true" data-msg-required="Inserire il numero di telefono" 
-                      data-rule-digits="true" data-msg-digits="Inserire unnumero di telefono valido">
+                      <input id="modtel" type="text" class="mod-tel form-control" name="telefono" placeholder="№ Telefono" readonly="readonly"
+                      data-rule-required="true" data-msg-required="Inserire il numero di telefono"
+                      data-rule-digits="true" data-msg-digits="Inserire un numero di telefono valido">
                   </div>
                 </div>
                 <hr/>
@@ -369,25 +369,25 @@
                   <label class="col-sm-3 control-label">Data di Arrivo</label>
                   <div class="col-sm-9" >
                       <input id="modarrivo" type="text" class="mod-arrivo form-control" name="arrivo" placeholder="Giorno-Mese-Anno" readonly="readonly"
-                      data-rule-required="true" data-msg-required="Inserire una data di arrivo" 
+                      data-rule-required="true" data-msg-required="Inserire una data di arrivo"
                       data-rule-customData="true">
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Durata del Soggiorno</label>
                   <div class="col-sm-9" >
-                      <input id="moddurata" type="text" class="mod-durata form-control" name="durata" placeholder="Durata del Soggiorno" readonly="readonly" 
-                      data-rule-required="true" data-msg-required="Inserire la durata del soggiorno" 
-                      data-rule-digits="true" data-msg-digits="Inserire una durata del soggiorno valida" 
+                      <input id="moddurata" type="text" class="mod-durata form-control" name="durata" placeholder="Durata del Soggiorno" readonly="readonly"
+                      data-rule-required="true" data-msg-required="Inserire la durata del soggiorno"
+                      data-rule-digits="true" data-msg-digits="Inserire una durata del soggiorno valida"
                       data-rule-customDurata="true">
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Posti Prenotati</label>
                   <div class="col-sm-9" >
-                      <input id="modposti" type="text" class="mod-posti form-control" name="posti" placeholder="Posti Prenotati" readonly="readonly" 
-                      data-rule="true" data-msg-required="Inserire il numero di posti letto prenotati" 
-                      data-rule-digits="true" data-msg-digits="Inserire un numero di posti letto valido" 
+                      <input id="modposti" type="text" class="mod-posti form-control" name="posti" placeholder="Posti Prenotati" readonly="readonly"
+                      data-rule="true" data-msg-required="Inserire il numero di posti letto prenotati"
+                      data-rule-digits="true" data-msg-digits="Inserire un numero di posti letto valido"
                       data-rule-customPosti="true">
                   </div>
                 </div>
@@ -395,7 +395,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Responsabile Prenotazione</label>
                   <div class="col-sm-9" >
-                      <input id="modresp" type="text" class="mod-resp form-control" name="responsabile" placeholder="Responsabile Prenotazione" readonly="readonly" 
+                      <input id="modresp" type="text" class="mod-resp form-control" name="responsabile" placeholder="Responsabile Prenotazione" readonly="readonly"
                       data-rule-required="true" data-msg-required='Inserisci il tuo nome nel campo "Responsabile della prenotazione"'>
                   </div>
                 </div>
@@ -425,13 +425,13 @@
 
               <div class="modal-footer center">
                 <input id="new-btn" class="btn btn-primary" disabled="disabled" type="submit" style='display:none;' value="Salva">
-                <a id="del-btn" class="btn btn-danger" href="javascript:prepareDelete()" style='display:none;'>Elimina</a> 
+                <a id="del-btn" class="btn btn-danger" href="javascript:prepareDelete()" style='display:none;'>Elimina</a>
                 <button class="btn btn-default" data-dismiss="modal">Chiudi</button>
               </div>
               <div class="modal-errfooter center" style='display:none;'>
                 <button class="btn btn-danger" data-dismiss="modal">Chiudi</button>
               </div>
-              
+
             </div>
           </form>
         </div>
@@ -643,10 +643,10 @@
         <? if ($ris == 1){ ?>
         <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
         <!--a class="btn btn-success" onclick='javascript:openNewBModal(1, 0, 0)'>ERROR BOX</a-->
-        
+
         <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
         <a href="main.php?ris=0" class="btn btn-danger">Logout</a>
-        
+
         <? }else{ ?>
         <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
         <? } ?>
@@ -662,10 +662,10 @@
             $('#message-alert').hide();
             $('#error-alert').hide();
             $('.modal-errfooter').hide();
-            
+
             $('.modal-dataTitle').text("Prenotazione");
             $('#newB_Modal form')[0].reset();
-            
+
             $('input').prop('readonly', true);
             $('#new-btn').prop('disabled', true);
             $('#new-btn').hide();

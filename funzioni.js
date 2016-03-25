@@ -5,7 +5,7 @@ function enableEditing(fillme, gestione){
     $('#new-btn').show();
     $('#enable-btn').hide();
     $('.mod-new').prop('checked', 'checked');
-    
+
     if (fillme){
         $('#del-btn').show();
         $('#del-btn').prop('disabled', false);
@@ -26,7 +26,7 @@ function prepareDelete(){
 }
 
 function openNewBModal(fillme, prenid, gestione){
-    
+
     $('#newB_Modal').modal('show');
 
     if(fillme) {
@@ -85,16 +85,16 @@ function openNewBModal(fillme, prenid, gestione){
         }).fail(function() {
             renderError("[$.get().fail() message]", "[$.get().fail() message]")
         });
-        
+
     }else{
-        
+
         $('#loadingNB').hide();
         $('#loadingTitle').hide();
         $('.modal-dataTitle').text('Nuova Prenotazione');
         $('.modal-databox').show();
         $('.modal-footer').show();
         $('.mod-new').prop('checked', 'checked' );
-        
+
         enableEditing(0, gestione);
     }
 
@@ -122,4 +122,13 @@ function togglePosti(){
             $('.mod-posti').prop('readonly',false);
         }
     }
+}
+
+function eraseDB(){
+
+    var result = confirm('Sei SICURO di voler cancellare completamente il database?\n\nQuesta operazione è IRREVERSIBILE e comporta la perdita di TUTTI i dati della stagione corrente.\n\nClicca OK per proseguire, Cancel per tornare indietro.');
+    if (result) {
+      document.location = "erase-database.php";
+    }
+
 }
