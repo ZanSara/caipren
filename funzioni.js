@@ -2,6 +2,7 @@
 function enableEditing(fillme, gestione){
     $('input').prop('readonly', false);
     $('#new-btn').prop('disabled', false);
+    $('#new-btn').show();
     $('#enable-btn').hide();
     $('.mod-new').prop('checked', 'checked');
     
@@ -31,6 +32,7 @@ function openNewBModal(fillme, prenid, gestione){
     if(fillme) {
 
         $('.modal-dataTitle').hide();
+        $('#enable-btn').hide();
         $('.modal-databox').hide();
         $('.modal-footer').hide();
         $('.loading').show();
@@ -78,6 +80,7 @@ function openNewBModal(fillme, prenid, gestione){
                 $('.mod-new').prop('checked', '' );
 
                 $('#enable-btn').attr("href", "javascript:enableEditing("+fillme+", "+gestione+");");
+                $('#enable-btn').show();
 
         }).fail(function() {
             renderError("[$.get().fail() message]", "[$.get().fail() message]")
@@ -108,3 +111,15 @@ function renderError(Exception, gotData){
     $('.modal-dataTitle').text("ERRORE");
 }
 
+
+function togglePosti(){
+
+    if ($('.mod-gest').prop('readonly') == false){
+        if($(".mod-gest").is(':checked') ){
+            $('.mod-posti').prop('readonly',true);
+            $('.mod-posti').val(1);
+        }else{
+            $('.mod-posti').prop('readonly',false);
+        }
+    }
+}

@@ -9,6 +9,20 @@ body {
 }
 
 
+
+.center{
+    text-align:center;
+}
+.border{
+    border: 2px solid red;
+}
+
+.control-label{
+    font-weight: normal;
+}
+
+
+
 .title{
     text-align: center;
     display: block;
@@ -23,35 +37,14 @@ body {
     font-size: 12px;
 }
 
-.inner-box{
-    width: 90%;
-    margin: 5%;
-    padding: 5%;
-}
-.white{
-    background: #fff;
-}
-.center{
-    text-align:center;
-}
-#data-box{
-    position: absolute;
-    top: 160px;
-    bottom: 50px;
-    overflow: auto;
-    width: 30%;
-    transition: left 0.5s;
-}
-#calendario-box{
-    right: default;
-    transition: right 0.5s;
-}
+
+/*
 #loading{
     width: 50%;
     position: relative;
     margin: auto;
 }
-
+*/
 
 .calendario-outer-box{
     position: absolute;
@@ -63,6 +56,15 @@ body {
 .calendario-outer-box tr{
     height: 40px;
 }
+.calendario{
+    background: #fff;
+    table-layout: fixed;
+    width: 100%;
+}
+.calendario td a{
+    margin: 0;
+    color: #000;
+}
 .calendario-inner-box{
     position: absolute;
     top: 40px;
@@ -71,26 +73,15 @@ body {
     left: 0;
     border: 1px solid #fff;
 }
+.grid tr td{
+    text-align: center;
+    border: 1px solid #fff;
+}
 .scrollable{
     overflow-y: scroll;
     overflow-x: hidden;
 }
 
-.calendario{
-    background: #fff;
-    table-layout: fixed;
-    width: 100%;
-}
-
-.grid tr td{
-    text-align: center;
-    border: 1px solid #fff;
-}
-
-.calendario td a{
-    margin: 0;
-    color: #000;
-}
 
 
 .giorno{
@@ -118,23 +109,11 @@ body {
 }
 
 
-.data-shown{
-    left: 70%;
-    opacity: 1;
+.modify-btn{
+    position:absolute;
+    top:20px;
+    right:15px;
 }
-.data-hidden{
-    left: 101%;
-    opacity: 0.3;
-}
-
-.cal-full{
-    right: default;
-}
-.cal-moved{
-    right: 33%;
-}
-
-
 
 
 footer {
@@ -145,31 +124,13 @@ footer {
     margin: auto;
     height: 50px;
     background-color: #0041B1; /* #f5f5f5; */
-}
-.footer-div{
-    position: absolute;
-    bottom: 0;
-    width: 99%;
     text-align: center;
-    margin: 5px;
-    padding: auto;
+}
+footer a, footer button{
+    position:relative;
+    margin:10px;
 }
 
-
-#close-btn{
-    position: relative;
-    float: right;
-    margin: 10%;
-    font-size: 10pt;
-}
-
-.border{
-    border: 2px solid red;
-}
-
-.control-label{
-    font-weight: normal;
-}
 
 
 

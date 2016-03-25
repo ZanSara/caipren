@@ -199,20 +199,11 @@
     function validate($dbhandle) {
 
         if ($_POST['nome']== '')  throw new Exception("Nome del cliente non valido!");
-
-        
         if ($_POST['telefono']== '')  throw new Exception("Numero di telefono non valido!");
-
-        
-        if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("Durata della prenotazione non valida!");
-        
+        if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("Durata della prenotazione non valida!"); 
         if ($_POST['arrivo']== '')  throw new Exception("Inserire una data di arrivo valida.");
          $replaced = str_replace("/", "-", $_POST['arrivo']);
-         $replaced = str_replace(".", "-", $replaced);
-         $replaced = str_replace("\\", "-", $replaced);
-         $replaced = str_replace(" ", "-", $replaced);
          $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($replaced)-1));
-         
 
         if ((int)($_POST['posti'])<= 0 or (int)($_POST['posti'])> 16) throw new Exception("Numero di posti prenotati non valido!");
 
@@ -241,17 +232,14 @@
         // Notice: here I assume that no booking will have ID = 0, because 0 means basically "do not check"
 
         $dayslist = array();
-
         for($giorno=$data['arrivo']; $giorno < ($data['arrivo']+$data['durata']); $giorno++ ){
             $result = mysqli_fetch_array(mysqli_query($dbhandle, "
                     SELECT SUM(posti) FROM Pernottamenti
                     WHERE ( giorno_inizio <= ".$giorno." AND (giorno_inizio + durata) >= ".$giorno.")
                     AND gestione = ".$data['gestione']." AND id <> ".$prenid) );
-
             if(!$data['gestione'] && $result[0] + $data['posti'] > 16){
                 $dayslist[] = DateTime::createFromFormat('z', $giorno);
             }
-
             if($data['gestione'] && $result[0]){
                 $dayslist[] = DateTime::createFromFormat('z', $giorno);
             }
@@ -262,19 +250,15 @@
             foreach ($dayslist as $day){
                 $errorstring = $errorstring.'<br><br>'.(string)$day->format('d-m-Y');
             }
-            
             mysqli_close($dbhandle);
             if (!$data['gestione']){
                 throw new Exception("Impossibile prenotare!<br>Il Rifugio è già pieno nelle date:".$errorstring."<br><br>NON è stata registrata nessuna modifica nel database: ripetere l'operazione.");
             }else{
                 throw new Exception("Attenzione!<br>C'è già un gestore in queste date: ".$errorstring."<br><br>NON è stata registrata nessuna modifica nel database: ripetere l'operazione.");
             }
-
         }
-
-
     }
-
+    
     ?>
 
     <div class="title shadow1">
@@ -290,120 +274,169 @@
 
     <!-- ERROR ALERT -->
     <div class="modal fade" id="Error_Modal" data-error="<? if($error) {?>1<?}else{?>0<?}?>" tabindex="-1" role="dialog" aria-labelledby="Error_ModalLabel">
-          <div class="modal-dialog modal-sm" role="document">
-            <div class="modal-content">
-              <div class="modal-header center">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h3 class="modal-dataTitle modal-title" style='color:red;'><b>ERRORE</b></h3>
-              </div>
-
-              <div class="modal-body center">
-                <p id='errormsg'><? echo($error_message); ?></p>
-              </div>
-
-              <div class="modal-footer center">
-                  <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
-              </div>
-
-            </div>
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header center">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h3 class="modal-title" style='color:red;'><b>ERRORE</b></h3>
           </div>
+
+          <div class="modal-body center">
+            <p id='errormsg'><? echo($error_message); ?></p>
+          </div>
+
+          <div class="modal-footer center">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+          </div>
+
         </div>
+      </div>
+    </div>
+    
+    <!-- ADVANCED MODAL -->
+    <div class="modal fade" id="Adv_Modal" tabindex="-1" role="dialog" aria-labelledby="Adv_ModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header center">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h2 class="modal-title">Funzioni Avanzate</h2>
+            <h4 class="modal-title" style="color:red;">Attenzione! Usare con cautela!</h4>
+          </div>
+
+          <div class="modal-body">
+          
+            <div style="padding-left:5%;padding-right:5%;" >
+              <div class="row">
+                <a class="col-sm-4 btn btn-info" href="gen-tabella-ospiti.php">Genera Tabella Ospiti</a>
+                <p class="col-sm-8 pull-right">Genera una tabella stampabile degli ospiti che hanno pernottato al rifugio durate questa stagione.</p>
+              </div>
+
+              <hr>
+              
+              <div class="row">
+                <a class="col-sm-4 btn btn-danger" href="erase-database.php">Svuota Database</a>
+                <p class="col-sm-8 pull-right">Svuota completamente il database delle prenotazioni.<br>ATTENZIONE! Questa operazione è IRREVERSIBILE!</p>
+              </div>
+              
+            </div>
+
+          </div>
+          
+          <div class="modal-footer center">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
 
     <!-- NEW BOOKING MODAL -->
-        <div class="modal fade" id="newB_Modal" tabindex="-1" role="dialog" aria-labelledby="newB_ModalLabel" data-fillme=0, data-prenid=0, data-gestione=0>
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-header center">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h2 class="loadingTitle modal-title" style='display:none;'>Caricamento...</h2>
-                <h2 id='newB_ModalTitle..' class="modal-dataTitle modal-title">Prenotazione</h2> 
-              </div>
-              <form id='booking-form' class='form-horizontal' method='POST'>
-                <div class="modal-body">
-
-                  <img class="loading" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
-                  
-                  <div id="error-alert" class="alert alert-danger" role="alert" style='display:none; text-align:center;'></div>
-                  <div id="message-alert" class="alert alert-danger" role="alert" style='display:none; padding-left:10%;padding-right:10%;'></div>
-
-                  <div class="modal-databox" >
-                    <div class="form-group" >
-                      <label class="col-sm-3 control-label">Nome Cliente</label>
-                      <div class="col-sm-9" >
-                          <input id="modnome" type="text" class="mod-nome form-control" name="nome" placeholder="Nome Cliente" readonly="readonly" data-rule-required="true" data-msg-required="Inserire il nome del cliente">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-3 control-label">№ Telefono</label>
-                      <div class="col-sm-9" >
-                          <input id="modtel" type="text" class="mod-tel form-control" name="telefono" placeholder="№ Telefono" readonly="readonly" data-rule-required="true" data-msg-required="Inserire il numero di telefono" data-rule-digits="true" data-msg-digits="Inserire unnumero di telefono valido">
-                      </div>
-                    </div>
-                    <hr/>
-                    <div class="form-group">
-                      <label class="col-sm-3 control-label">Data di Arrivo</label>
-                      <div class="col-sm-9" >
-                          <input id="modarrivo" type="text" class="mod-arrivo form-control" name="arrivo" placeholder="Giorno-Mese-Anno" readonly="readonly" data-rule-required="true" data-msg-required="Inserire una data di arrivo" data-rule-customData="true">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-3 control-label">Durata del Soggiorno</label>
-                      <div class="col-sm-9" >
-                          <input id="moddurata" type="text" class="mod-durata form-control" name="durata" placeholder="Durata del Soggiorno" readonly="readonly" data-rule-required="true" data-msg-required="Inserire la durata del soggiorno" data-rule-digits="true" data-msg-digits="Inserire una durata del soggiorno valida" data-rule-customDurata="true">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-3 control-label">Posti Prenotati</label>
-                      <div class="col-sm-9" >
-                          <input id="modposti" type="text" class="mod-posti form-control" name="posti" placeholder="Posti Prenotati" readonly="readonly" data-rule="true" data-msg-required="Inserire il numero di posti letto prenotati" data-rule-digits="true" data-msg-digits="Inserire un numero di posti letto valido" data-rule-customPosti="true">
-                      </div>
-                    </div>
-                    <hr/>
-                    <div class="form-group">
-                      <label class="col-sm-3 control-label">Responsabile Prenotazione</label>
-                      <div class="col-sm-9" >
-                          <input id="modresp" type="text" class="mod-resp form-control" name="responsabile" placeholder="Responsabile Prenotazione" readonly="readonly" data-rule-required="true" data-msg-required='Inserisci il tuo nome nel campo "Responsabile della prenotazione"'>
-                      </div>
-                    </div>
-                    <div class="form-group">
-                      <label class="col-sm-3 control-label">Note</label>
-                      <div class="col-sm-9" >
-                          <input id="modnote" type="textarea" class="mod-note form-control" name="note" placeholder="Note..." readonly="readonly">
-                      </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-offset-3 col-sm-9 checkbox">
-                          <label>
-                            <input id="modgest" name='gestione' class='mod-gest' type="checkbox" readonly="readonly"> Sono gestori
-                          </label>
-                        </div>
-                    </div>
-                    <div class="hidden checkbox">
-                      <input id="modnew" name='newbooking' class='mod-new' type="checkbox" checked='checked' readonly="readonly">
-                    </div>
-                    <div class="hidden checkbox">
-                      <input id="moddel" name='delbooking' class='mod-del' type="checkbox" readonly="readonly">
-                    </div>
-                    <div class="hidden">
-                      <input id="modprenid" name='prenid' class='mod-prenid' type="text" readonly="readonly">
-                    </div>
-                  </div> <!-- modal-databox -->
-
-                  <div class="modal-footer center">
-                    <a id="enable-btn" class="btn btn-warning" href="javascript:enableEditing(0);">Modifica</a>
-                    <input id="new-btn" class="btn btn-primary" disabled="disabled" type="submit" value="Salva">
-                    <a id="del-btn" class="btn btn-danger" href="javascript:prepareDelete()" style='display:none;'>Elimina</a> 
-                    <button class="btn btn-default" data-dismiss="modal">Chiudi</button>
-                  </div>
-                  <div class="modal-errfooter center" style='display:none;'>
-                    <button class="btn btn-danger" data-dismiss="modal">Chiudi</button>
-                  </div>
-                  
-                </div>
-              </form>
-            </div>
+    <div class="modal fade" id="newB_Modal" tabindex="-1" role="dialog" aria-labelledby="newB_ModalLabel" data-fillme=0, data-prenid=0, data-gestione=0>
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+        
+          <div class="modal-header center">
+            <h2 class="loadingTitle modal-title" style='display:none;'>Caricamento...</h2>
+            <h2 class="modal-dataTitle modal-title">Prenotazione</h2>
+            <a id="enable-btn" class="btn btn-warning modify-btn" href="javascript:enableEditing(0);">Modifica</a>
           </div>
+          
+          <form id='booking-form' class='form-horizontal' method='POST'>
+            <div class="modal-body">
+
+              <img class="loading" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
+              <div id="error-alert" class="alert alert-danger" role="alert" style='display:none; text-align:center;'></div>
+              <div id="message-alert" class="alert alert-danger" role="alert" style='display:none; padding-left:10%;padding-right:10%;'></div>
+
+              <div class="modal-databox" >
+                <div class="form-group" >
+                  <label class="col-sm-3 control-label">Nome Cliente</label>
+                  <div class="col-sm-9" >
+                      <input id="modnome" type="text" class="mod-nome form-control" name="nome" placeholder="Nome Cliente" readonly="readonly"
+                      data-rule-required="true" data-msg-required="Inserire il nome del cliente">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">№ Telefono</label>
+                  <div class="col-sm-9" >
+                      <input id="modtel" type="text" class="mod-tel form-control" name="telefono" placeholder="№ Telefono" readonly="readonly" 
+                      data-rule-required="true" data-msg-required="Inserire il numero di telefono" 
+                      data-rule-digits="true" data-msg-digits="Inserire unnumero di telefono valido">
+                  </div>
+                </div>
+                <hr/>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Data di Arrivo</label>
+                  <div class="col-sm-9" >
+                      <input id="modarrivo" type="text" class="mod-arrivo form-control" name="arrivo" placeholder="Giorno-Mese-Anno" readonly="readonly"
+                      data-rule-required="true" data-msg-required="Inserire una data di arrivo" 
+                      data-rule-customData="true">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Durata del Soggiorno</label>
+                  <div class="col-sm-9" >
+                      <input id="moddurata" type="text" class="mod-durata form-control" name="durata" placeholder="Durata del Soggiorno" readonly="readonly" 
+                      data-rule-required="true" data-msg-required="Inserire la durata del soggiorno" 
+                      data-rule-digits="true" data-msg-digits="Inserire una durata del soggiorno valida" 
+                      data-rule-customDurata="true">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Posti Prenotati</label>
+                  <div class="col-sm-9" >
+                      <input id="modposti" type="text" class="mod-posti form-control" name="posti" placeholder="Posti Prenotati" readonly="readonly" 
+                      data-rule="true" data-msg-required="Inserire il numero di posti letto prenotati" 
+                      data-rule-digits="true" data-msg-digits="Inserire un numero di posti letto valido" 
+                      data-rule-customPosti="true">
+                  </div>
+                </div>
+                <hr/>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Responsabile Prenotazione</label>
+                  <div class="col-sm-9" >
+                      <input id="modresp" type="text" class="mod-resp form-control" name="responsabile" placeholder="Responsabile Prenotazione" readonly="readonly" 
+                      data-rule-required="true" data-msg-required='Inserisci il tuo nome nel campo "Responsabile della prenotazione"'>
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Note</label>
+                  <div class="col-sm-9" >
+                      <input id="modnote" type="textarea" class="mod-note form-control" name="note" placeholder="Note..." readonly="readonly">
+                  </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9 checkbox">
+                      <label>
+                        <input id="modgest" name='gestione' class='mod-gest' type="checkbox" onclick="javascript:togglePosti();" readonly="readonly"> Sono gestori
+                      </label>
+                    </div>
+                </div>
+                <div class="hidden checkbox">
+                  <input id="modnew" name='newbooking' class='mod-new' type="checkbox" checked='checked' readonly="readonly">
+                </div>
+                <div class="hidden checkbox">
+                  <input id="moddel" name='delbooking' class='mod-del' type="checkbox" readonly="readonly">
+                </div>
+                <div class="hidden">
+                  <input id="modprenid" name='prenid' class='mod-prenid' type="text" readonly="readonly">
+                </div>
+              </div> <!-- modal-databox -->
+
+              <div class="modal-footer center">
+                <input id="new-btn" class="btn btn-primary" disabled="disabled" type="submit" style='display:none;' value="Salva">
+                <a id="del-btn" class="btn btn-danger" href="javascript:prepareDelete()" style='display:none;'>Elimina</a> 
+                <button class="btn btn-default" data-dismiss="modal">Chiudi</button>
+              </div>
+              <div class="modal-errfooter center" style='display:none;'>
+                <button class="btn btn-danger" data-dismiss="modal">Chiudi</button>
+              </div>
+              
+            </div>
+          </form>
         </div>
+      </div>
+    </div>
 
     <? } ?>
 
@@ -411,7 +444,7 @@
 
     <!-- MAIN TABLE -->
     <div class="row">
-        <div id="calendario-box" class="cal-full calendario-outer-box shadow2">
+        <div id="calendario-box" class="calendario-outer-box shadow2">
           <table id="tableid" style="overflow:hidden;">
               <tr><td>
                 <div class='scrollable'>
@@ -593,29 +626,32 @@
     }
     mysqli_close($dbhandle);
     ?>
-              </tbody>
-            </table>
-            </div>
+                  </tbody>
+                </table>
+              </div>
             </td></tr>
           </tbody>
-          </table>
+        </table>
 
-          </div>
-        </div>
+      </div>
+    </div>
 
 
     <!-- FOOTER -->
-        <footer>
-          <div class="footer-div">
-            <? if ($ris == 1){ ?>
-            <a class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</a>
-            <a class="btn btn-success" onclick='javascript:openNewBModal(1, 0, 0)'>LEFT BOX</a>
-            <a href="main.php?ris=0" class="btn btn-danger" style='position:relative;float:right;'>Logout</a>
-            <? }else{ ?>
-            <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
-            <? } ?>
-          </div>
-        </footer>
+    <footer>
+      <div>
+        <? if ($ris == 1){ ?>
+        <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
+        <!--a class="btn btn-success" onclick='javascript:openNewBModal(1, 0, 0)'>ERROR BOX</a-->
+        
+        <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
+        <a href="main.php?ris=0" class="btn btn-danger">Logout</a>
+        
+        <? }else{ ?>
+        <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
+        <? } ?>
+      </div>
+    </footer>
 
 
 
@@ -632,6 +668,7 @@
             
             $('input').prop('readonly', true);
             $('#new-btn').prop('disabled', true);
+            $('#new-btn').hide();
             $('#del-btn').hide();
             $('#enable-btn').show();
         });
