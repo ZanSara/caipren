@@ -1,15 +1,28 @@
 
-function enableEditing(fillme){
+function enableEditing(fillme, gestione){
     $('input').prop('readonly', false);
     $('#new-btn').prop('disabled', false);
     $('#enable-btn').hide();
+    $('.mod-new').prop('checked', 'checked');
     
-    if(fillme){
+    if (fillme){
         $('#del-btn').show();
         $('#del-btn').prop('disabled', false);
+        $('#new-btn').prop('disabled', false);
+        $('.mod-new').prop('checked', '');
+    }
+    if (gestione) {
+        $('.mod-posti').val(1);
+        $('.mod-posti').prop('readonly', 'readonly');
     }
 }
 
+
+function prepareDelete(){
+    $('.mod-del').prop('checked', 'checked');
+    $('.mod-new').prop('checked', '');
+    $('#booking-form').submit();
+}
 
 function openNewBModal(fillme, prenid, gestione){
     
@@ -59,12 +72,12 @@ function openNewBModal(fillme, prenid, gestione){
                 $('.mod-prenid').val(decoded.prenid);
                 $('.mod-new').prop('checked', gestione );
                 if(gestione){
-                    //alert('qui!');
+                    $('.mod-posti').val(1);
                     $('.mod-gest').prop('checked', 'checked');
                 }
                 $('.mod-new').prop('checked', '' );
 
-                $('#enable-btn').attr("href", "javascript:enableEditing("+fillme+");");
+                $('#enable-btn').attr("href", "javascript:enableEditing("+fillme+", "+gestione+");");
 
         }).fail(function() {
             renderError("[$.get().fail() message]", "[$.get().fail() message]")
@@ -79,10 +92,9 @@ function openNewBModal(fillme, prenid, gestione){
         $('.modal-footer').show();
         $('.mod-new').prop('checked', 'checked' );
         
-        enableEditing(0);
+        enableEditing(0, gestione);
     }
 
-    //$('#new-btn').attr('onclick', 'javascript:validate_and_send('+prenid+', '+gestione+')');
 }
 
 

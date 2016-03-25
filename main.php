@@ -12,7 +12,7 @@
     <script src="funzioni.js"></script>
     
     <script type="text/javascript">
-
+    // jQuery validation plugin settings
 
 	    $.validator.addMethod("customData", function(value) {
 	    // test this terrible regex here http://www.regular-expressions.info/javascriptexample.html
@@ -43,11 +43,7 @@
 			    }
 		    });
 
-	    });
-          
-      
-      
-      
+	    }); 
     </script>
 
   </head>
@@ -185,8 +181,11 @@
 // *************** DELETE RESERVATION *******************************
 
     function deleteReservation($dbhandle, $prenid){
+    
+        echo('HERE!!');
 
         $result = mysqli_query($dbhandle, "DELETE FROM Pernottamenti WHERE ID = ".$prenid);
+        
         if ($result == False){
             mysqli_close($dbhandle);
             throw new Exception("Errore interno al server.<br>La prenotazione NON è stato cancellata.<br>Avverti il webmaster (Codice D).");//.$result);
@@ -198,24 +197,24 @@
 // *************** DATA VALIDATION ****************************************
 
     function validate($dbhandle) {
-        
-        echo("here!!");
-        
-        $firstday = date('z', strtotime('01-06-2016')-1); //   ONLY dd-mm-yyyy OR mm/dd/yyyy are recognized correctly
-        $lastday = date('z', strtotime('1-10-2016')-1);
 
         if ($_POST['nome']== '')  throw new Exception("Nome del cliente non valido!");
+
         
         if ($_POST['telefono']== '')  throw new Exception("Numero di telefono non valido!");
+
         
         if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("Durata della prenotazione non valida!");
+        
+        if ($_POST['arrivo']== '')  throw new Exception("Inserire una data di arrivo valida.");
+         $replaced = str_replace("/", "-", $_POST['arrivo']);
+         $replaced = str_replace(".", "-", $replaced);
+         $replaced = str_replace("\\", "-", $replaced);
+         $replaced = str_replace(" ", "-", $replaced);
+         $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($replaced)-1));
+         
 
-        if ((int)$_POST['arrivo']= '')  throw new Exception("Data di arrivo non valida!");
-        $absdate = date('z', strtotime($_POST['arrivo'])-1);
-        echo(strtotime($_POST['arrivo']));
-        echo($_POST['arrivo']);
-
-        if ((int)($_POST['posti'])<= 0 or (int)($_POST['posti'])>= 15) throw new Exception("Numero di posti prenotati non valido!");
+        if ((int)($_POST['posti'])<= 0 or (int)($_POST['posti'])> 16) throw new Exception("Numero di posti prenotati non valido!");
 
         $gestione = 0;
         if (isset($_POST['gestione'])) {
@@ -263,14 +262,12 @@
             foreach ($dayslist as $day){
                 $errorstring = $errorstring.'<br><br>'.(string)$day->format('d-m-Y');
             }
-
-            //print_r($dayslist);
-
+            
             mysqli_close($dbhandle);
             if (!$data['gestione']){
-                throw new Exception("Impossibile prenotare!<br>Il Rifugio è già pieno nelle date:".$errorstring."<br>La prenotazione NON è stata registrata.");
+                throw new Exception("Impossibile prenotare!<br>Il Rifugio è già pieno nelle date:".$errorstring."<br><br>NON è stata registrata nessuna modifica nel database: ripetere l'operazione.");
             }else{
-                throw new Exception("Attenzione!<br>C'è già un gestore in queste date: ".$errorstring."<br>La prenotazione NON è stata registrata.");
+                throw new Exception("Attenzione!<br>C'è già un gestore in queste date: ".$errorstring."<br><br>NON è stata registrata nessuna modifica nel database: ripetere l'operazione.");
             }
 
         }
@@ -394,9 +391,8 @@
 
                   <div class="modal-footer center">
                     <a id="enable-btn" class="btn btn-warning" href="javascript:enableEditing(0);">Modifica</a>
-                    <input id="del-btn" class="btn btn-danger" disabled="disabled" type="submit" value="Elimina" style='display:none;'>
                     <input id="new-btn" class="btn btn-primary" disabled="disabled" type="submit" value="Salva">
-                    <!-- onclick="javascript:validate_and_send(0,0);" -->
+                    <a id="del-btn" class="btn btn-danger" href="javascript:prepareDelete()" style='display:none;'>Elimina</a> 
                     <button class="btn btn-default" data-dismiss="modal">Chiudi</button>
                   </div>
                   <div class="modal-errfooter center" style='display:none;'>
@@ -540,7 +536,7 @@
             if( $weekday == 7 ) echo("style='color:red;'");
             if( $month == 8 and $day==15 ) echo("style=color:red;");
         echo(">");
-            echo($day." ".$monthname." / ".$absday);
+            echo($day." ".$monthname);//." / ".$absday);
         echo("</td>");
 
 
@@ -608,8 +604,6 @@
         </div>
 
 
-
-
     <!-- FOOTER -->
         <footer>
           <div class="footer-div">
@@ -626,66 +620,6 @@
 
 
     <script type="text/javascript">
-    
-
-      /*
-        $('new').click( function() {
-
-            var form = $('#booking-form');
-            var alertbox = $('#message-alert');
-            var haderror = false
-
-            if( $('.mod-nome').value == undefined ){
-                haderror = true;
-                alertbox.text("Inserire il nome del cliente.")
-            }
-            else if( $('.mod-nome').value.lenght > 100 ){
-                haderror = true;
-                alertbox.text("Inserire solo il nome del cliente nella prima riga (massimo 100 caratteri).");
-            }
-            else if( $('.mod-tel').value == undefined ){
-                haderror = true;
-                alertbox.text("Inserire un numero di telefono.");
-            }
-            else if( $('.mod-tel').value.lenght > 15 ){
-                haderror = true;
-                alertbox.text("Inserire un numero di telefono valido.");
-            }
-            // Controllare che il numero di telefono sia composto di sole cifre!!
-            else if( $('.mod-durata').value < 1 || $('.mod-durata').value > 122 ){
-                haderror = true;
-                alertbox.text("Inserire una durata del pernottamento valida.");
-            }
-            else if( $('.mod-arrivo').value == undefined ){
-                haderror = true;
-                alertbox.text("Inserire una data di arrivo.");
-            }else if( $('.mod-posti').value < 1 || $('.mod-posti').value > 16 ){
-                haderror = true;
-                alertbox.text("Inserire un numero di posti prenotati valido. Attenzione: sono disponibili al massimo 16 posti letto.");
-            }
-            else if( $('.mod-note').value != undefined ){
-                if( $('.mod-note').value.lenght > 1000 ){
-                    haderror = true;
-                    alertbox.text("Attenzione! La nota è troppo lunga (massimo 1000 caratteri)");
-                }
-            }
-            else if( $('.mod-resp').value == undefined && $('.mod-gest').prop('checked') != 'checked' ){
-                haderror = true;
-                alertbox.text("Inserisci il tuo nome nel campo 'Responsabile della Prenotazione'.");
-            }
-
-            if( haderror ){
-                alertbox.show();
-                haderror = false;
-            }else{
-                form.submit();
-                $('#newB_Modal').modal('hide');
-            }
-
-        return false;
-        } );
-
-      */
 
         // Reset NewB_Modal when closed
         $('#newB_Modal').on('hidden.bs.modal', function (event) {
@@ -699,11 +633,10 @@
             $('input').prop('readonly', true);
             $('#new-btn').prop('disabled', true);
             $('#del-btn').hide();
-            $('#del-btn').prop('disabled', true);
             $('#enable-btn').show();
         });
 
-        // Open Error_Modal in case of errors  -- fallback error catcher, I may think about removing this...
+        // Open Error_Modal in case of PHP errors (like "No more beds on these days")
         if( $('#Error_Modal').data('error') ){
             $('#Error_Modal').modal('show');
         }
