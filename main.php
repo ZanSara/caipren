@@ -262,11 +262,24 @@
     ?>
 
     <div class="title shadow1">
+
         <h2>Prenotazioni Stagione 2016</h2>
         <h4>Rifugio M. Del Grande - R. Camerini</h4>
         <p>ATTENZIONE: I tipi di sistemazione (letto, brandina, bivacco etc...)
         sono provvisori e la disposizione effettiva dei posti letto verrà
         concordata con i gestori una volta giunti al Rifugio.</p>
+
+        <!-- I'LL PUT BUTTONS HERE WHEN I IMPLEMENT MOBILE VERSION
+        <? if ($ris == 1){ ?>
+        <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
+        <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
+        <a href="main.php?ris=0" class="btn btn-danger">Logout</a>
+
+        <? }else{ ?>
+        <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
+        <? } ?>
+        -->
+
     </div>
 
 
@@ -307,14 +320,17 @@
 
             <div style="padding-left:5%;padding-right:5%;" >
               <div class="row">
-                <a class="col-sm-4 btn btn-info" href="gen-tabella-ospiti.php">Genera Tabella Ospiti</a>
-                <p class="col-sm-8 pull-right">Genera una tabella stampabile degli ospiti che hanno pernottato al rifugio durate questa stagione.</p>
+                <a class="col-sm-4 btn btn-info" href="gen-tabella-prenotazioni.php">Tabella Prenotazioni</a>
+                <p class="col-sm-8 pull-right">Genera una tabella stampabile delle prenotazioni di ogni gestore.</p>
               </div>
-
               <hr>
-
               <div class="row">
-                <a class="col-sm-4 btn btn-danger" href="javascript:eraseDB();">Svuota Database</a>
+                <a class="col-sm-4 btn btn-success" href="gen-tabella-ospiti.php">Tabella Ospiti</a>
+                <p class="col-sm-8 pull-right">Genera una tabella stampabile di tutti gli ospiti che hanno pernottato al rifugio durate questa stagione.</p>
+              </div>
+              <hr>
+              <div class="row">
+                <a class="col-sm-4 btn btn-danger" href="erase-database-stage1.php">Svuota Database</a>
                 <p class="col-sm-8 pull-right">Svuota completamente il database delle prenotazioni.<br>ATTENZIONE! Questa operazione è IRREVERSIBILE!</p>
               </div>
 

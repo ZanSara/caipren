@@ -6,7 +6,8 @@
   </head>
   <body style="margin:20px;">
     <h2>Lista Ospiti al Rifugio Del Grande - Stagione 2016 </h2>
-    
+    <hr>
+
 <?
 $username = "6786_utentesql";
 $password = "databasecai";
@@ -16,18 +17,20 @@ $dbhandle = mysqli_connect($hostname, $username, $password)
     or die( json_encode(array( "error"=> "Unable to connect to MySQL") ) );
 $selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
     or die( json_encode(array("error"=> "Could not select database") ) );
-  
+
 $numBookings = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT COUNT(*) FROM Pernottamenti"))[0];
 $numClienti = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT COUNT(*) FROM Pernottamenti WHERE gestione = 0"))[0];
 $numGestioni = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT COUNT(*) FROM Pernottamenti WHERE gestione = 1"))[0];
 
 echo('
-    <hr>
-    <p>In questa stagione ci sono state in totale '.$numBookings.' prenotazioni. di cui '.$numGestioni.' gestioni.</p>
-    <hr>
+    <p>In questa stagione ci sono state in totale <b>'.$numBookings.' prenotazioni</b>. di cui '.$numGestioni.' gestioni.</p>
 ');
 
 ?>
+    <!-- CHANGE ME WHEN DEPLOYING!!! -->
+    <a class="btn btn-default" href="main.php?ris=1">Torna Indietro</a>
+    <hr>
+
     <table class="table table-bordered">
       <tr class="active">
         <td>Nome Cliente</td>
@@ -46,10 +49,10 @@ $datalist = mysqli_query($dbhandle, "SELECT * FROM Pernottamenti ORDER BY giorno
 
 // Convert data format  -- BE CAREFUL ABOUT THE HARD-CODED 2016
 while ($data = mysqli_fetch_array($datalist)) {
-    
+
     $absdate = DateTime::createFromFormat('z', $data['giorno_inizio']);
     $day = $absdate->format('d-m');
-    
+
     if ($data['gestione']){
         echo("
         <tr class='danger'>
@@ -66,7 +69,7 @@ while ($data = mysqli_fetch_array($datalist)) {
           <td>".$day.'-2016'."</td>
           <td>".$data['durata']."</td>
     ");
-    
+
     if ($data['gestione']){
         echo("
         <td>X</td>
@@ -78,7 +81,7 @@ while ($data = mysqli_fetch_array($datalist)) {
         <td>No</td>
         ");
     }
-    
+
     echo("
           <td>".$data['responsabile']."</td>
           <td>".$data['note']."</td>
