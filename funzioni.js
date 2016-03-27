@@ -124,11 +124,3 @@ function togglePosti(){
     }
 }
 
-function eraseDB(){
-
-    var result = confirm('Sei SICURO di voler cancellare completamente il database?\n\nQuesta operazione è IRREVERSIBILE e comporta la perdita di TUTTI i dati della stagione corrente.\n\nClicca OK per proseguire, Cancel per tornare indietro.');
-    if (result) {
-      document.location = "erase-database.php";
-    }
-
-}

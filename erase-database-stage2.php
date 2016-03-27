@@ -14,9 +14,9 @@ $password = "databasecai";
 $hostname = "localhost";
 
 $dbhandle = mysqli_connect($hostname, $username, $password)
-    or die( json_encode(array( "error"=> "Unable to connect to MySQL") ) );
+    or die( json_encode(array( "error"=> "Impossibile connettersi al server. Contatta il webmaster (Codice C4))") ) );
 $selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
-    or die( json_encode(array("error"=> "Could not select database") ) );
+    or die( json_encode(array("error"=> "Errore di connessione al server. Contatta il webmaster (Codice D4)") ) );
 
 $data = mysqli_query($dbhandle, "DELETE FROM `Pernottamenti`");
 

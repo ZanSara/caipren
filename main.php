@@ -75,9 +75,9 @@
         $hostname = "localhost";
 
         $dbhandle = mysqli_connect($hostname, $username, $password)
-            or die("Unable to connect to MySQL");
+            or die("Impossibile connettersi al server. Contatta il webmaster (Codice C1))");
         $selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
-            or die("Could not select database");
+            or die("Errore di connessione al server. Contatta il webmaster (Codice D1)");
 
 
         if (isset($_POST['delbooking'])){
@@ -263,6 +263,7 @@
 
     <div class="title shadow1">
 
+        <h3>Prenotazioni 2016</h3>
         <h2>Prenotazioni Stagione 2016</h2>
         <h4>Rifugio M. Del Grande - R. Camerini</h4>
         <p>ATTENZIONE: I tipi di sistemazione (letto, brandina, bivacco etc...)
@@ -320,17 +321,17 @@
 
             <div style="padding-left:5%;padding-right:5%;" >
               <div class="row">
-                <a class="col-sm-4 btn btn-info" href="gen-tabella-prenotazioni.php">Tabella Prenotazioni</a>
+                <a class="col-sm-3 btn btn-info" href="gen-tabella-prenotazioni.php">Prenotazioni</a>
                 <p class="col-sm-8 pull-right">Genera una tabella stampabile delle prenotazioni di ogni gestore.</p>
               </div>
               <hr>
               <div class="row">
-                <a class="col-sm-4 btn btn-success" href="gen-tabella-ospiti.php">Tabella Ospiti</a>
+                <a class="col-sm-3 btn btn-success" href="gen-tabella-ospiti.php">Tabella Ospiti</a>
                 <p class="col-sm-8 pull-right">Genera una tabella stampabile di tutti gli ospiti che hanno pernottato al rifugio durate questa stagione.</p>
               </div>
               <hr>
               <div class="row">
-                <a class="col-sm-4 btn btn-danger" href="erase-database-stage1.php">Svuota Database</a>
+                <a class="col-sm-3 btn btn-danger" href="erase-database-stage1.php">Svuota Database</a>
                 <p class="col-sm-8 pull-right">Svuota completamente il database delle prenotazioni.<br>ATTENZIONE! Questa operazione è IRREVERSIBILE!</p>
               </div>
 
@@ -527,9 +528,9 @@
     $hostname = "localhost";
 
     $dbhandle = mysqli_connect($hostname, $username, $password)
-     or die("Unable to connect to MySQL");
+     or die("Impossibile connettersi al server. Contatta il webmaster (Codice C2)");
     $selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
-      or die("Could not select database");
+      or die("Errore di connessione al server. Contatta il webmaster (Codice D2)");
 
     /*
     echo('<tr><td></td><td>DEBUG: Colors</td>');
