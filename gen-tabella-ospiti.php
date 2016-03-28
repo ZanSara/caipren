@@ -5,7 +5,8 @@
       <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body style="margin:20px;">
-    <h2>Lista Ospiti al Rifugio Del Grande - Stagione 2016 </h2>
+    <? $year = date('Y'); ?>
+    <h2>Lista Ospiti al Rifugio Del Grande - Stagione <?echo $year?> </h2>
     <hr>
 
 <?
@@ -23,7 +24,7 @@ $numClienti = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT COUNT(*) FROM P
 $numGestioni = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT COUNT(*) FROM Pernottamenti WHERE gestione = 1"))[0];
 
 echo('
-    <p>In questa stagione ci sono state in totale <b>'.$numBookings.' prenotazioni</b>. di cui '.$numGestioni.' gestioni.</p>
+    <p>In questa stagione ci sono state in totale <b>'.$numBookings.' prenotazioni</b>, di cui '.$numGestioni.' gestioni.</p>
 ');
 
 ?>
@@ -47,7 +48,7 @@ echo('
 
 $datalist = mysqli_query($dbhandle, "SELECT * FROM Pernottamenti ORDER BY giorno_inizio");
 
-// Convert data format  -- BE CAREFUL ABOUT THE HARD-CODED 2016
+// Convert data format
 while ($data = mysqli_fetch_array($datalist)) {
 
     $absdate = DateTime::createFromFormat('z', $data['giorno_inizio']);
@@ -66,7 +67,7 @@ while ($data = mysqli_fetch_array($datalist)) {
     echo("
           <td>".$data['nome']."</td>
           <td>".$data['tel']."</td>
-          <td>".$day.'-2016'."</td>
+          <td>".$day."-".$year."</td>
           <td>".$data['durata']."</td>
     ");
 

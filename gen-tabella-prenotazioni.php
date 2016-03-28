@@ -2,7 +2,6 @@
   <head>
       <meta charset='utf-8'>
       <title>Tabella Ospiti - CAI Sovico</title>
-      <link href="style.css" rel="stylesheet">
       <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
       <script src="static/javascript/jQuery/jquery-1.11.2.min.js"></script>
       <script src="static/javascript/jQuery/jquery.validate.min.js"></script>
@@ -29,8 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     $giornoInizio = date('z', strtotime($dataInizio)-1);
     $giornoFine = date('z', strtotime($dataFine)-1);
 
+    $year = date('Y');
+
     $numClienti = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT COUNT(*) FROM Pernottamenti WHERE gestione = 0 AND NOT (
-                giorno_inizio+durata <  ".$giornoInizio."  OR giorno_inizio > ".$giornoFine.")"))[0];
+                giorno_inizio+durata-1 <  ".$giornoInizio."  OR giorno_inizio > ".$giornoFine.")"))[0];
     echo('
         <p>Dal '.$dataInizio.' al '.$dataFine.' ci sono in totale <b>'.$numClienti.' prenotazioni</b>.</p>
     ');
@@ -39,6 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         <div class="noprint">
           <a class="btn btn-default" href="javascript:window.print()">Stampa la pagina</a>
           <!-- CHANGE ME WHEN DEPLOYING!!! -->
+          <a class="btn btn-default"href="gen-tabella-prenotazioni.php">Cambia Date</a>
           <a class="btn btn-default"href="main.php?ris=1">Torna Indietro</a>
         </div>
 
@@ -47,6 +49,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 <?
 
     $lista = [];
+    // Pre-fill lista[] with bookings began before the starting date
+    $listadb = mysqli_query($dbhandle, "SELECT *
+                                            FROM Pernottamenti
+                                            WHERE (gestione=0 AND giorno_inizio < ".$giornoInizio." AND giorno_inizio+durata >".$giornoInizio.")");
+        while ($row = mysqli_fetch_array($listadb)) {
+            $lista[] = $row; // This appends the NEW bookings to $lista, which is usually NOT empty!
+        }
+
+
     for($g=$giornoInizio; $g<$giornoFine+1; $g++){
 
         $absdate = DateTime::createFromFormat('z', $g);
@@ -95,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             <td>Nome Cliente</td>
             <td>№ Telefono</td>
             <td>Data Arrivo</td>
+            <td>Data Partenza</td>
             <td>Durata Soggiorno</td>
             <td>Posti Prenotati</td>
             <td>Nome Responsabile</td>
@@ -103,20 +115,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     <?
 
     $datalist = mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE gestione = 0 AND NOT (
-                giorno_inizio+durata <  ".$giornoInizio."  OR giorno_inizio > ".$giornoFine.")");
+                giorno_inizio+durata-1 <  ".$giornoInizio."  OR giorno_inizio > ".$giornoFine.")");
 
-    // Convert data format  -- BE CAREFUL ABOUT THE HARD-CODED 2016
+    // Convert data format
     while ($data = mysqli_fetch_array($datalist)) {
 
         $absdate = DateTime::createFromFormat('z', $data['giorno_inizio']);
-        $day = $absdate->format('d-m');
+        $dayInizio = $absdate->format('d-m');
+
+        $absdate = DateTime::createFromFormat('z', $data['giorno_inizio']+$data['durata']);
+        $dayFine = $absdate->format('d-m');
 
         echo("
             <tr>
               <td>".$data['id']."</td>
               <td>".$data['nome']."</td>
               <td>".$data['tel']."</td>
-              <td>".$day.'-2016'."</td>
+              <td>".$dayInizio."-".$year."</td>
+              <td>".$dayFine."-".$year."</td>
               <td>".$data['durata']."</td>
               <td>".$data['posti']."</td>
               <td>".$data['responsabile']."</td>
@@ -139,14 +155,13 @@ else
     <script type="text/javascript">
     // jQuery validation plugin settings
 
-        $.validator.addMethod("customData", function(value) {
-        // test this terrible regex here http://www.regular-expressions.info/javascriptexample.html
-        // Matches only days between 1 June and 30 Sept
+        var now     = new Date();
+        var year    = now.getFullYear();
 
-        // SHOULD CHECK THE CURRENT YEAR TOO!!
-        var re = new RegExp("^(((0[1-9]|1[0-9]|2[0-9]|30)-(0[6-9]))|((31)-(0[7-8])))-20[0-9][0-9]$")
+        $.validator.addMethod("customData", function(value) {
+        var re = new RegExp("^(((0[1-9]|1[0-9]|2[0-9]|30)-(0[6-9]))|((31)-(0[7-8])))-"+year+"$")
             return re.test(value);
-        }, 'Inserire una data di arrivo valida (GG-MM-AAAA) compresa tra 01-06-2016 e 30-09-2016');
+        }, 'Inserire una data di arrivo valida (GG-MM-AAAA) compresa tra 01-06-'+year+' e 30-09-'+year);
 
         $().ready(function() {
             $("#booking-form").validate({
@@ -183,7 +198,7 @@ else
         <div class="form-group col-sm-3">
         </div>
         <div class="form-group col-sm-9 pull-right">
-          <input class="btn btn-default col-sm-2 pull-left" type="submit" value="Invia">
+          <input class="btn btn-default" type="submit" value="Invia">
           <a class="btn btn-default"href="main.php?ris=1">Torna Indietro</a>
         </div>
       </form>

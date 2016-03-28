@@ -14,14 +14,16 @@
     <script type="text/javascript">
     // jQuery validation plugin settings
 
+        var now     = new Date();//(2017, 01, 01);
+        var year    = now.getFullYear();
+
         $.validator.addMethod("customData", function(value) {
         // test this terrible regex here http://www.regular-expressions.info/javascriptexample.html
         // Matches only days between 1 June and 30 Sept
 
-        // SHOULD CHECK THE CURRENT YEAR TOO!!
-        var re = new RegExp("^(((0[1-9]|1[0-9]|2[0-9]|30)-(0[6-9]))|((31)-(0[7-8])))-20[0-9][0-9]$")
+        var re = new RegExp("^(((0[1-9]|1[0-9]|2[0-9]|30)-(0[6-9]))|((31)-(0[7-8])))-"+year+"$")
             return re.test(value);
-        }, 'Inserire una data di arrivo valida (GG-MM-AAAA) compresa tra 01-06-2016 e 30-09-2016');
+        }, 'Inserire una data di arrivo valida (GG-MM-AAAA) compresa tra 01-06-'+year+' e 30-09-'+year);
 
         $.validator.addMethod("customDurata", function(value) {
             return (value < 122 && value > 0);
@@ -57,14 +59,26 @@
 
     // Some global variables moved here
 
+    $year = date('Y'); //date('Y', strtotime('01-01-2017'));
+    // To test on different year remember to modify this string also in
+    // the other php files and inside JS validators!
+
     $error = false;
     $error_message = "";
 
-    // BE CAREFUL HERE - I SET EVERYWHERE A FIXED 2016
-    $firstday = date('z', strtotime('01-06-2016')-1); //   ONLY dd-mm-yyyy OR mm/dd/yyyy are recognized correctly
-    $lastday = date('z', strtotime('1-10-2016')-1);
-    $today = date('z', strtotime('05-06-2016')-1);
+    // Obviously, strtotime likes to mess up everything in case of leap years
+    if($year % 4 == 0){
+        $firstday = date('z', strtotime('01-06-'.$year)-1); //   ONLY dd-mm-yyyy OR mm/dd/yyyy are recognized correctly
+        $lastday = date('z', strtotime('1-10-'.$year)-1);
+        $today = date('z', strtotime('05-06-'.$year)-1);  // -----> CHANGE ME WHEN DEPLOYING!!!
+    }else{
+        $firstday = date('z', strtotime('01-06-'.$year));
+        $lastday = date('z', strtotime('1-10-'.$year));
+        $today = date('z', strtotime('05-06-'.$year));
+      }
     //$today = date('z') - $firstday;
+
+
 
 
 
@@ -90,14 +104,14 @@
         }else{
             if (isset($_POST['newbooking'])){
                 try{
-                    makeReservation($dbhandle);
+                    makeReservation($dbhandle, $year);
                 }catch (Exception $e){
                     $error = true;
                     $error_message = $e->getMessage();
                 }
             }else{
                 try{
-                    updateReservation($dbhandle, (int)$_POST['prenid']);
+                    updateReservation($dbhandle, (int)$_POST['prenid'], $year);
                 }catch (Exception $e){
                     $error = true;
                     $error_message = $e->getMessage();
@@ -111,10 +125,10 @@
 
     // *************** MAKE RESERVATION *******************************
 
-    function makeReservation($dbhandle){
+    function makeReservation($dbhandle, $year){
 
         $validData = validate($dbhandle);
-        checkAssertions($dbhandle, $validData, 0);
+        checkAssertions($dbhandle, $validData, 0, $year);
 
         // Retrieve colors
         $lastColor = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT ID FROM Colori WHERE last IN (SELECT MAX(last) FROM Colori)") )[0];
@@ -129,6 +143,7 @@
         $values = "(NULL, '".$validData['nome']."', '".
                     $validData['telefono']."', '".
                     $validData['arrivo']."', '".
+                    $year."', '".
                     $validData['durata']."', '".
                     $validData['posti']."', '".
                     $validData['note']."', '".
@@ -136,7 +151,7 @@
                     $validData['resp']."', '".
                     $newColor."')";
         $result = mysqli_query($dbhandle, "INSERT INTO `Pernottamenti`
-                                (`id`, `nome`, `tel`, `giorno_inizio`, `durata`, `posti`, `note`, `gestione`, `responsabile`, `colore`)
+                                (`id`, `nome`, `tel`, `giorno_inizio`, `stagione`, `durata`, `posti`, `note`, `gestione`, `responsabile`, `colore`)
                                 VALUES".$values);
         if ($result == 1){
             // Update Last Color
@@ -147,7 +162,7 @@
 
         }else{
             mysqli_close($dbhandle);
-            throw new Exception("Errore interno al server durante la registrazione della prenotazione:<br>la prenotazione NON è stata effettuata.<br>Avverti il webmaster (Codice R).");
+            throw new Exception("Errore interno al server durante la registrazione della prenotazione:<br>la prenotazione NON è stata effettuata.<br>Avverti il webmaster (Codice R).".$result);
             }
 
     }
@@ -155,10 +170,10 @@
 
 // *************** UPDATE RESERVATION *******************************
 
-    function updateReservation($dbhandle, $prenid){
+    function updateReservation($dbhandle, $prenid, $year){
 
         $validData = validate($dbhandle);
-        checkAssertions($dbhandle, $validData, $prenid);
+        checkAssertions($dbhandle, $validData, $prenid, $year);
         // Update reservation in DB
         $result = mysqli_query($dbhandle, "UPDATE Pernottamenti SET
                                 nome = '".$validData['nome'].
@@ -172,7 +187,7 @@
                                 "' WHERE ID = ".$prenid);
         if ($result == False){
             mysqli_close($dbhandle);
-            throw new Exception($result."Errore interno al server:<br>L'aggiornamento NON è stato effettuato.<br>Avverti il webmaster (Codice U).".$result);
+            throw new Exception("Errore interno al server:<br>L'aggiornamento NON è stato effettuato.<br>Avverti il webmaster (Codice U).");
         }
 
     }
@@ -194,7 +209,8 @@
     }
 
 
-// *************** DATA VALIDATION ****************************************
+// *************** FALLBACK DATA VALIDATION ****************************
+// Throws errors only if js validation falied its work - should never be seen
 
     function validate($dbhandle) {
 
@@ -228,14 +244,14 @@
 
 // *************** DB ASSERTIONS ****************************************
 
-    function checkAssertions($dbhandle, $data, $prenid){
+    function checkAssertions($dbhandle, $data, $prenid, $year){
         // Notice: here I assume that no booking will have ID = 0, because 0 means basically "do not check"
 
         $dayslist = array();
         for($giorno=$data['arrivo']; $giorno < ($data['arrivo']+$data['durata']); $giorno++ ){
             $result = mysqli_fetch_array(mysqli_query($dbhandle, "
                     SELECT SUM(posti) FROM Pernottamenti
-                    WHERE ( giorno_inizio <= ".$giorno." AND (giorno_inizio + durata) >= ".$giorno.")
+                    WHERE stagione = ".$year." AND ( giorno_inizio <= ".$giorno." AND (giorno_inizio + durata) >= ".$giorno.")
                     AND gestione = ".$data['gestione']." AND id <> ".$prenid) );
             if(!$data['gestione'] && $result[0] + $data['posti'] > 16){
                 $dayslist[] = DateTime::createFromFormat('z', $giorno);
@@ -263,8 +279,8 @@
 
     <div class="title shadow1">
 
-        <h3>Prenotazioni 2016</h3>
-        <h2>Prenotazioni Stagione 2016</h2>
+        <h3>Prenotazioni <? echo $year ?></h3>
+        <h2>Prenotazioni Stagione <? echo $year ?></h2>
         <h4>Rifugio M. Del Grande - R. Camerini</h4>
         <p>ATTENZIONE: I tipi di sistemazione (letto, brandina, bivacco etc...)
         sono provvisori e la disposizione effettiva dei posti letto verrà
@@ -295,7 +311,7 @@
             <h3 class="modal-title" style='color:red;'><b>ERRORE</b></h3>
           </div>
 
-          <div class="modal-body center">
+          <div class="modal-body center" style='background:#FFE0E0'>
             <p id='errormsg'><? echo($error_message); ?></p>
           </div>
 
@@ -594,14 +610,14 @@
         if ($ris == 1){
             // WARNING! Does not deal with overlapping
             if ($gest == 0){
-                $gestdb =  mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE (gestione=1 AND giorno_inizio=".$absday.")");
+                $gestdb =  mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE stagione = ".$year." AND (gestione=1 AND giorno_inizio=".$absday.")");
                 $gest = mysqli_fetch_array($gestdb);
             }
             if ( ($gest['giorno_inizio'] + $gest['durata']) <= $absday){
                 $gest = 0;
             }
             if ($gest == 0){
-                echo("<td style='background:#EFB8A3'>Nessuno!</td>");
+                echo("<td class='nogestore'>Nessuno!</td>");
             }else{
                 echo("<td>");
                 echo("<a id='".$absday."-G' onclick='javascript:openNewBModal(1, ".$gest['id'].", 1);' ><div>");
@@ -615,7 +631,7 @@
         // Filling the rest of the table
         $listadb = mysqli_query($dbhandle, "SELECT *
                                             FROM Pernottamenti AS p INNER JOIN Colori AS c ON p.colore = c.ID
-                                            WHERE (p.gestione=0 AND p.giorno_inizio=".$absday.")");
+                                            WHERE p.stagione = ".$year." AND (p.gestione=0 AND p.giorno_inizio=".$absday.")");
         while ($row = mysqli_fetch_array($listadb)) {
             $lista[] = $row; // This appends the NEW bookings to $lista, which is usually NOT empty!
         }

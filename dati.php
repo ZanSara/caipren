@@ -4,7 +4,7 @@
 $gestione = $_GET['gestione'];
 $prenid = $_GET['prenid'];
 
-sleep(1);   //----------------> REMOVE ME WHEN DEPLOYING!!
+//sleep(1);   //----------------> REMOVE ME WHEN DEPLOYING!!
 
 $username = "6786_utentesql";
 $password = "databasecai";
@@ -17,16 +17,17 @@ $selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
 
 $data = mysqli_fetch_array( mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE (id=".$prenid.")") );
 
-// Convert data format  -- BE CAREFUL ABOUT THE HARD-CODED 2016
+// Convert data format
 $absdate = DateTime::createFromFormat('z', $data['giorno_inizio']);
 $day = $absdate->format('d-m');
+$year = date('Y');
 
 echo( json_encode(
     array(
         "nome" => $data['nome'],
         "tel" => $data['tel'],
         "prenid" => $data['id'],
-        "arrivo" => $day.'-2016',
+        "arrivo" => $day."-".$year,
         "durata" => $data['durata'],
         "posti" => $data['posti'],
         "resp" => $data['responsabile'],
