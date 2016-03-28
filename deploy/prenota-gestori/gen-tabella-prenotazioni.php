@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         <table class="table table-bordered calendario" style='border:1px solid black;'>
 <?
 
-    $lista = [];
+    $lista = array();
     // Pre-fill lista[] with bookings began before the starting date
     $listadb = mysqli_query($dbhandle, "SELECT *
                                             FROM Pernottamenti

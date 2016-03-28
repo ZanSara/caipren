@@ -5,11 +5,7 @@
     <title>Prenotazioni - CAI Sovico</title>
 
     <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
-    <script src="static/javascript/jQuery/jquery-1.11.2.min.js"></script>
-    <script src="static/javascript/jQuery/jquery.validate.min.js"></script>
-    <script src="static/bootstrap/js/bootstrap.min.js"></script>
-    <script src="funzioni.js"></script>
+    <link href="static/css/style.css" rel="stylesheet">
 
   </head>
   <body>
@@ -101,7 +97,7 @@
                   <tbody>
     <?
 
-    $lista = [];
+    $lista = array();
 
     $username = "6786_utentesql";
     $password = "databasecai";
@@ -194,7 +190,7 @@
     <!-- FOOTER -->
     <footer>
       <div>
-        <a href="main-deploy.php" class="btn btn-success">Area Riservata</a>
+        <a href="../prenota-gestori/main.php" class="btn btn-success">Area Riservata</a>
       </div>
     </footer>
 
