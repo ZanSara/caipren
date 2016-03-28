@@ -52,10 +52,6 @@
   <body>
 
     <?
-    $ris = 0;
-    if ($_GET) {
-        $ris = $_GET['ris'];
-    };
 
     // Some global variables moved here
 
@@ -285,20 +281,13 @@
         concordata con i gestori una volta giunti al Rifugio.</p>
 
         <!-- I'LL PUT BUTTONS HERE WHEN I IMPLEMENT MOBILE VERSION
-        <? if ($ris == 1){ ?>
         <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
         <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
         <a href="main.php?ris=0" class="btn btn-danger">Logout</a>
-
-        <? }else{ ?>
-        <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
-        <? } ?>
         -->
 
     </div>
 
-
-    <? if ($ris==1){ ?>
 
     <!-- ERROR ALERT -->
     <div class="modal fade" id="Error_Modal" data-error="<? if($error) {?>1<?}else{?>0<?}?>" tabindex="-1" role="dialog" aria-labelledby="Error_ModalLabel">
@@ -469,8 +458,6 @@
       </div>
     </div>
 
-    <? } ?>
-
 
 
     <!-- MAIN TABLE -->
@@ -482,9 +469,7 @@
                 <table class="calendario">
                     <tr>
                         <td class='giorno' style="border: 1px solid #fff;">Data</td>
-                        <? if ($ris==1)
-                            echo("<td class='gestore' style='border: 1px solid #fff;'>Gestore</td>")
-                        ?>
+                        <td class='gestore' style='border: 1px solid #fff;'>Gestore</td>
                         <td class='letto'></td>
                         <td class='letto'></td>
                         <td class='letto'></td>
@@ -510,9 +495,7 @@
                 <table class="calendario grid">
                   <colgroup>
                         <col class='giorno'>
-                        <? if ($ris == 1)
-                            echo("<col class='gestore'>")
-                        ?>
+                        <col class='gestore'>
                         <col class='letto'>
                         <col class='letto'>
                         <col class='letto'>
@@ -605,25 +588,22 @@
 
 
         // Building Gestore td
-        if ($ris == 1){
-            // WARNING! Does not deal with overlapping
-            if ($gest == 0){
-                $gestdb =  mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE stagione = ".$year." AND (gestione=1 AND giorno_inizio=".$absday.")");
-                $gest = mysqli_fetch_array($gestdb);
-            }
-            if ( ($gest['giorno_inizio'] + $gest['durata']) <= $absday){
-                $gest = 0;
-            }
-            if ($gest == 0){
-                echo("<td class='nogestore'>Nessuno!</td>");
-            }else{
-                echo("<td>");
-                echo("<a id='".$absday."-G' onclick='javascript:openNewBModal(1, ".$gest['id'].", 1);' ><div>");
-                echo($gest['nome']);//.' '.var_dump($listag[0]) );
-                echo("</div></a>");
-                echo("</td>");
-            }
-
+        // WARNING! Does not deal with overlapping
+        if ($gest == 0){
+            $gestdb =  mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE stagione = ".$year." AND (gestione=1 AND giorno_inizio=".$absday.")");
+            $gest = mysqli_fetch_array($gestdb);
+        }
+        if ( ($gest['giorno_inizio'] + $gest['durata']) <= $absday){
+            $gest = 0;
+        }
+        if ($gest == 0){
+            echo("<td class='nogestore'>Nessuno!</td>");
+        }else{
+            echo("<td>");
+            echo("<a id='".$absday."-G' onclick='javascript:openNewBModal(1, ".$gest['id'].", 1);' ><div>");
+            echo($gest['nome']);//.' '.var_dump($listag[0]) );
+            echo("</div></a>");
+            echo("</td>");
         }
 
         // Filling the rest of the table
@@ -637,9 +617,9 @@
         foreach($lista as $pren){
             for($i=0; $i<$pren['posti']; $i++, $tot++){
                 echo("<td style='background:".$pren['colore'].";'>");
-                    if ($ris == 1 ) echo("<a id='".$absday."-".$i."' onclick='javascript:openNewBModal(1, ".$pren['id'].", 0);' ><div>"); //echo("<a id='".$absday."-".$i."' href='javascript:getData(".$pren['id'].",0)'><div>");
+                echo("<a id='".$absday."-".$i."' onclick='javascript:openNewBModal(1, ".$pren['id'].", 0);' ><div>"); //echo("<a id='".$absday."-".$i."' href='javascript:getData(".$pren['id'].",0)'><div>");
                 echo('<b>P '.$pren['id'].'</b>');
-                    if ($ris == 1 ) echo("</div></a>");
+                echo("</div></a>");
                 echo("</td>");
             }
             if ($pren['giorno_inizio']+ $pren['durata']-1 <= $absday){
@@ -671,16 +651,10 @@
     <!-- FOOTER -->
     <footer>
       <div>
-        <? if ($ris == 1){ ?>
         <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
         <!--a class="btn btn-success" onclick='javascript:openNewBModal(1, 0, 0)'>ERROR BOX</a-->
-
         <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
-        <a href="main.php?ris=0" class="btn btn-danger">Logout</a>
-
-        <? }else{ ?>
-        <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
-        <? } ?>
+        <a href="main-unlogged-deploy.php" class="btn btn-danger">Logout</a>
       </div>
     </footer>
 
