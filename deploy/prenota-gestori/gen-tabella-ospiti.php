@@ -16,7 +16,7 @@ $hostname = "localhost";
 
 $dbhandle = mysqli_connect($hostname, $username, $password)
     or die( json_encode(array( "error"=> "Impossibile connettersi al server. Contatta il webmaster (Codice C6))") ) );
-$selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
+$selected = mysqli_select_db($dbhandle, "6786_prenotazioni")
     or die( json_encode(array("error"=> "Errore di connessione al server. Contatta il webmaster (Codice D6)") ) );
 
 $numBookings = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT COUNT(*) FROM Pernottamenti"))[0];

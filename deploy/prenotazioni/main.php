@@ -105,7 +105,7 @@
 
     $dbhandle = mysqli_connect($hostname, $username, $password)
         or die("Impossibile connettersi al server. Contatta il webmaster (Codice C2)");
-    $selected = mysqli_select_db($dbhandle, "6786_pernottamenti")
+    $selected = mysqli_select_db($dbhandle, "6786_prenotazioni")
         or die("Errore di connessione al server. Contatta il webmaster (Codice D2)");
 
     // Start building the table
