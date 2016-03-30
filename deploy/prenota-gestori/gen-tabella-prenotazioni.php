@@ -2,7 +2,7 @@
   <head>
       <meta charset='utf-8'>
       <title>Tabella Ospiti - CAI Sovico</title>
-      <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+      <link href="static/bootstrap/css/bootstrap.css" rel="stylesheet">
       <script src="static/javascript/jQuery/jquery-1.11.2.min.js"></script>
       <script src="static/javascript/jQuery/jquery.validate.min.js"></script>
   </head>
@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
           <a class="btn btn-default" href="javascript:window.print()">Stampa la pagina</a>
           <!-- CHANGE ME WHEN DEPLOYING!!! -->
           <a class="btn btn-default"href="gen-tabella-prenotazioni.php">Cambia Date</a>
-          <a class="btn btn-default"href="main.php?ris=1">Torna Indietro</a>
+          <a class="btn btn-default"href="index.php">Torna Indietro</a>
         </div>
 
         <h3>Calendario:</h3>
@@ -199,7 +199,7 @@ else
         </div>
         <div class="form-group col-sm-9 pull-right">
           <input class="btn btn-default" type="submit" value="Invia">
-          <a class="btn btn-default"href="main.php?ris=1">Torna Indietro</a>
+          <a class="btn btn-default"href="index.php">Torna Indietro</a>
         </div>
       </form>
 

@@ -2,7 +2,7 @@
   <head>
       <meta charset='utf-8'>
       <title>Svuota Database - CAI Sovico</title>
-      <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+      <link href="static/bootstrap/css/bootstrap.css" rel="stylesheet">
   </head>
   <body style="margin:20px;text-align:center;">
     <h2>SVUOTA DATABASE</h2>
@@ -30,7 +30,7 @@ mysqli_close($dbhandle);
 ?>
 
     <!-- CHANGE ME WHEN DEPLOYING!!! -->
-    <a class="btn btn-default" href="main.php?ris=1">Torna Indietro</a>
+    <a class="btn btn-default" href="index.php">Torna Indietro</a>
 
   </body>
 </html>
