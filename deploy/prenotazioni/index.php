@@ -28,16 +28,11 @@
 
     <div class="title shadow1">
 
-        <h3>Prenotazioni <? echo $year ?></h3>
         <h2>Prenotazioni Stagione <? echo $year ?></h2>
         <h4>Rifugio M. Del Grande - R. Camerini</h4>
         <p>ATTENZIONE: I tipi di sistemazione (letto, brandina, bivacco etc...)
         sono provvisori e la disposizione effettiva dei posti letto verrà
         concordata con i gestori una volta giunti al Rifugio.</p>
-
-        <!-- I'LL PUT BUTTONS HERE WHEN I IMPLEMENT MOBILE VERSION
-        <a href="../prenota-gestori/" class="btn btn-success">Area Riservata</a>
-        -->
 
     </div>
 

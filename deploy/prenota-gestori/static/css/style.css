@@ -7,14 +7,6 @@ body {
     color: black;
     background: white;
 }
-@media (max-width : 770px){
-    body {
-        font-size: 14px;
-
-
-        background: black;
-    }
-}
 
 
 
@@ -24,10 +16,10 @@ body {
 .border{
     border: 2px solid red;
 }
-
 .control-label{
     font-weight: normal;
 }
+
 
 
 .title{
@@ -46,21 +38,8 @@ body {
 .title h3 {
     display: none;
 }
-@media (max-width : 770px){
-    .title {
-        height: 75px;
-        white-space: nowrap;
-        overflow: hidden;
-        padding-left: 10px;
-    }
-    .title h3{
-        display: block;
-        font-size: 28px;
-    }
-    .title h4, .title h2, .title p{
-        display:none;
-    }
-}
+
+
 
 .calendario-outer-box{
     position: absolute;
@@ -72,19 +51,6 @@ body {
 .calendario-outer-box tr{
     height: 40px;
 }
-@media (max-width : 770px){
-    .calendario-outer-box{
-        bottom: 0px;
-        left: 0px;
-        right: 0px;
-        top: 75px;
-        overflow-x: scroll;
-    }
-    .calendario-outer-box tr{
-        height: 40px;
-    }
-}
-
 .calendario{
     background: #fff;
     table-layout: fixed;
@@ -102,12 +68,6 @@ body {
     left: 0;
     border: 1px solid #fff;
 }
-@media (max-width : 770px){
-    .calendario-inner-box{
-        min-width: 750px;
-
-    }
-}
 .grid tr td{
     text-align: center;
     border: 1px solid #fff;
@@ -119,11 +79,6 @@ body {
 .scrollable{
     overflow-y: scroll;
     overflow-x: hidden;
-}
-@media (max-width : 770px){
-    .scrollable{
-        width: 750px;
-    }
 }
 
 
@@ -180,15 +135,12 @@ footer {
     margin-left:5px;
 }
 
-
 .btn-erasedb{
   margin:10px;
 }
 
 
-@media print{
-    noprint {display:none;}
-}
+
 
 
 .shadow1{
