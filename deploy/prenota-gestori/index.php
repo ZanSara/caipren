@@ -3,8 +3,10 @@
   <head>
     <meta charset="utf-8">
     <title>Prenotazioni - CAI Sovico</title>
+     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="static/bootstrap/css/bootstrap.css" rel="stylesheet">
+    <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="static/css/style.css" rel="stylesheet">
     <script src="static/javascript/jQuery/jquery-1.11.2.min.js"></script>
     <script src="static/javascript/jQuery/jquery.validate.min.js"></script>
@@ -66,13 +68,11 @@
     if($year % 4 == 0){
         $firstday = date('z', strtotime('01-06-'.$year)-1); //   ONLY dd-mm-yyyy OR mm/dd/yyyy are recognized correctly
         $lastday = date('z', strtotime('1-10-'.$year)-1);
-        $today = date('z', strtotime('05-06-'.$year)-1);  // -----> CHANGE ME WHEN DEPLOYING!!!
     }else{
         $firstday = date('z', strtotime('01-06-'.$year));
         $lastday = date('z', strtotime('1-10-'.$year));
-        $today = date('z', strtotime('05-06-'.$year));
       }
-    //$today = date('z') - $firstday;
+    $today = date('z') - $firstday;
 
 
 
@@ -211,9 +211,10 @@
         if ($_POST['nome']== '')  throw new Exception("Nome del cliente non valido!");
         if ($_POST['telefono']== '')  throw new Exception("Numero di telefono non valido!");
         if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("Durata della prenotazione non valida!");
-        if ($_POST['arrivo']== '')  throw new Exception("Inserire una data di arrivo valida.");
-         $replaced = str_replace("/", "-", $_POST['arrivo']);
-         $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($replaced)-1));
+        
+        if ($_POST['arrivo']== '')  throw new Exception("Data di arrivo non valida!");
+        $replaced = str_replace("/", "-", $_POST['arrivo']);
+        $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($replaced)-1));
 
         if ((int)($_POST['posti'])<= 0 or (int)($_POST['posti'])> 16) throw new Exception("Numero di posti prenotati non valido!");
 
@@ -221,8 +222,7 @@
         if (isset($_POST['gestione'])) {
            $gestione = 1;
         }
-
-        if ($_POST['responsabile']== '' and $gestione == 0) throw new Exception("Nome del responsabile non valido!");
+        if ($_POST['responsabile']== '') throw new Exception("Nome del responsabile non valido!");
 
         return array(
             'nome' => mysqli_real_escape_string($dbhandle, $_POST['nome']),
@@ -283,7 +283,7 @@
         <!-- I'LL PUT BUTTONS HERE WHEN I IMPLEMENT MOBILE VERSION
         <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
         <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
-        <a href="main.php?ris=0" class="btn btn-danger">Logout</a>
+        <a href="../prenotazioni/" class="btn btn-danger">Logout</a>
         -->
 
     </div>
@@ -324,7 +324,7 @@
 
             <div style="padding-left:5%;padding-right:5%;" >
               <div class="row">
-                <a class="col-sm-3 btn btn-info" href="gen-tabella-prenotazioni.php">Prenotazioni</a>
+                <a class="col-sm-3 btn btn-info" href="gen-tabella-prenotazioni.php">Calendario</a>
                 <p class="col-sm-8 pull-right">Genera una tabella stampabile delle prenotazioni di ogni gestore.</p>
               </div>
               <hr>
@@ -337,14 +337,15 @@
                 <a class="col-sm-3 btn btn-danger" href="erase-database-stage1.php">Svuota Database</a>
                 <p class="col-sm-8 pull-right">Svuota completamente il database delle prenotazioni.<br>ATTENZIONE! Questa operazione è IRREVERSIBILE!</p>
               </div>
-
+            </div>
+            
+            <div class="modal-footer center">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
             </div>
 
           </div>
 
-          <div class="modal-footer center">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
-          </div>
+          
 
         </div>
       </div>
@@ -588,7 +589,7 @@
 
 
         // Building Gestore td
-        // WARNING! Does not deal with overlapping
+        // WARNING! Does not deal with overlapping, because there shouldn't be such overlappings in db
         if ($gest == 0){
             $gestdb =  mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE stagione = ".$year." AND (gestione=1 AND giorno_inizio=".$absday.")");
             $gest = mysqli_fetch_array($gestdb);
@@ -601,7 +602,7 @@
         }else{
             echo("<td>");
             echo("<a id='".$absday."-G' onclick='javascript:openNewBModal(1, ".$gest['id'].", 1);' ><div>");
-            echo($gest['nome']);//.' '.var_dump($listag[0]) );
+            echo($gest['nome']);
             echo("</div></a>");
             echo("</td>");
         }
@@ -617,7 +618,7 @@
         foreach($lista as $pren){
             for($i=0; $i<$pren['posti']; $i++, $tot++){
                 echo("<td style='background:".$pren['colore'].";'>");
-                echo("<a id='".$absday."-".$i."' onclick='javascript:openNewBModal(1, ".$pren['id'].", 0);' ><div>"); //echo("<a id='".$absday."-".$i."' href='javascript:getData(".$pren['id'].",0)'><div>");
+                echo("<a id='".$absday."-".$i."' onclick='javascript:openNewBModal(1, ".$pren['id'].", 0);' ><div>");
                 echo('<b>P '.$pren['id'].'</b>');
                 echo("</div></a>");
                 echo("</td>");
@@ -652,7 +653,6 @@
     <footer>
       <div>
         <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
-        <!--a class="btn btn-success" onclick='javascript:openNewBModal(1, 0, 0)'>ERROR BOX</a-->
         <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
         <a href="../prenotazioni/" class="btn btn-danger">Logout</a>
       </div>

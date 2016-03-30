@@ -13,19 +13,17 @@
     <?
     $year = date('Y'); //date('Y', strtotime('01-01-2017'));
     // To test on different year remember to modify this string also in
-    // the other php files and inside JS validators!
+    // the other php files and inside JS validators
 
     // Obviously, strtotime likes to mess up everything in case of leap years
     if($year % 4 == 0){
         $firstday = date('z', strtotime('01-06-'.$year)-1); //   ONLY dd-mm-yyyy OR mm/dd/yyyy are recognized correctly
         $lastday = date('z', strtotime('1-10-'.$year)-1);
-        $today = date('z', strtotime('05-06-'.$year)-1);  // -----> CHANGE ME WHEN DEPLOYING!!!
     }else{
         $firstday = date('z', strtotime('01-06-'.$year));
         $lastday = date('z', strtotime('1-10-'.$year));
-        $today = date('z', strtotime('05-06-'.$year));
       }
-    //$today = date('z') - $firstday;
+    $today = date('z') - $firstday;
 ?>
 
     <div class="title shadow1">
@@ -38,7 +36,7 @@
         concordata con i gestori una volta giunti al Rifugio.</p>
 
         <!-- I'LL PUT BUTTONS HERE WHEN I IMPLEMENT MOBILE VERSION
-        <a href="main.php?ris=1" class="btn btn-success">Area Riservata</a>
+        <a href="../prenota-gestori/" class="btn btn-success">Area Riservata</a>
         -->
 
     </div>

@@ -107,7 +107,7 @@ function renderError(Exception, gotData){
     $(".modal-dataTitle").show();
     $(".modal-errfooter").show();
     $('#error-alert').show();
-    $('#error-alert').html('<h4>ERRORE INTERNO.</h4><p>Contatta il webmaster (Codice RE).<p>' + gotData); // + " ## " + Exception);
+    $('#error-alert').html('<h4>ERRORE INTERNO.</h4><p>Contatta il webmaster (Codice RE).<p>');// + gotData); // + " ## " + Exception);
     $('.modal-dataTitle').text("ERRORE");
 }
 

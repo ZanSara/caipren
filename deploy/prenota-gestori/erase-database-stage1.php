@@ -2,7 +2,7 @@
   <head>
       <meta charset='utf-8'>
       <title>Svuota Database - CAI Sovico</title>
-      <link href="static/bootstrap/css/bootstrap.css" rel="stylesheet">
+      <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
       <link href="style.css" rel="stylesheet">
   </head>
   <body style="margin:20px;text-align:center;">
@@ -21,7 +21,7 @@
 
     <a class="btn btn-danger btn-erasedb" href="erase-database-stage2.php">Svuota il Database</a>
     <br>
-    <!-- CHANGE ME WHEN DEPLOYING!!! -->
+
     <a class="btn btn-success" href="index.php">Torna Indietro</a>
 
   </body>

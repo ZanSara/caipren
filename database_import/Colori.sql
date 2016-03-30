@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Mar 30, 2016 at 06:44 PM
+-- Generation Time: Mar 30, 2016 at 08:58 PM
 -- Server version: 10.1.9-MariaDB
 -- PHP Version: 5.6.15
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `6786_pernottamenti`
+-- Database: `6786_prenotazioni`
 --
 
 -- --------------------------------------------------------
@@ -26,6 +26,7 @@ SET time_zone = "+00:00";
 -- Table structure for table `Colori`
 --
 
+DROP TABLE IF EXISTS `Colori`;
 CREATE TABLE `Colori` (
   `ID` int(11) NOT NULL,
   `colore` varchar(7) NOT NULL,

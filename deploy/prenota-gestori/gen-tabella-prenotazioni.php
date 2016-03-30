@@ -2,7 +2,7 @@
   <head>
       <meta charset='utf-8'>
       <title>Tabella Ospiti - CAI Sovico</title>
-      <link href="static/bootstrap/css/bootstrap.css" rel="stylesheet">
+      <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
       <script src="static/javascript/jQuery/jquery-1.11.2.min.js"></script>
       <script src="static/javascript/jQuery/jquery.validate.min.js"></script>
   </head>
