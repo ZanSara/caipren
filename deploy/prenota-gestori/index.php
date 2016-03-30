@@ -3,9 +3,12 @@
   <head>
     <meta charset="utf-8">
     <title>Prenotazioni - CAI Sovico</title>
+     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="static/css/style.css" rel="stylesheet">
+    
     <script src="static/javascript/jQuery/jquery-1.11.2.min.js"></script>
     <script src="static/javascript/jQuery/jquery.validate.min.js"></script>
     <script src="static/bootstrap/js/bootstrap.min.js"></script>
@@ -271,11 +274,18 @@
 
     <div class="title shadow1">
 
+        <h3>Prenotazioni <? echo $year ?></h3>
         <h2>Prenotazioni Stagione <? echo $year ?></h2>
         <h4>Rifugio M. Del Grande - R. Camerini</h4>
         <p>ATTENZIONE: I tipi di sistemazione (letto, brandina, bivacco etc...)
         sono provvisori e la disposizione effettiva dei posti letto verrà
         concordata con i gestori una volta giunti al Rifugio.</p>
+
+        <!-- I'LL PUT BUTTONS HERE WHEN I IMPLEMENT MOBILE VERSION
+        <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
+        <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
+        <a href="../prenotazioni/" class="btn btn-danger">Logout</a>
+        -->
 
     </div>
 
@@ -675,7 +685,6 @@
         }
 
     </script>
-
 
   </body>
 </html>
