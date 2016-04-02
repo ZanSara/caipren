@@ -11,10 +11,7 @@ function enableEditing(fillme, gestione){
         $('#del-btn').prop('disabled', false);
         $('#new-btn').prop('disabled', false);
         $('.mod-new').prop('checked', '');
-    }
-    if (gestione) {
-        $('.mod-posti').val(1);
-        $('.mod-posti').prop('readonly', 'readonly');
+        $('.mod-gest').prop('disabled', '');
     }
 }
 
@@ -73,8 +70,9 @@ function openNewBModal(fillme, prenid, gestione){
                 $('.mod-note').val(decoded.note);
                 $('.mod-prenid').val(decoded.prenid);
                 $('.mod-new').prop('checked', gestione );
+                $('.mod-gest').prop('disabled', 'disabled');
                 if(gestione){
-                    $('.mod-posti').val(1);
+                    $('#line-posti').hide();
                     $('.mod-gest').prop('checked', 'checked');
                 }
                 $('.mod-new').prop('checked', '' );
@@ -111,16 +109,19 @@ function renderError(Exception, gotData){
     $('.modal-dataTitle').text("ERRORE");
 }
 
+function toggleGestione(){
 
-function togglePosti(){
-
-    if ($('.mod-gest').prop('readonly') == false){
-        if($(".mod-gest").is(':checked') ){
-            $('.mod-posti').prop('readonly',true);
-            $('.mod-posti').val(1);
-        }else{
-            $('.mod-posti').prop('readonly',false);
-        }
+    if($('.mod-gest').prop('readonly') == false){
+        $('#line-posti').toggle();
+        
+        var text = $('.modal-dataTitle').text(function(index,text){
+            if($('.mod-gest').prop('checked') == true){
+                return text.replace("Prenotazione", "Gestione");
+            }
+            return text.replace("Gestione", "Prenotazione");
+        });
+        $('.modal-dataTitle').text(text.text() );
+        
     }
+    
 }
-

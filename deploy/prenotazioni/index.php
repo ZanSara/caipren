@@ -155,7 +155,7 @@
         foreach($lista as $pren){
             for($i=0; $i<$pren['posti']; $i++, $tot++){
                 echo("<td style='background:".$pren['colore'].";'>");
-                echo('<b>P '.$pren['id'].'</b>');
+                echo('<b>№ '.$pren['id'].'</b>');
                 echo("</td>");
             }
             if ($pren['giorno_inizio']+ $pren['durata']-1 <= $absday){
@@ -186,10 +186,10 @@
     <!-- FOOTER -->
     <footer>
       <div>
-        <a href="../prenota-gestori/" class="btn btn-success">Area Riservata</a>
+        <a href="../prenota-gestori/#<? echo date('j-n'); ?>" class="btn btn-success">Area Riservata</a>
       </div>
       <div >
-        <a href="../prenota-gestori/">
+        <a href="../prenota-gestori/#<? echo date('j-n'); ?>">
             <img class="fab" src="static/images/fab-login.png" />
         </a>
       </div>

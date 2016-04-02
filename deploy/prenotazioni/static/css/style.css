@@ -192,7 +192,7 @@ footer {
       position:absolute;
       bottom: 0px;
       right: 0px;
-      margin: 10px;
+      margin-right: 10px;
       width: 80px;
       z-index: 20;
     }

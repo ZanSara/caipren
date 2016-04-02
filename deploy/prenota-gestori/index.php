@@ -365,12 +365,16 @@
 
           <form id='booking-form' class='form-horizontal' method='POST'>
             <div class="modal-body">
-
-              <img class="loading" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
-              <div id="error-alert" class="alert alert-danger" role="alert" style='display:none; text-align:center;'></div>
-              <div id="message-alert" class="alert alert-danger" role="alert" style='display:none; padding-left:10%;padding-right:10%;'></div>
-
+                            
               <div class="modal-databox" >
+                <div class="form-group">
+                    <div class="col-sm-offset-3 col-sm-9 checkbox">
+                      <label>
+                        <input id="modgest" name='gestione' class='mod-gest' type="checkbox" onclick="javascript:toggleGestione();"> Sono gestori
+                      </label>
+                    </div>
+                </div>
+                <hr />
                 <div class="form-group" >
                   <label class="col-sm-3 control-label">Nome Cliente</label>
                   <div class="col-sm-9" >
@@ -404,7 +408,7 @@
                       data-rule-customDurata="true">
                   </div>
                 </div>
-                <div class="form-group">
+                <div class="form-group" id="line-posti">
                   <label class="col-sm-3 control-label">Posti Prenotati</label>
                   <div class="col-sm-9" >
                       <input id="modposti" type="text" class="mod-posti form-control" name="posti" placeholder="Posti Prenotati" readonly="readonly"
@@ -427,13 +431,6 @@
                       <input id="modnote" type="textarea" class="mod-note form-control" name="note" placeholder="Note..." readonly="readonly">
                   </div>
                 </div>
-                <div class="form-group">
-                    <div class="col-sm-offset-3 col-sm-9 checkbox">
-                      <label>
-                        <input id="modgest" name='gestione' class='mod-gest' type="checkbox" onclick="javascript:togglePosti();" readonly="readonly"> Sono gestori
-                      </label>
-                    </div>
-                </div>
                 <div class="hidden checkbox">
                   <input id="modnew" name='newbooking' class='mod-new' type="checkbox" checked='checked' readonly="readonly">
                 </div>
@@ -444,6 +441,11 @@
                   <input id="modprenid" name='prenid' class='mod-prenid' type="text" readonly="readonly">
                 </div>
               </div> <!-- modal-databox -->
+              
+              <img class="loading" src="static/images/spinningwheel.gif" style='width:40%; margin:30%; display:none;' />
+              <div id="error-alert" class="alert alert-danger" role="alert" style='display:none; text-align:center;'></div>
+              <div id="message-alert" class="alert alert-danger" role="alert" style='display:none; padding-left:10%;padding-right:10%;'></div>
+
 
               <div class="modal-footer center">
                 <input id="new-btn" class="btn btn-primary" disabled="disabled" type="submit" style='display:none;' value="Salva">
@@ -620,7 +622,7 @@
             for($i=0; $i<$pren['posti']; $i++, $tot++){
                 echo("<td style='background:".$pren['colore'].";'>");
                 echo("<a id='".$absday."-".$i."' onclick='javascript:openNewBModal(1, ".$pren['id'].", 0);' ><div>");
-                echo('<b>P '.$pren['id'].'</b>');
+                echo('<b>№ '.$pren['id'].'</b>');
                 echo("</div></a>");
                 echo("</td>");
             }
@@ -655,7 +657,7 @@
       <div>
         <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
         <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
-        <a href="../prenotazioni/" class="btn btn-danger">Logout</a>
+        <a href="../prenotazioni/#<? echo date('j-n'); ?>" class="btn btn-danger">Logout</a>
       </div>
     </footer>
 
@@ -671,6 +673,8 @@
 
             $('.modal-dataTitle').text("Prenotazione");
             $('#newB_Modal form')[0].reset();
+            $('.mod-gest').prop('checked', '' );
+            $('#line-posti').show();
 
             $('input').prop('readonly', true);
             $('#new-btn').prop('disabled', true);
