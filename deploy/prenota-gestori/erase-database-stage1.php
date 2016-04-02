@@ -3,7 +3,7 @@
       <meta charset='utf-8'>
       <title>Svuota Database - CAI Sovico</title>
       <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-      <link href="style.css" rel="stylesheet">
+      <link href="static/css/style.css" rel="stylesheet">
   </head>
   <body style="margin:20px;text-align:center;">
     <h1>SVUOTA DATABASE</h1>

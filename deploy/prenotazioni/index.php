@@ -3,12 +3,14 @@
   <head>
     <meta charset="utf-8">
     <title>Prenotazioni - CAI Sovico</title>
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
     <link href="static/css/style.css" rel="stylesheet">
 
   </head>
-  <body>
+  <body class="mainpage">
 
     <?
     $year = date('Y'); //date('Y', strtotime('01-01-2017'));
@@ -26,15 +28,18 @@
     $today = date('z') - $firstday;
 ?>    
 
-    <div class="title shadow1">
+    <div class="banner shadow1">
+      <img src="static/images/homebanner.jpg">
+      <h2>Prenotazioni Stagione <? echo $year ?></h2>
+      
+      <!--h4>Rifugio M. Del Grande - R. Camerini</h4-->
+    </div>
 
-        <h2>Prenotazioni Stagione <? echo $year ?></h2>
+    <div class="mobile-title shadow1">
         <h3>Prenotazioni <? echo $year ?></h3>
-        <h4>Rifugio M. Del Grande - R. Camerini</h4>
-        <p>ATTENZIONE: I tipi di sistemazione (letto, brandina, bivacco etc...)
-        sono provvisori e la disposizione effettiva dei posti letto verrà
-        concordata con i gestori una volta giunti al Rifugio.</p>
-
+        <a href="../prenota-gestori/#<? echo date('j-n', strtotime('yesterday')); ?>">
+          <img class='mobile-login' src='static/images/nav-login.gif'>
+        </a>
     </div>
     
 
@@ -186,12 +191,7 @@
     <!-- FOOTER -->
     <footer>
       <div>
-        <a href="../prenota-gestori/#<? echo date('j-n'); ?>" class="btn btn-success">Area Riservata</a>
-      </div>
-      <div >
-        <a href="../prenota-gestori/#<? echo date('j-n'); ?>">
-            <img class="fab" src="static/images/fab-login.png" />
-        </a>
+        <a href="../prenota-gestori/#<? echo date('j-n', strtotime('yesterday')); ?>" class="btn btn-success">Area Riservata</a>
       </div>
     </footer>
 

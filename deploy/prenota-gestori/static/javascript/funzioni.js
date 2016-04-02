@@ -109,8 +109,8 @@ function renderError(Exception, gotData){
     $('.modal-dataTitle').text("ERRORE");
 }
 
-function toggleGestione(){
 
+function toggleGestione(){
     if($('.mod-gest').prop('readonly') == false){
         $('#line-posti').toggle();
         
@@ -121,7 +121,6 @@ function toggleGestione(){
             return text.replace("Gestione", "Prenotazione");
         });
         $('.modal-dataTitle').text(text.text() );
-        
     }
-    
 }
+

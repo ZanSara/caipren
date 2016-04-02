@@ -52,7 +52,7 @@
     </script>
 
   </head>
-  <body>
+  <body class="mainpage">
 
     <?
 
@@ -64,6 +64,8 @@
 
     $error = false;
     $error_message = "";
+    $open = 0;
+    $last_prenid = 0;
 
     // Obviously, strtotime likes to mess up everything in case of leap years
     if($year % 4 == 0){
@@ -101,7 +103,8 @@
         }else{
             if (isset($_POST['newbooking'])){
                 try{
-                    makeReservation($dbhandle, $year);
+                    $last_prenid = makeReservation($dbhandle, $year);
+                    $open = 1;
                 }catch (Exception $e){
                     $error = true;
                     $error_message = $e->getMessage();
@@ -115,7 +118,7 @@
                 }
             }
         }
-
+        
         mysqli_close($dbhandle);
     }
 
@@ -150,18 +153,19 @@
         $result = mysqli_query($dbhandle, "INSERT INTO `Pernottamenti`
                                 (`id`, `nome`, `tel`, `giorno_inizio`, `stagione`, `durata`, `posti`, `note`, `gestione`, `responsabile`, `colore`)
                                 VALUES".$values);
-        if ($result ==  True){
+                                
+        if ($result ==  True) {
+            $prenid = mysqli_insert_id($dbhandle);
             // Update Last Color
             $maxLast = mysqli_fetch_array(mysqli_query($dbhandle, "SELECT MAX(last) FROM Colori") )[0];
 
             $result2 = mysqli_query( $dbhandle, "UPDATE Colori SET last = ".($maxLast+1)." WHERE ID = ".$newColor);
             if ($result2 == 0) throw new Exception("Errore interno al server:<br>la prenotazione È stata comunque effettuata.<br>Avverti il webmaster (Codice C).");
-
-        }else{
-            mysqli_close($dbhandle);
+        } else {
             throw new Exception("Errore interno al server durante la registrazione della prenotazione:<br>la prenotazione NON è stata effettuata.<br>Avverti il webmaster (Codice R).".$result);
-            }
-
+        }
+    
+    return $prenid;
     }
 
 
@@ -183,7 +187,6 @@
                                 ", responsabile = '".$validData['resp'].
                                 "' WHERE ID = ".$prenid);
         if ($result == False){
-            mysqli_close($dbhandle);
             throw new Exception("Errore interno al server:<br>L'aggiornamento NON è stato effettuato.<br>Avverti il webmaster (Codice U).");
         }
 
@@ -197,7 +200,6 @@
         $result = mysqli_query($dbhandle, "DELETE FROM Pernottamenti WHERE ID = ".$prenid);
 
         if ($result == False){
-            mysqli_close($dbhandle);
             throw new Exception("Errore interno al server.<br>La prenotazione NON è stato cancellata.<br>Avverti il webmaster (Codice D).");//.$result);
         }
 
@@ -246,9 +248,12 @@
         for($giorno=$data['arrivo']; $giorno < ($data['arrivo']+$data['durata']); $giorno++ ){
             $result = mysqli_fetch_array(mysqli_query($dbhandle, "
                     SELECT SUM(posti) FROM Pernottamenti
-                    WHERE stagione = ".$year." AND ( giorno_inizio <= ".$giorno." AND (giorno_inizio + durata) >= ".$giorno.")
+                    WHERE stagione = ".$year." AND ( giorno_inizio <= ".$giorno." AND (giorno_inizio + durata) > ".$giorno.")
                     AND gestione = ".$data['gestione']." AND id <> ".$prenid) );
-            if(!$data['gestione'] && $result[0] + $data['posti'] > 16){
+            if(!$data['gestione'] && ($result[0] + $data['posti'] > 16) ){
+                echo($result[0]);
+                echo(" - ");
+                echo($data['posti']);
                 $dayslist[] = DateTime::createFromFormat('z', $giorno);
             }
             if($data['gestione'] && $result[0]){
@@ -271,22 +276,24 @@
     }
 
     ?>
+    
+    <div class="banner shadow1">
+      <img src="static/images/homebanner.jpg">
+      <h2>Prenotazioni Stagione <? echo $year ?></h2>
+      
+      <!--h4>Rifugio M. Del Grande - R. Camerini</h4-->
+    </div>
 
-    <div class="title shadow1">
-
+    <div class="mobile-title shadow1">
         <h3>Prenotazioni <? echo $year ?></h3>
-        <h2>Prenotazioni Stagione <? echo $year ?></h2>
-        <h4>Rifugio M. Del Grande - R. Camerini</h4>
-        <p>ATTENZIONE: I tipi di sistemazione (letto, brandina, bivacco etc...)
-        sono provvisori e la disposizione effettiva dei posti letto verrà
-        concordata con i gestori una volta giunti al Rifugio.</p>
-
-        <!-- I'LL PUT BUTTONS HERE WHEN I IMPLEMENT MOBILE VERSION
-        <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
-        <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
-        <a href="../prenotazioni/" class="btn btn-danger">Logout</a>
-        -->
-
+        <img class='mobile-login' src='static/images/nav-settings.gif' onclick="javascript:$('#mobile-dropdown').toggle();">
+    </div>
+    <div id='mobile-dropdown'>
+      <ul>
+        <li class="btn btn-success"><a onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</a></li>
+        <li class="btn btn-warning"><a data-toggle="modal" data-target="#Adv_Modal">Avanzate</a></li>
+        <li class="btn btn-danger"><a href="../prenotazioni/" >Logout</a></li>
+      </ul>
     </div>
 
 
@@ -310,6 +317,31 @@
         </div>
       </div>
     </div>
+    
+    <!-- BOOKING ID ALERT -->
+    <div class="modal fade" id="Id_Modal" data-open="<? if($open) {?>1<?}else{?>0<?}?>" tabindex="-1" role="dialog" aria-labelledby="Id_ModalLabel">
+      <div class="modal-dialog modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header center">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h3 class="modal-title">Nuova Prenotazione</h3>
+          </div>
+
+          <div class="modal-body center">
+            <p>La nuova prenotazione è stata registrata.<br>Il numero della prenotazione è</p>
+            <h3 id='newId'><? echo($last_prenid); ?></h3>
+            <p style="font-size:11px;"><br>RICORDA: i tipi di sistemazione (letto, brandina, bivacco etc...) sono provvisori 
+            e la disposizione effettiva dei posti letto verrà concordata con i gestori una volta giunti al Rifugio.</p>
+          </div>
+
+          <div class="modal-footer center">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
 
     <!-- ADVANCED MODAL -->
     <div class="modal fade" id="Adv_Modal" tabindex="-1" role="dialog" aria-labelledby="Adv_ModalLabel">
@@ -620,8 +652,12 @@
         $tot = 0;
         foreach($lista as $pren){
             for($i=0; $i<$pren['posti']; $i++, $tot++){
-                echo("<td style='background:".$pren['colore'].";'>");
-                echo("<a id='".$absday."-".$i."' onclick='javascript:openNewBModal(1, ".$pren['id'].", 0);' ><div>");
+                if($pren['id'] == $last_prenid){
+                    echo("<td style='background:".$pren['colore'].";border: yellow 4px solid;'>");
+                }else{
+                    echo("<td style='background:".$pren['colore'].";'>");
+                }
+                echo("<a id='".$absday."-".$i."' onclick='javascript:openNewBModal(1, ".$pren['id'].", 0);' ><div>");//<div style='border: red 1px solid;'>");
                 echo('<b>№ '.$pren['id'].'</b>');
                 echo("</div></a>");
                 echo("</td>");
@@ -657,7 +693,7 @@
       <div>
         <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
         <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
-        <a href="../prenotazioni/#<? echo date('j-n'); ?>" class="btn btn-danger">Logout</a>
+        <a href="../prenotazioni/#<? echo date('j-n', strtotime('yesterday')); ?>" class="btn btn-danger">Logout</a>
       </div>
     </footer>
 
@@ -686,6 +722,10 @@
         // Open Error_Modal in case of PHP errors (like "No more beds on these days")
         if( $('#Error_Modal').data('error') ){
             $('#Error_Modal').modal('show');
+        }
+        // Open Id_Modal in case of success of the registration
+        if( $('#Id_Modal').data('open') ){
+            $('#Id_Modal').modal('show');
         }
 
     </script>
