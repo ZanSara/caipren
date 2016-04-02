@@ -278,10 +278,10 @@
     ?>
     
     <div class="banner shadow1">
-      <img src="static/images/homebanner.jpg">
+      <a href="http://www.caisovico.it">
+        <img src="static/images/homebanner.jpg">
+      </a>
       <h2>Prenotazioni Stagione <? echo $year ?></h2>
-      
-      <!--h4>Rifugio M. Del Grande - R. Camerini</h4-->
     </div>
 
     <div class="mobile-title shadow1">
