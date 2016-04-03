@@ -5,7 +5,7 @@ html {
 .mainpage {
     overflow-x:hidden;
     color: black;
-    background: #CCF0FF;
+    background: white;
 }
 @media (max-width : 800px){
     .mainpage {
@@ -42,7 +42,7 @@ html {
     padding: 0;
 }
 .banner h2 {
-    color: blue;
+    color: green;
     font-weight: bold;
     margin-top: 10px;
 }
@@ -120,15 +120,19 @@ html {
 }
 
 
+
 .calendario-outer-box{
     position: absolute;
     bottom: 60px;
     left: 10px;
     right: 10px;
-    top: 270px;
+    top: 255px;
+    max-width: 800px;
+    display: block;
+    margin:auto;
 }
 .calendario-outer-box tr{
-    height: 40px;
+    height: 30px;
 }
 @media (max-width : 800px){
     .calendario-outer-box{
@@ -139,7 +143,7 @@ html {
         overflow-x: scroll;
     }
     .calendario-outer-box tr{
-        height: 40px;
+        height: 30px;
     }
 }
 
@@ -154,7 +158,7 @@ html {
 }
 .calendario-inner-box{
     position: absolute;
-    top: 40px;
+    top: 30px;
     bottom: 0;
     right: 0;
     left: 0;
@@ -223,7 +227,7 @@ footer {
     right: 0;
     margin: auto;
     height: 50px;
-    background-color: #0041B1; /* #f5f5f5; */
+    background-color: white; /* #0041B1;  #f5f5f5; */
     text-align: center;
     padding: 5px;
 }

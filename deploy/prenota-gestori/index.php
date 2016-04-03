@@ -277,11 +277,17 @@
 
     ?>
     
-    <div class="banner shadow1">
+    <div class="banner">
       <a href="http://www.caisovico.it">
+        <!--img src="../foto/pagebanner.jpg"-->
         <img src="static/images/homebanner.jpg">
       </a>
-      <h2>Prenotazioni Stagione <? echo $year ?></h2>
+      <h2 style='display:inline-block;'>Prenotazioni Stagione <? echo $year ?></h2>
+      
+      <a href="http://www.caisovico.it/rifugio/rifugio.html">
+        <!--img src="../../foto/freccia_blu_back.jpg" style='display:inline;' class='pull-right' -->
+        <img src="static/images/freccia_blu_back.jpg" style='display:inline;' class='pull-right'>
+      </a>
     </div>
 
     <div class="mobile-title shadow1">
@@ -658,7 +664,7 @@
                     echo("<td style='background:".$pren['colore'].";'>");
                 }
                 echo("<a id='".$absday."-".$i."' onclick='javascript:openNewBModal(1, ".$pren['id'].", 0);' ><div>");//<div style='border: red 1px solid;'>");
-                echo('<b>№ '.$pren['id'].'</b>');
+                echo('<b>P'.$pren['id'].'</b>');
                 echo("</div></a>");
                 echo("</td>");
             }
