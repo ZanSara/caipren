@@ -18,9 +18,12 @@ $dbhandle = mysqli_connect($hostname, $username, $password)
 $selected = mysqli_select_db($dbhandle, "6786_prenotazioni")
     or die( json_encode(array("error"=> "Errore di connessione al server. Contatta il webmaster (Codice D4)") ) );
 
-$data = mysqli_query($dbhandle, "DELETE FROM `Pernottamenti`");
+$data = mysqli_query($dbhandle, " DELETE FROM Pernottamenti");
+$data = mysqli_query($dbhandle, " ALTER TABLE Pernottamenti DROP COLUMN id");
+$data = mysqli_query($dbhandle, " ALTER TABLE Pernottamenti AUTO_INCREMENT = 1");
+$data = mysqli_query($dbhandle, " ALTER TABLE Pernottamenti ADD id INT UNSIGNED NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;");
 
-if($data){
+if($data == True){
     echo("<p>Il database è stato completamente cancellato.</p>");
 }else{
     echo("<p>Si è verificato un errore durante la cancellazione del database. Riprova e avverti il webmaster.</p> ");
@@ -29,7 +32,7 @@ if($data){
 mysqli_close($dbhandle);
 ?>
 
-    <a class="btn btn-default" href="index.php">Torna Indietro</a>
+    <a class="btn btn-default" href="index.php#<? echo date('j-n', strtotime('yesterday')); ?>"> Torna Indietro</a>
 
   </body>
 </html>

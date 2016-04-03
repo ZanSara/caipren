@@ -22,7 +22,7 @@
     <a class="btn btn-danger btn-erasedb" href="erase-database-stage2.php">Svuota il Database</a>
     <br>
 
-    <a class="btn btn-success" href="index.php">Torna Indietro</a>
+    <a class="btn btn-success" href="index.php#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
 
   </body>
 </html>

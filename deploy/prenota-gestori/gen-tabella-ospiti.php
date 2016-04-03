@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     ');
 
 ?>
-    <a class="btn btn-default" href="index.php">Torna Indietro</a>
+    <a class="btn btn-default" href="index.php#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
     <hr>
 
     <table class="table table-bordered">
@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 ?>
     </table>
     
-    <a class="btn btn-default" href="index.php">Torna Indietro</a>
+    <a class="btn btn-default" href="index.php#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
     
 <?
 }
@@ -143,7 +143,7 @@ else
         <div class="form-group">
           <label class="col-sm-3 control-label">Data di Inizio</label>
           <div class="col-sm-9" >
-              <input id="inizio" type="text" class="form-control" name="inizio" placeholder="Giorno-Mese-Anno"
+              <input id="inizio" type="text" class="form-control" name="inizio" placeholder="Giorno-Mese-Anno" value="01-06-<? echo (date('Y')); ?>"
               data-rule-required="true" data-msg-required="Inserire una data di inizio gestione"
               data-rule-customData="true">
           </div>
@@ -151,7 +151,7 @@ else
         <div class="form-group">
           <label class="col-sm-3 control-label">Data di Fine</label>
           <div class="col-sm-9" >
-              <input id="fine" type="text" class="form-control" name="fine" placeholder="Giorno-Mese-Anno"
+              <input id="fine" type="text" class="form-control" name="fine" placeholder="Giorno-Mese-Anno" value="30-09-<? echo (date('Y')); ?>"
               data-rule-required="true" data-msg-required="Inserire una data di fine gestione"
               data-rule-customData="true">
           </div>
@@ -160,7 +160,7 @@ else
         </div>
         <div class="form-group col-sm-9 pull-right">
           <input class="btn btn-default" type="submit" value="Invia">
-          <a class="btn btn-default"href="index.php">Torna Indietro</a>
+          <a class="btn btn-default" href="index.php#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
         </div>
       </form>
 

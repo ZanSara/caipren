@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
           <a class="btn btn-default" href="javascript:window.print()">Stampa la pagina</a>
           <!-- CHANGE ME WHEN DEPLOYING!!! -->
           <a class="btn btn-default"href="gen-tabella-prenotazioni.php">Cambia Date</a>
-          <a class="btn btn-default"href="index.php">Torna Indietro</a>
+          <a class="btn btn-default" href="index.php#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
         </div>
 
         <h3>Calendario:</h3>
@@ -199,7 +199,7 @@ else
         </div>
         <div class="form-group col-sm-9 pull-right">
           <input class="btn btn-default" type="submit" value="Invia">
-          <a class="btn btn-default"href="index.php">Torna Indietro</a>
+          <a class="btn btn-default" href="index.php#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
         </div>
       </form>
 
