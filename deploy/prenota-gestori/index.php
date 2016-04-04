@@ -292,12 +292,13 @@
 
     <div class="mobile-title shadow1">
         <h3>Prenotazioni <? echo $year ?></h3>
-        <img class='mobile-login' src='static/images/nav-settings.gif' onclick="javascript:$('#mobile-dropdown').toggle();">
+        <img class='mobile-login' src='static/images/nav-settings-green.gif' onclick="javascript:$('#mobile-dropdown').toggle();">
     </div>
     <div id='mobile-dropdown'>
       <ul>
         <li class="btn btn-success"><a onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</a></li>
-        <li class="btn btn-warning"><a data-toggle="modal" data-target="#Adv_Modal">Avanzate</a></li>
+        <li class="btn btn-info"><a data-toggle="modal" data-target="#Adv_Modal">Avanzate</a></li>
+        <li class="btn btn-warning"><a data-toggle="modal" data-target="#About_Modal">About</a></li>
         <li class="btn btn-danger"><a href="../prenotazioni/" >Logout</a></li>
       </ul>
     </div>
@@ -320,6 +321,36 @@
               <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
           </div>
 
+        </div>
+      </div>
+    </div>
+    
+    <!-- ABOUT ALERT -->
+    <div class="modal fade" id="About_Modal" tabindex="-1" role="dialog" aria-labelledby="About_ModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header center">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h2 class="modal-title">CAI Prenota</h2>
+          </div>
+
+          <div class="modal-body center">
+
+            <p>Questo sito è stato progettato e realizzato da</p>
+            <h4>Sara Zanzottera</h4>
+            <p>e si trova attualmente alla sua versione</p>
+            <h4>v2.0</h4>
+            <hr>
+            <p><br>Se avete riscontrato dei problemi nell'utilizzo di questo sito 
+            siete pregati di contattare il webmaster dei CAI Sovico all'indirizzo:</p>
+            <p>webmaster@caisovico.it</p>
+            
+            <div class="modal-footer center">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
+            </div>
+
+          </div>
+          
         </div>
       </div>
     </div>
@@ -383,9 +414,7 @@
             </div>
 
           </div>
-
           
-
         </div>
       </div>
     </div>
@@ -699,6 +728,7 @@
       <div>
         <button class="btn btn-success" onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</button>
         <button class="btn btn-info" data-toggle="modal" data-target="#Adv_Modal">Avanzate</button>
+        <a class="btn btn-warning" data-toggle="modal" data-target="#About_Modal">About</a>
         <a href="../prenotazioni/#<? echo date('j-n', strtotime('yesterday')); ?>" class="btn btn-danger">Logout</a>
       </div>
     </footer>

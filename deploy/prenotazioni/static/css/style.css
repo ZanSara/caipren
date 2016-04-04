@@ -56,10 +56,10 @@ html {
         display: block;
         text-align: center;
         position: absolute;
-        color: white;
+        color: green;
         top: 0;
         width: 100%;
-        background:  #0091E1;
+        background: white /* #0091E1; */
         height: 75px;
         white-space: nowrap;
         overflow: hidden;
@@ -69,6 +69,7 @@ html {
     .mobile-title h3{
         display: block;
         font-size: 28px;
+        font-weight: bold;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;

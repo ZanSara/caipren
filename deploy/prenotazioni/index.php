@@ -44,7 +44,7 @@
     <div class="mobile-title">
         <h3>Prenotazioni <? echo $year ?></h3>
         <a href="../prenota-gestori/#<? echo date('j-n', strtotime('yesterday')); ?>">
-          <img class='mobile-login' src='static/images/nav-login.gif'>
+          <img class='mobile-login' src='static/images/nav-login-green.gif'>
         </a>
     </div>
     
