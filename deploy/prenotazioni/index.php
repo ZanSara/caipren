@@ -30,14 +30,14 @@
 
     <div class="banner">
       <a href="http://www.caisovico.it">
-        <!--img src="../foto/pagebanner.jpg"-->
-        <img src="static/images/homebanner.jpg">
+        <img src="../foto/pagebanner.jpg">
+        <!--img src="static/images/homebanner.jpg"-->
       </a>
       
       <h2 style='display:inline-block;'>Prenotazioni Stagione <? echo $year ?></h2>
       <a href="http://www.caisovico.it/rifugio/rifugio.html">
-        <!--img src="../../foto/freccia_blu_back.jpg" style='display:inline;' class='pull-right' -->
-        <img src="static/images/freccia_blu_back.jpg" style='display:inline;' class='pull-right'>
+        <img src="../foto/freccia_blu_back.jpg" style='display:inline;' class='pull-right'>
+        <!--img src="static/images/freccia_blu_back.jpg" style='display:inline;' class='pull-right' -->
       </a>
     </div>
 
@@ -166,7 +166,7 @@
         foreach($lista as $pren){
             for($i=0; $i<$pren['posti']; $i++, $tot++){
                 echo("<td style='background:".$pren['colore'].";'>");
-                echo('<b>№ '.$pren['id'].'</b>');
+                echo('<b>P'.$pren['id'].'</b>');
                 echo("</td>");
             }
             if ($pren['giorno_inizio']+ $pren['durata']-1 <= $absday){

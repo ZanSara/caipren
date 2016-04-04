@@ -219,12 +219,12 @@
         $replaced = str_replace("/", "-", $_POST['arrivo']);
         $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($replaced)-1));
 
-        if ((int)($_POST['posti'])<= 0 or (int)($_POST['posti'])> 16) throw new Exception("Numero di posti prenotati non valido!");
-
-        $gestione = 0;
+		$gestione = 0;
         if (isset($_POST['gestione'])) {
            $gestione = 1;
         }
+        if (!$gestione && ( (int)($_POST['posti'])<= 0 or (int)($_POST['posti'])> 16) ) throw new Exception("Numero di posti prenotati non valido!");
+        
         if ($_POST['responsabile']== '') throw new Exception("Nome del responsabile non valido!");
 
         return array(
@@ -279,14 +279,14 @@
     
     <div class="banner">
       <a href="http://www.caisovico.it">
-        <!--img src="../foto/pagebanner.jpg"-->
-        <img src="static/images/homebanner.jpg">
+        <img src="../foto/pagebanner.jpg">
+        <!--img src="static/images/homebanner.jpg"-->
       </a>
       <h2 style='display:inline-block;'>Prenotazioni Stagione <? echo $year ?></h2>
       
       <a href="http://www.caisovico.it/rifugio/rifugio.html">
-        <!--img src="../../foto/freccia_blu_back.jpg" style='display:inline;' class='pull-right' -->
-        <img src="static/images/freccia_blu_back.jpg" style='display:inline;' class='pull-right'>
+        <img src="../foto/freccia_blu_back.jpg" style='display:inline;' class='pull-right' -->
+        <!--img src="static/images/freccia_blu_back.jpg" style='display:inline;' class='pull-right'!-->
       </a>
     </div>
 
