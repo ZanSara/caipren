@@ -9,6 +9,9 @@ Just another CAI website
     - all folders in deploy/prenota-gestori/static/bootstrap
 - Install XAMPP and start it (sudo /opt/lampp/xampp start)
 - Create a symlink of the repository inside /opt/lampp/htdocs
-- Create a new database in phpMyAdmin called 6786_pernottamenti
+	- in case Apache doesn't want to follow the symlink, a quick and unsafe patch is running these two commands:
+		sudo chmod -R ugo+rwx /opt/lampp/htdocs/
+		sudo chmod -R ugo+rwx /path/to/your/project/
+- Create a new database in phpMyAdmin called 6786_prenotazioni
 - Import all tables from .sql files
 - Create a test user with username : 6786_utentesql, password : databasecai, host: localhost, granting him DATA and STRUCTURE privileges.

@@ -218,7 +218,14 @@ html {
     top:20px;
     right:15px;
 }
-
+@media (max-width : 800px){
+    .modify-btn{
+        position: relative;
+        top: auto;
+        right: auto;
+        display: block;
+    }
+}
 
 footer {
     position: absolute;
@@ -238,7 +245,7 @@ footer {
 }
 .btn{
     margin-right:5px;
-    margin-left:5px;
+    margin-left:5px;    
 }
 .btn-erasedb{
   margin:10px;

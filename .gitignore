@@ -1,11 +1,4 @@
-py-draft/*.pyc
-py-draft/*.jpg
-py-draft/app/log/*.*
-py-draft/env
-py-draft/__pycache__
-py-draft/db_repository
-py-draft/app/static/bootstrap
-py-draft/app/static/javascript/jQuery
+drafts/
 static/bootstrap
 deploy/prenotazioni/static/bootstrap
 deploy/prenota-gestori/static/bootstrap
