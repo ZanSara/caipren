@@ -225,6 +225,7 @@ html {
         top: auto;
         right: auto;
         display: block;
+        max-width: 100px;
     }
 }
 
@@ -247,6 +248,12 @@ footer {
 .btn{
     margin-right:5px;
     margin-left:5px;    
+}
+@media (max-width : 800px){
+    .btn{
+        margin-right:auto;
+        margin-left:auto;    
+    }
 }
 .btn-erasedb{
   margin:10px;

@@ -335,15 +335,15 @@
           </div>
 
           <div class="modal-body center">
-
-            <p>Questo sito è stato progettato e realizzato da</p>
-            <h4>Sara Zanzottera</h4>
-            <p>e si trova attualmente alla sua versione</p>
-            <h4>v2.0</h4>
-            <hr>
+            
+            <p>Questo sito è online da Aprile 2016 si trova attualmente alla sua versione</p>
+            <h3>3.0</h3>
             <p><br>Se avete riscontrato dei problemi nell'utilizzo di questo sito 
             siete pregati di contattare il webmaster dei CAI Sovico all'indirizzo:</p>
-            <p>webmaster@caisovico.it</p>
+            <p><b>webmaster@caisovico.it</b></p>
+            <hr>
+            <p>Progettato e realizzato da</p>
+            <h5><a href="https://cn.linkedin.com/in/zansara/it"><b>Sara Zanzottera</b></a></h5>
             
             <div class="modal-footer center">
               <button type="button" class="btn btn-default" data-dismiss="modal">Chiudi</button>
@@ -395,17 +395,17 @@
             <div style="padding-left:5%;padding-right:5%;" >
               <div class="row">
                 <a class="col-sm-3 btn btn-info" href="gen-tabella-prenotazioni.php">Calendario</a>
-                <p class="col-sm-8 pull-right">Genera una tabella stampabile delle prenotazioni di ogni gestore.</p>
+                <p class="col-sm-8 ">Genera una tabella stampabile delle prenotazioni di ogni gestore.</p>
               </div>
               <hr>
               <div class="row">
                 <a class="col-sm-3 btn btn-success" href="gen-tabella-ospiti.php">Tabella Ospiti</a>
-                <p class="col-sm-8 pull-right">Genera una tabella stampabile di tutti gli ospiti che hanno pernottato al rifugio durate questa stagione.</p>
+                <p class="col-sm-8">Genera una tabella stampabile di tutti gli ospiti che hanno pernottato al rifugio durate questa stagione.</p>
               </div>
               <hr>
               <div class="row">
                 <a class="col-sm-3 btn btn-danger" href="erase-database-stage1.php">Svuota Database</a>
-                <p class="col-sm-8 pull-right">Svuota completamente il database delle prenotazioni.<br>ATTENZIONE! Questa operazione è IRREVERSIBILE!</p>
+                <p class="col-sm-8">Svuota completamente il database delle prenotazioni.<br>ATTENZIONE! Questa operazione è IRREVERSIBILE!</p>
               </div>
             </div>
             
