@@ -2,6 +2,7 @@
   <head>
       <meta charset='utf-8'>
       <title>Tabella Ospiti - CAI Sovico</title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <link href="static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body style="margin:20px;">
