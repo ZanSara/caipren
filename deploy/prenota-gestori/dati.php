@@ -24,6 +24,7 @@ echo( json_encode(
     array(
         "nome" => $data['nome'],
         "tel" => $data['tel'],
+        "provincia" => $data['provincia'],
         "prenid" => $data['id'],
         "arrivo" => $day."-".$year,
         "durata" => $data['durata'],

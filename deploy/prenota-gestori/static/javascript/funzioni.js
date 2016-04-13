@@ -63,6 +63,7 @@ function openNewBModal(fillme, prenid, gestione){
                 $('.modal-footer').show();
                 $('.mod-nome').val(decoded.nome);
                 $('.mod-tel').val(decoded.tel);
+                $('.mod-prov').val(decoded.provincia);
                 $('.mod-arrivo').val(decoded.arrivo);
                 $('.mod-durata').val(decoded.durata);
                 $('.mod-posti').val(decoded.posti);

@@ -142,6 +142,7 @@
         // Actually write reservation in DB
         $values = "(NULL, '".$validData['nome']."', '".
                     $validData['telefono']."', '".
+                    $validData['provincia']."', '".
                     $validData['arrivo']."', '".
                     $year."', '".
                     $validData['durata']."', '".
@@ -151,7 +152,7 @@
                     $validData['resp']."', '".
                     $newColor."')";
         $result = mysqli_query($dbhandle, "INSERT INTO `Pernottamenti`
-                                (`id`, `nome`, `tel`, `giorno_inizio`, `stagione`, `durata`, `posti`, `note`, `gestione`, `responsabile`, `colore`)
+                                (`id`, `nome`, `tel`, `provincia`, `giorno_inizio`, `stagione`, `durata`, `posti`, `note`, `gestione`, `responsabile`, `colore`)
                                 VALUES".$values);
                                 
         if ($result ==  True) {
@@ -179,6 +180,7 @@
         $result = mysqli_query($dbhandle, "UPDATE Pernottamenti SET
                                 nome = '".$validData['nome'].
                                 "', tel = '".$validData['telefono'].
+                                "', provincia = '".$validData['provincia'].
                                 "', giorno_inizio = ".$validData['arrivo'].
                                 ", durata = ".$validData['durata'].
                                 ", posti = ".$validData['posti'].
@@ -230,6 +232,7 @@
         return array(
             'nome' => mysqli_real_escape_string($dbhandle, $_POST['nome']),
             'telefono' => mysqli_real_escape_string($dbhandle, $_POST['telefono']),
+            'provincia' => mysqli_real_escape_string($dbhandle, $_POST['provincia']),
             'arrivo' => (int)mysqli_real_escape_string($dbhandle, $absdate),
             'durata' => (int)mysqli_real_escape_string($dbhandle, $_POST['durata']),
             'posti' => mysqli_real_escape_string($dbhandle, $_POST['posti']),
@@ -455,6 +458,13 @@
                       <input id="modtel" type="text" class="mod-tel form-control" name="telefono" placeholder="№ Telefono" readonly="readonly"
                       data-rule-required="true" data-msg-required="Inserire il numero di telefono"
                       data-rule-digits="true" data-msg-digits="Inserire un numero di telefono valido">
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label class="col-sm-3 control-label">Provincia di Residenza</label>
+                  <div class="col-sm-9" >
+                      <input id="modprov" type="text" class="mod-prov form-control" name="provincia" placeholder="Codice Provincia" readonly="readonly"
+                      data-rule-required="true" data-msg-required="Inserire la provincia di residenza">
                   </div>
                 </div>
                 <hr/>

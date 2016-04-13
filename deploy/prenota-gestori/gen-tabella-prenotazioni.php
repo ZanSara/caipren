@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         <div class="noprint">
           <a class="btn btn-default" href="javascript:window.print()">Stampa la pagina</a>
           <!-- CHANGE ME WHEN DEPLOYING!!! -->
-          <a class="btn btn-default"href="gen-tabella-prenotazioni.php">Cambia Date</a>
+          <a class="btn btn-default" href="gen-tabella-prenotazioni.php">Cambia Date</a>
           <a class="btn btn-default" href="index.php#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
         </div>
 
@@ -106,6 +106,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
             <td>№</td>
             <td>Nome Cliente</td>
             <td>№ Telefono</td>
+            <td>Provincia</td>
             <td>Data Arrivo</td>
             <td>Data Partenza</td>
             <td>Durata Soggiorno</td>
@@ -132,6 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
               <td>".$data['id']."</td>
               <td>".$data['nome']."</td>
               <td>".$data['tel']."</td>
+              <td>".$data['provincia']."</td>
               <td>".$dayInizio."-".$year."</td>
               <td>".$dayFine."-".$year."</td>
               <td>".$data['durata']."</td>

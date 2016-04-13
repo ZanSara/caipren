@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
       <tr class="active">
         <td>Nome Cliente</td>
         <td>№ Telefono</td>
+        <td>Provincia</td>
         <td>Data Arrivo</td>
         <td>Durata Soggiorno</td>
         <td>Posti Prenotati</td>
@@ -80,6 +81,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         echo("
               <td>".$data['nome']."</td>
               <td>".$data['tel']."</td>
+              <td>".$data['provincia']."</td>
               <td>".$day."-".$year."</td>
               <td>".$data['durata']."</td>
         ");
