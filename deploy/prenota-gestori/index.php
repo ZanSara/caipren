@@ -246,21 +246,21 @@
 
     function checkAssertions($dbhandle, $data, $prenid, $year){
         // Notice: here I assume that no booking will have ID = 0, because 0 means basically "do not check"
-
+        
         $dayslist = array();
         for($giorno=$data['arrivo']; $giorno < ($data['arrivo']+$data['durata']); $giorno++ ){
             $result = mysqli_fetch_array(mysqli_query($dbhandle, "
-                    SELECT SUM(posti) FROM Pernottamenti
-                    WHERE stagione = ".$year." AND ( giorno_inizio <= ".$giorno." AND (giorno_inizio + durata) > ".$giorno.")
-                    AND gestione = ".$data['gestione']." AND id <> ".$prenid) );
-            if(!$data['gestione'] && ($result[0] + $data['posti'] > 16) ){
-                echo($result[0]);
-                echo(" - ");
-                echo($data['posti']);
-                $dayslist[] = DateTime::createFromFormat('z', $giorno);
-            }
-            if($data['gestione'] && $result[0]){
-                $dayslist[] = DateTime::createFromFormat('z', $giorno);
+                        SELECT SUM(posti) FROM Pernottamenti
+                        WHERE stagione = ".$year." AND ( giorno_inizio <= ".$giorno." AND (giorno_inizio + durata) > ".$giorno.")
+                        AND gestione = ".$data['gestione']." AND id <> ".$prenid) );
+            if(!$data['gestione']){
+                if($result[0] + $data['posti'] > 16){
+                    $dayslist[] = DateTime::createFromFormat('z', $giorno);
+                }            
+            }else{
+                if($result[0] > 0){
+                    $dayslist[] = DateTime::createFromFormat('z', $giorno);
+                }
             }
         }
 
@@ -598,7 +598,7 @@
     <?
 
     $lista = array();
-    $gest = 0;
+    $gest = array();
     $gestdb = array();
 
     $username = "6786_utentesql";
@@ -670,22 +670,28 @@
 
         // Building Gestore td
         // WARNING! Does not deal with overlapping, because there shouldn't be such overlappings in db
-        if ($gest == 0){
-            $gestdb =  mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE stagione = ".$year." AND (gestione=1 AND giorno_inizio=".$absday.")");
-            $gest = mysqli_fetch_array($gestdb);
+        $gestdb =  mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE stagione = ".$year." AND (gestione=1 AND giorno_inizio=".$absday.")");
+        while ($row = mysqli_fetch_array($gestdb)) {
+            $gest[] = $row;
         }
-        if ( ($gest['giorno_inizio'] + $gest['durata']) <= $absday){
-            $gest = 0;
-        }
-        if ($gest == 0){
+        if (sizeOf($gest) == 0){
             echo("<td class='nogestore'>Nessuno!</td>");
         }else{
-            echo("<td>");
-            echo("<a id='".$absday."-G' onclick='javascript:openNewBModal(1, ".$gest['id'].", 1);' ><div>");
-            echo($gest['nome']);
+            echo("<td");
+            if(sizeOf($gest) > 1){
+                echo(" style='border:3px solid red;'");
+            }
+            echo(">");
+            echo("<a id='".$absday."-G' onclick='javascript:openNewBModal(1, ".$gest[0]['id'].", 1);' ><div>");
+            echo($gest[0]['nome']);
             echo("</div></a>");
             echo("</td>");
+            if ($gest[0]['giorno_inizio']+ $gest[0]['durata']-1 <= $absday){
+                unset($gest[0]);
+                $gest = array_values($gest);
+            }
         }
+        
 
         // Filling the rest of the table
         $listadb = mysqli_query($dbhandle, "SELECT *

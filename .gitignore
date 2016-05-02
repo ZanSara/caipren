@@ -2,3 +2,5 @@ drafts/
 static/bootstrap
 deploy/prenotazioni/static/bootstrap
 deploy/prenota-gestori/static/bootstrap
+deploy/foto
+deploy/webcam
