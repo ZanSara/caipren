@@ -253,6 +253,7 @@
                         SELECT SUM(posti) FROM Pernottamenti
                         WHERE stagione = ".$year." AND ( giorno_inizio <= ".$giorno." AND (giorno_inizio + durata) > ".$giorno.")
                         AND gestione = ".$data['gestione']." AND id <> ".$prenid) );
+            echo($result[0]);
             if(!$data['gestione']){
                 if($result[0] + $data['posti'] > 16){
                     $dayslist[] = DateTime::createFromFormat('z', $giorno);
@@ -661,15 +662,15 @@
 
         // Building Date td
         echo("<td ");
+            if( $weekday == 6 ) echo("style='color:blue;'");
             if( $weekday == 7 ) echo("style='color:red;'");
-            if( $month == 8 and $day==15 ) echo("style=color:red;");
+            if( $month == 8 and $day==15 ) echo("style=color:orange;");
         echo(">");
             echo($day." ".$monthname);//." / ".$absday);
         echo("</td>");
 
 
         // Building Gestore td
-        // WARNING! Does not deal with overlapping, because there shouldn't be such overlappings in db
         $gestdb =  mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE stagione = ".$year." AND (gestione=1 AND giorno_inizio=".$absday.")");
         while ($row = mysqli_fetch_array($gestdb)) {
             $gest[] = $row;
@@ -686,9 +687,12 @@
             echo($gest[0]['nome']);
             echo("</div></a>");
             echo("</td>");
-            if ($gest[0]['giorno_inizio']+ $gest[0]['durata']-1 <= $absday){
-                unset($gest[0]);
-                $gest = array_values($gest);
+            foreach($gest as $g){
+                if ($g['giorno_inizio']+ $g['durata']-1 <= $absday){
+                    $key = array_search($g, $gest);
+                    unset($gest[$key]);
+                    $gest = array_values($gest);
+                }
             }
         }
         
