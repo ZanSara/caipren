@@ -249,11 +249,15 @@
         
         $dayslist = array();
         for($giorno=$data['arrivo']; $giorno < ($data['arrivo']+$data['durata']); $giorno++ ){
-            $result = mysqli_fetch_array(mysqli_query($dbhandle, "
-                        SELECT SUM(posti) FROM Pernottamenti
+            if(!$data['gestione']){
+                $what2Do = "SUM(posti)";
+            }else{
+                $what2Do = "COUNT(*)";
+            }
+            $string = "SELECT ".$what2Do." FROM Pernottamenti
                         WHERE stagione = ".$year." AND ( giorno_inizio <= ".$giorno." AND (giorno_inizio + durata) > ".$giorno.")
-                        AND gestione = ".$data['gestione']." AND id <> ".$prenid) );
-            echo($result[0]);
+                        AND gestione = ".$data['gestione']." AND id <> ".$prenid;
+            $result = mysqli_fetch_array(mysqli_query($dbhandle, $string));
             if(!$data['gestione']){
                 if($result[0] + $data['posti'] > 16){
                     $dayslist[] = DateTime::createFromFormat('z', $giorno);
