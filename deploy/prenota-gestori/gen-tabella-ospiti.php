@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     <table class="table table-bordered">
       <tr class="active">
+		<td>Num. Pren.</td>
         <td>Nome Cliente</td>
         <td>№ Telefono</td>
         <td>Provincia</td>
@@ -79,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
         }
 
         echo("
+			  <td>".$data['id']."</td>
               <td>".$data['nome']."</td>
               <td>".$data['tel']."</td>
               <td>".$data['provincia']."</td>
