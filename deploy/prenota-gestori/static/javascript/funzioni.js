@@ -1,17 +1,18 @@
 
 function enableEditing(fillme, gestione){
     $('input').prop('readonly', false);
+    $('textarea').prop('readonly', false);
     $('#new-btn').prop('disabled', false);
     $('#new-btn').show();
     $('#enable-btn').hide();
     $('.mod-new').prop('checked', 'checked');
+    $('.mod-gest').prop('disabled', '');
 
     if (fillme){
         $('#del-btn').show();
         $('#del-btn').prop('disabled', false);
         $('#new-btn').prop('disabled', false);
         $('.mod-new').prop('checked', '');
-        $('.mod-gest').prop('disabled', '');
     }
 }
 

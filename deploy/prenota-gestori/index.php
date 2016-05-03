@@ -276,9 +276,9 @@
             }
             mysqli_close($dbhandle);
             if (!$data['gestione']){
-                throw new Exception("Impossibile prenotare!<br>Il Rifugio è già pieno nelle date:".$errorstring."<br><br>NON è stata registrata nessuna modifica nel database: ripetere l'operazione.");
+                throw new Exception("Impossibile prenotare!<br>Il Rifugio è già pieno nelle date:".$errorstring."<br><br>NON è stata registrata nessuna modifica: ripetere l'operazione.");
             }else{
-                throw new Exception("Attenzione!<br>C'è già un gestore in queste date: ".$errorstring."<br><br>NON è stata registrata nessuna modifica nel database: ripetere l'operazione.");
+                throw new Exception("Attenzione!<br>C'è già un gestore in queste date: ".$errorstring."<br><br>NON è stata registrata nessuna modifica: ripetere l'operazione.");
             }
         }
     }
@@ -288,13 +288,11 @@
     <div class="banner">
       <a href="http://www.caisovico.it">
         <img src="../foto/pagebanner.jpg">
-        <!--img src="static/images/homebanner.jpg"-->
       </a>
       <h2 style='display:inline-block;'>Prenotazioni Stagione <? echo $year ?></h2>
       
       <a href="http://www.caisovico.it/rifugio/rifugio.html">
         <img src="../foto/freccia_blu_back.jpg" style='display:inline;' class='pull-right' -->
-        <!--img src="static/images/freccia_blu_back.jpg" style='display:inline;' class='pull-right'!-->
       </a>
     </div>
 
@@ -302,12 +300,12 @@
         <h3>Prenotazioni <? echo $year ?></h3>
         <img class='mobile-login' src='static/images/nav-settings-green.gif' onclick="javascript:$('#mobile-dropdown').toggle();">
     </div>
-    <div id='mobile-dropdown'>
+    <div id='mobile-dropdown' class="shadow3">
       <ul>
-        <li class="btn btn-success"><a onclick='javascript:openNewBModal(0, 0, 0)'>Nuova Prenotazione</a></li>
-        <li class="btn btn-info"><a data-toggle="modal" data-target="#Adv_Modal">Avanzate</a></li>
-        <li class="btn btn-warning"><a data-toggle="modal" data-target="#About_Modal">About</a></li>
-        <li class="btn btn-danger"><a href="../prenotazioni/" >Logout</a></li>
+        <a onclick='javascript:openNewBModal(0, 0, 0)'><li class="btn btn-success">Nuova Prenotazione</li></a>
+        <a data-toggle="modal" data-target="#Adv_Modal"><li class="btn btn-info">Avanzate</li></a>
+        <a data-toggle="modal" data-target="#About_Modal"><li class="btn btn-warning">About</li></a>
+        <a href="../prenotazioni/" ><li class="btn btn-danger">Logout</li></a>
       </ul>
     </div>
 
@@ -345,7 +343,7 @@
           <div class="modal-body center">
             
             <p>Questo sito è online da Aprile 2016 si trova attualmente alla sua versione</p>
-            <h3>3.0</h3>
+            <h3>3.1</h3>
             <p><br>Se avete riscontrato dei problemi nell'utilizzo di questo sito 
             siete pregati di contattare il webmaster dei CAI Sovico all'indirizzo:</p>
             <p><b>webmaster@caisovico.it</b></p>
@@ -510,7 +508,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Note</label>
                   <div class="col-sm-9" >
-                      <input id="modnote" type="textarea" class="mod-note form-control" name="note" placeholder="Note..." readonly="readonly">
+                      <textarea id="modnote" type="textarea" rows="3" class="mod-note form-control" name="note" placeholder="Note..." readonly="readonly"></textarea>
                   </div>
                 </div>
                 <div class="hidden checkbox">
@@ -668,7 +666,7 @@
         echo("<td ");
             if( $weekday == 6 ) echo("style='color:blue;'");
             if( $weekday == 7 ) echo("style='color:red;'");
-            if( $month == 8 and $day==15 ) echo("style=color:orange;");
+            if( $month == 8 and $day==15 ) echo("style=color:red;text-decoration:underline;");
         echo(">");
             echo($day." ".$monthname);//." / ".$absday);
         echo("</td>");
@@ -769,10 +767,12 @@
 
             $('.modal-dataTitle').text("Prenotazione");
             $('#newB_Modal form')[0].reset();
-            $('.mod-gest').prop('checked', '' );
+            $('#modgest').prop('disabled', '' );
+            $('#modgest').prop('checked', '' );
             $('#line-posti').show();
 
             $('input').prop('readonly', true);
+            $('textarea').prop('readonly', true);
             $('#new-btn').prop('disabled', true);
             $('#new-btn').hide();
             $('#del-btn').hide();

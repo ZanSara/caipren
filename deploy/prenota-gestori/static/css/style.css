@@ -95,6 +95,9 @@ html {
     top: 75px;
     z-index: 20;
 }
+#mobile-dropdown ul{
+    display:none;
+}
 @media (max-width : 800px){
     #mobile-dropdown{
         display: none; /* this will be handled via jQuery */
@@ -103,18 +106,21 @@ html {
         top: 75px;
     }
     #mobile-dropdown ul{
+        text-align:right;
+        display: block;
         list-style: none;
         background: white; /* #0091E1; */
         border: 1px solid white; /* #0091E1; */
         margin: 0;
-        padding: 0;
+        padding: 10px;
     }
-    #mobile-dropdown li{
+    #mobile-dropdown a li{
         display: block;
+        width: 150px;
         z-index: 20;
         margin: 5px;
     }
-    #mobile-dropdown li a{
+    #mobile-dropdown a{
         color: white;
         text-decoration: none;   
     }
@@ -274,10 +280,10 @@ footer {
     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99222222, endColorstr=#99222222);
     /* For IE 8*/
     -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99222222, endColorstr=#99222222);
-    z-index:5;
-  -moz-box-shadow:0px 0px 12px #000000;
-  -webkit-box-shadow:0px 0px 12px #000000;
-  box-shadow:0px 0px 12px #000000;
+    z-index:15;
+  -moz-box-shadow:0px 0px 12px #222222;
+  -webkit-box-shadow:0px 0px 12px #222222;
+  box-shadow:0px 0px 12px #222222;
 
 /* Arguments:
  * 1px: Horizontal offset of the effect. Positive numbers shift it right, negative left.
@@ -291,8 +297,19 @@ footer {
     filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99222222, endColorstr=#99222222);
     /* For IE 8*/
     -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99222222, endColorstr=#99222222);
-    z-index:10;
+    z-index:5;
   -moz-box-shadow:0px 0px 10px #aaaaaa;
   -webkit-box-shadow:0px 0px 10px #aaaaaa;
   box-shadow:0px 0px 10px #aaaaaa;
+}
+
+.shadow3{
+    /* For IE 5.5 - 7*/
+    filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99222222, endColorstr=#99222222);
+    /* For IE 8*/
+    -ms-filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#99222222, endColorstr=#99222222);
+    z-index:10;
+  -moz-box-shadow:0px 0px 10px #777777;
+  -webkit-box-shadow:0px 0px 10px #777777;
+  box-shadow:0px 0px 10px #777777;
 }
