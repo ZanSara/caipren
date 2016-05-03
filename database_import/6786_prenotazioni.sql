@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: May 02, 2016 at 10:15 PM
+-- Generation Time: May 03, 2016 at 02:27 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 5.6.19
 
@@ -37,8 +37,8 @@ CREATE TABLE `Colori` (
 --
 
 INSERT INTO `Colori` (`ID`, `colore`, `last`) VALUES
-(0, '#0061D1', 25),
-(1, '#00A823', 26),
+(0, '#0061D1', 37),
+(1, '#00A823', 38),
 (2, '#DA38FF', 27),
 (3, '#FFD02E', 28),
 (4, '#B0B0B0', 29),
@@ -59,7 +59,7 @@ INSERT INTO `Colori` (`ID`, `colore`, `last`) VALUES
 CREATE TABLE `Pernottamenti` (
   `id` int(10) UNSIGNED NOT NULL,
   `nome` varchar(100) COLLATE utf8_bin NOT NULL,
-  `tel` varchar(15) COLLATE utf8_bin NOT NULL,
+  `tel` varchar(50) COLLATE utf8_bin NOT NULL,
   `provincia` varchar(20) COLLATE utf8_bin NOT NULL,
   `stagione` varchar(4) COLLATE utf8_bin NOT NULL,
   `giorno_inizio` int(3) NOT NULL,
@@ -77,11 +77,13 @@ CREATE TABLE `Pernottamenti` (
 
 INSERT INTO `Pernottamenti` (`id`, `nome`, `tel`, `provincia`, `stagione`, `giorno_inizio`, `durata`, `posti`, `note`, `gestione`, `responsabile`, `colore`) VALUES
 (12, 'gestoreA', '00000000', 'mb', '2016', 151, 4, 0, '', 1, 'io', '2'),
-(16, 'gestoreRottoA', '3333333', 'MBPNM', '2016', 154, 3, 0, '', 1, 'io', '6'),
+(16, 'gestoreRottoA', '3333333', 'MBPNM', '2016', 155, 2, 0, '', 1, 'io', '6'),
 (18, 'cliente1', '234123412', 'mi', '2016', 156, 2, 6, '', 0, 'io', '8'),
 (19, 'cliente2', '464345234', 'va', '2016', 152, 3, 2, '', 0, 'io ancora', '9'),
-(20, 'cliente3', '64567453', 'BG', '2016', 155, 3, 1, '', 0, 'tu', '10'),
-(21, 'cliente4', '754564354', 'BS', '2016', 154, 2, 10, '', 0, 'lui', '11');
+(20, 'cliente3', '64567453', 'BG', '2016', 157, 3, 1, 'E'' finalmente riuscito a funzionare, evvai!', 1, 'tu', '10'),
+(21, 'cliente4', '754564354', 'BS', '2016', 154, 2, 10, '', 0, 'lui', '11'),
+(22, 'cliente11', '54736463', 'LC', '2016', 152, 1, 1, '', 0, 'io', '0'),
+(23, 'cliente11', '54736463', 'LC', '2016', 152, 1, 1, '', 1, 'io', '1');
 
 --
 -- Indexes for dumped tables
@@ -107,7 +109,7 @@ ALTER TABLE `Pernottamenti`
 -- AUTO_INCREMENT for table `Pernottamenti`
 --
 ALTER TABLE `Pernottamenti`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

@@ -21,12 +21,19 @@
         var year    = now.getFullYear();
 
         $.validator.addMethod("customData", function(value) {
-        // test this terrible regex here http://www.regular-expressions.info/javascriptexample.html
-        // Matches only days between 1 June and 30 Sept
-
-        var re = new RegExp("^(((0[1-9]|1[0-9]|2[0-9]|30)-(0[6-9]))|((31)-(0[7-8])))-"+year+"$")
+            // test this terrible regex here http://www.regular-expressions.info/javascriptexample.html
+            // Matches only days between 1 June and 30 Sept
+            var re = new RegExp("^(((0[1-9]|1[0-9]|2[0-9]|30)-(0[6-9]))|((31)-(0[7-8])))-"+year+"$");
             return re.test(value);
         }, 'Inserire una data di arrivo valida (GG-MM-AAAA) compresa tra 01-06-'+year+' e 30-09-'+year);
+        
+        $.validator.addMethod("customPhone", function(value) {
+            // Matches only string to 4 to 50 char long, allowing digits, spaces, brackets, + and -
+            // Notice \\s: the escapes shoud be double escaped inside []!
+            var re = new RegExp("^[+]?([0-9]|[\\s]|[-]|[(]|[)]){4,50}$");
+            return re.test(value);
+        }, 'Inserire un numero di telefono valido (min 4 max 50 caratteri. Permessi solo numeri, +, -, parentesi e spazi.');
+
 
         $.validator.addMethod("customDurata", function(value) {
             return (value < 122 && value > 0);
@@ -459,8 +466,8 @@
                   <label class="col-sm-3 control-label">№ Telefono</label>
                   <div class="col-sm-9" >
                       <input id="modtel" type="text" class="mod-tel form-control" name="telefono" placeholder="№ Telefono" readonly="readonly"
-                      data-rule-required="true" data-msg-required="Inserire il numero di telefono"
-                      data-rule-digits="true" data-msg-digits="Inserire un numero di telefono valido">
+                      data-rule-required="true" data-msg-required="Inserire un numero di telefono"
+                      data-rule-customPhone="true">
                   </div>
                 </div>
                 <div class="form-group">
