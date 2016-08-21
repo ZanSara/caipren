@@ -103,35 +103,28 @@
         $selected = mysqli_select_db($dbhandle, "6786_prenotazioni")
             or die("Errore di connessione al server. Contatta il webmaster (Codice D1)");
 
-
-        if (isset($_POST['delbooking'])){
-            try{
+        try{
+            if (isset($_POST['delbooking'])){
+                
                 deleteReservation($dbhandle, (int)$_POST['prenid']);
-            }catch (Exception $e){
-                $error = true;
-                $error_message = $e->getMessage();
-            }
-        }else{
-            if (isset($_POST['newbooking'])){
-                try{
+                
+            }else{
+                if (isset($_POST['newbooking'])){
+                    
                     $last_prenid = makeReservation($dbhandle, $year);
                     $open = 1;
-                }catch (Exception $e){
-                    $error = true;
-                    $error_message = $e->getMessage();
-                }
-            }else{
-                try{
+                    
+                }else{
+                    
                     updateReservation($dbhandle, (int)$_POST['prenid'], $year);
                     $last_prenid = (int)$_POST['prenid'];
-                }catch (Exception $e){
-                    $error = true;
-                    $error_message = $e->getMessage();
+                    
                 }
             }
+        }catch (Exception $e){
+            $error = true;
+            $error_message = $e->getMessage();
         }
-        
-        mysqli_close($dbhandle);
     }
 
 
@@ -307,12 +300,15 @@
       <h2 style='display:inline-block;'>Prenotazioni Stagione <? echo $year ?></h2>
       
       <a href="http://www.caisovico.it/rifugio/rifugio.html">
-        <img src="../foto/freccia_blu_back.jpg" style='display:inline;' class='pull-right' -->
+        <img src="../foto/freccia_blu_back.jpg" style='display:inline;' class='pull-right' >
       </a>
     </div>
 
-    <div class="mobile-title shadow1">
+    <div class="mobile-title">
         <h3>Prenotazioni <? echo $year ?></h3>
+        <a href="http://www.caisovico.it/rifugio/rifugio.html">
+          <img class='mobile-back' src='static/images/nav-home-green.png'>
+        </a>
         <img class='mobile-login' src='static/images/nav-settings-green.gif' onclick="javascript:$('#mobile-dropdown').toggle();">
     </div>
     <div id='mobile-dropdown' class="shadow3">
@@ -358,7 +354,7 @@
           <div class="modal-body center">
             
             <p>Questo sito è online da Aprile 2016 si trova attualmente alla sua versione</p>
-            <h3>2.2</h3>
+            <h3>2.3</h3>
             <p><br>Se avete riscontrato dei problemi nell'utilizzo di questo sito 
             siete pregati di contattare il webmaster dei CAI Sovico all'indirizzo:</p>
             <p><b>webmaster@caisovico.it</b></p>
@@ -449,6 +445,7 @@
             <h2 class="loadingTitle modal-title" style='display:none;'>Caricamento...</h2>
             <h2 class="modal-dataTitle modal-title">Prenotazione</h2>
             <a id="enable-btn" class="btn btn-warning modify-btn" href="javascript:enableEditing(0);">Modifica</a>
+            <button id="top-close-btn" class="btn btn-default" data-dismiss="modal">Chiudi</button>
           </div>
 
           <form id='booking-form' class='form-horizontal' method='POST'>
@@ -542,10 +539,10 @@
               <div id="message-alert" class="alert alert-danger" role="alert" style='display:none; padding-left:10%;padding-right:10%;'></div>
 
 
-              <div class="modal-footer center">
+              <div class="modal-footer center" style='display:none;' >
                 <input id="new-btn" class="btn btn-primary" disabled="disabled" type="submit" style='display:none;' value="Salva">
                 <a id="del-btn" class="btn btn-danger" href="javascript:prepareDelete()" style='display:none;'>Elimina</a>
-                <button class="btn btn-default" data-dismiss="modal">Chiudi</button>
+                <button id="bottom-close-btn" class="btn btn-default" data-dismiss="modal" style='display:none;' >Chiudi</button>
               </div>
               <div class="modal-errfooter center" style='display:none;'>
                 <button class="btn btn-danger" data-dismiss="modal">Chiudi</button>
@@ -697,7 +694,10 @@
         }else{
             echo("<td");
             if(sizeOf($gest) > 1){
-                echo(" style='border:3px solid red;'");
+                echo(" style='border:4px solid red;'");
+            }
+            if($gest[0]['id'] == $last_prenid){
+                echo(" style='border:4px solid yellow;'");
             }
             echo(">");
             echo("<a id='".$absday."-G' onclick='javascript:openNewBModal(1, ".$gest[0]['id'].", 1);' ><div>");
@@ -791,7 +791,9 @@
             $('#new-btn').prop('disabled', true);
             $('#new-btn').hide();
             $('#del-btn').hide();
+            $('#bottom-close-btn').hide();
             $('#enable-btn').show();
+            $('#top-close-btn').show();
         });
 
         // Open Error_Modal in case of PHP errors (like "No more beds on these days")

@@ -43,6 +43,9 @@
 
     <div class="mobile-title">
         <h3>Prenotazioni <? echo $year ?></h3>
+        <a href="http://www.caisovico.it/rifugio/rifugio.html">
+          <img class='mobile-back' src='static/images/nav-home-green.png'>
+        </a>
         <a href="../prenota-gestori/#<? echo date('j-n', strtotime('yesterday')); ?>">
           <img class='mobile-login' src='static/images/nav-login-green.gif'>
         </a>

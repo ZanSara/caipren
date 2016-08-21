@@ -64,7 +64,7 @@ html {
         white-space: nowrap;
         overflow: hidden;
         padding-left: 10px;
-        padding-right: 65px;
+        padding-right: 115px;
     }
     .mobile-title h3{
         display: block;
@@ -90,7 +90,18 @@ html {
         top: 20px;
     }
 }
-
+.mobile-back{
+    display:none;
+}
+@media (max-width : 800px){
+    .mobile-back{
+        display:block;
+        height: 45px;
+        position: absolute;
+        right: 65px;
+        top: 15px;
+    }
+}
 
 
 .calendario-outer-box{

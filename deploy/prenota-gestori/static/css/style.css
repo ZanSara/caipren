@@ -62,7 +62,7 @@ html {
         white-space: nowrap;
         overflow: hidden;
         padding-left: 10px;
-        padding-right: 65px;
+        padding-right: 115px;
     }
     .mobile-title h3{
         display: block;
@@ -88,6 +88,19 @@ html {
         top: 15px;
     }
 }
+.mobile-back{
+    display:none;
+}
+@media (max-width : 800px){
+    .mobile-back{
+        display:block;
+        height: 45px;
+        position: absolute;
+        right: 65px;
+        top: 15px;
+    }
+}
+
 #mobile-dropdown{
     display: none; /* this will be handled via jQuery */
     position: fixed;
@@ -221,19 +234,14 @@ html {
 
 
 .modify-btn{
-    position:absolute;
-    top:20px;
-    right:15px;
+    position: relative;
+    top: auto;
+    margin-right: auto; !important
+    margin-left: auto; !important
+    display: block;
+    max-width: 100px;
 }
-@media (max-width : 800px){
-    .modify-btn{
-        position: relative;
-        top: auto;
-        right: auto;
-        display: block;
-        max-width: 100px;
-    }
-}
+
 
 footer {
     position: absolute;

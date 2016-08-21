@@ -1,10 +1,12 @@
 
-function enableEditing(fillme, gestione){
+function enableEditing(fillme){
     $('input').prop('readonly', false);
     $('textarea').prop('readonly', false);
     $('#new-btn').prop('disabled', false);
     $('#new-btn').show();
+    $('#bottom-close-btn').show();
     $('#enable-btn').hide();
+    $('#top-close-btn').hide();
     $('.mod-new').prop('checked', 'checked');
     $('.mod-gest').prop('disabled', '');
 
