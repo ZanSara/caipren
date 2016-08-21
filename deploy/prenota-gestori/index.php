@@ -24,7 +24,11 @@
             // test this terrible regex here http://www.regular-expressions.info/javascriptexample.html
             // Matches only days between 1 June and 30 Sept
             var re = new RegExp("^(((0[1-9]|1[0-9]|2[0-9]|30)-(0[6-9]))|((31)-(0[7-8])))-"+year+"$");
-            return re.test(value);
+            if (!re.test(value)) {
+                value1 = value+"-"+year;
+                return re.test(value1);
+            }
+            return true;
         }, 'Inserire una data di arrivo valida (GG-MM-AAAA) compresa tra 01-06-'+year+' e 30-09-'+year);
         
         $.validator.addMethod("customPhone", function(value) {
@@ -119,6 +123,7 @@
             }else{
                 try{
                     updateReservation($dbhandle, (int)$_POST['prenid'], $year);
+                    $last_prenid = (int)$_POST['prenid'];
                 }catch (Exception $e){
                     $error = true;
                     $error_message = $e->getMessage();
@@ -134,7 +139,7 @@
 
     function makeReservation($dbhandle, $year){
 
-        $validData = validate($dbhandle);
+        $validData = validate($dbhandle, $year);
         checkAssertions($dbhandle, $validData, 0, $year);
 
         // Retrieve colors
@@ -181,7 +186,7 @@
 
     function updateReservation($dbhandle, $prenid, $year){
 
-        $validData = validate($dbhandle);
+        $validData = validate($dbhandle, $year);
         checkAssertions($dbhandle, $validData, $prenid, $year);
         // Update reservation in DB
         $result = mysqli_query($dbhandle, "UPDATE Pernottamenti SET
@@ -218,7 +223,7 @@
 // *************** FALLBACK DATA VALIDATION ****************************
 // Throws errors only if js validation falied its work - should never be seen
 
-    function validate($dbhandle) {
+    function validate($dbhandle, $year) {
 
         if ($_POST['nome']== '')  throw new Exception("Nome del cliente non valido!");
         if ($_POST['telefono']== '')  throw new Exception("Numero di telefono non valido!");
@@ -226,6 +231,9 @@
         
         if ($_POST['arrivo']== '')  throw new Exception("Data di arrivo non valida!");
         $replaced = str_replace("/", "-", $_POST['arrivo']);
+        if (!(substr($replaced, -4)== $year)){
+            $replaced .= "-".$year;
+        }
         $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($replaced)-1));
 
 		$gestione = 0;
@@ -473,8 +481,8 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Provincia di Residenza</label>
                   <div class="col-sm-9" >
-                      <input id="modprov" type="text" class="mod-prov form-control" name="provincia" placeholder="Codice Provincia" readonly="readonly"
-                      data-rule-required="true" data-msg-required="Inserire la provincia di residenza">
+                      <input id="modprov" type="text" class="mod-prov form-control" name="provincia" placeholder="Codice Provincia" readonly="readonly">
+                      <!-- data-rule-required="true" data-msg-required="Inserire la provincia di residenza" -- RIMOSSO NELLA VERSIONE 2.3 -->
                   </div>
                 </div>
                 <hr/>
