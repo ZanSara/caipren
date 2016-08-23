@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
     <table class="table table-bordered">
       <tr class="active">
-		<td>Num. Pren.</td>
+		    <td>Num. Pren.</td>
         <td>Nome Cliente</td>
         <td>№ Telefono</td>
         <td>Provincia</td>
@@ -61,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 <?
                         
     $datalist = mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE NOT (
-                                                    giorno_inizio+durata-1 <  ".$giornoInizio."  OR giorno_inizio > ".$giornoFine.") ORDER BY giorno_inizio");
+                                                    giorno_inizio+durata-1 <  ".$giornoInizio."  OR giorno_inizio > ".$giornoFine.") ORDER BY giorno_inizio ");
 
     // Convert data format
     while ($data = mysqli_fetch_array($datalist)) {
