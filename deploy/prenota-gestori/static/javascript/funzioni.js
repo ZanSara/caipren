@@ -33,7 +33,7 @@ function openNewBModal(fillme, prenid, gestione){
 
     if(fillme) {
 
-        $('.modal-dataTitle').hide();
+        $('#newB-dataTitle').hide();
         $('#enable-btn').hide();
         $('.modal-databox').hide();
         $('.modal-footer').hide();
@@ -57,13 +57,13 @@ function openNewBModal(fillme, prenid, gestione){
                 $('.loading').hide();
                 $('.loadingTitle').hide();
                 if(gestione == 1) {
-                    $('.modal-dataTitle').text('Gestione');
+                    $('#newB-dataTitle').text('Gestione');
                 }else{
-                    $('.modal-dataTitle').text('Prenotazione');
+                    $('#newB-dataTitle').text('Prenotazione');
                 }
 
-                $(".modal-dataTitle").append(' № '+ decoded.prenid);
-                $('.modal-dataTitle').show();
+                $("#newB-dataTitle").append(' № '+ decoded.prenid);
+                $('#newB-dataTitle').show();
                 $('.modal-databox').show();
                 $('.modal-footer').show();
                 $('#modnome').val(decoded.nome);
@@ -94,7 +94,7 @@ function openNewBModal(fillme, prenid, gestione){
 
         $('#loadingNB').hide();
         $('#loadingTitle').hide();
-        $('.modal-dataTitle').text('Nuova Prenotazione');
+        $('#newB-dataTitle').text('Nuova Prenotazione');
         $('.modal-databox').show();
         $('.modal-footer').show();
         $('#modnew').prop('checked', 'checked' );
@@ -111,7 +111,7 @@ function renderError(Exception, gotData){
     $(".modal-dataTitle").show();
     $(".modal-errfooter").show();
     $('#error-alert').show();
-    $('#error-alert').html('<h4>ERRORE INTERNO.</h4><p>Contatta il webmaster (Codice RE).<p>');// + gotData); // + " ## " + Exception);
+    $('#error-alert').html('<h4>ERRORE INTERNO.</h4><p>Contatta il webmaster (Codice BRE).<p>');// + gotData); // + " ## " + Exception);
     $('.modal-dataTitle').text("ERRORE");
 }
 
@@ -121,30 +121,30 @@ function renderFindError(Exception, gotData){
     $(".modal-dataTitle").show();
     $(".modal-errfooter").show();
     $('#finderror-alert').show();
-    $('#finderror-alert').html('<h4>ERRORE INTERNO.</h4><p>Contatta il webmaster (Codice RE).<p>');// + gotData); // + " ## " + Exception);
+    $('#finderror-alert').html('<h4>ERRORE INTERNO.</h4><p>Contatta il webmaster (Codice FRE).<p>');// + gotData); // + " ## " + Exception);
     $('.modal-dataTitle').text("ERRORE");
 }
 
 
 
 function toggleGestione(){
-    if($('.mod-gest').prop('readonly') == false){
+    if($('#modgest').prop('readonly') == false){
         $('#line-posti').toggle();
         
-        var text = $('.modal-dataTitle').text(function(index,text){
-            if($('.mod-gest').prop('checked') == true){
+        var text = $('#newB-dataTitle').text(function(index,text){
+            if($('#modgest').prop('checked') == true){
                 return text.replace("Prenotazione", "Gestione");
             }
             return text.replace("Gestione", "Prenotazione");
         });
-        $('.modal-dataTitle').text(text.text() );
+        $('#newB-dataTitle').text(text.text() );
     }
 }
 
 
 function findBooking(){
 
-    $('.modal-dataTitle').hide();
+    $('#find-dataTitle').hide();
     $('.modal-databox').hide();
     $('.modal-footer').hide();
     $('.loading').show();
@@ -153,7 +153,7 @@ function findBooking(){
     $('.message').text('');
     
     // Non va...?
-    $('td[style*="border:4px solid black"]').css("border","1px solid white");
+    //$('td[style*="border:4px solid white"]').css("border","1px solid white");
         
     $('.loading').show();
     $.get('find.php', {
@@ -213,15 +213,16 @@ function findBooking(){
                     var row = document.getElementById(anchor);
                     row.scrollIntoView(true);
                     // Mette il bordo
-                    $(".P"+value.id).css("border", "4px solid black");
+                    $(".P"+value.id).css("border", "4px solid yellow");
                     // chiude il modal
 	                  $('#Find_Modal').modal('hide');
                 });
                 
             });
             $('#nresults').text(nresults);
-
-            $('.modal-dataTitle').show();
+            
+            $('#find-dataTitle').text("Risultati");
+            $('#find-dataTitle').show();
             $('.modal-resultbox').show();
             $('.modal-footer').show();
             $('#find-btn').hide();

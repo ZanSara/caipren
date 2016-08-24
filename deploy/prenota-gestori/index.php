@@ -446,7 +446,7 @@
           <div class="modal-header center">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h2 class="loadingTitle modal-title" style='display:none;'>Caricamento...</h2>
-            <h2 class="modal-dataTitle modal-title">Cerca</h2>
+            <h2 id="find-dataTitle" class="modal-dataTitle modal-title">Cerca</h2>
           </div>
 
           <div class="modal-body">
@@ -496,7 +496,7 @@
                         <input id="cercadurata" type="text" class="mod-durata form-control" name="durata" placeholder="Durata del Soggiorno">
                     </div>
                   </div>
-                  <div class="row" id="line-posti">
+                  <div class="row">
                     <label class="col-sm-3 control-label">Posti Prenotati</label>
                     <div class="col-sm-9" >
                         <input id="cercaposti" type="text" class="mod-posti form-control" name="posti" placeholder="Posti Prenotati">
@@ -554,7 +554,7 @@
 
           <div class="modal-header center">
             <h2 class="loadingTitle modal-title" style='display:none;'>Caricamento...</h2>
-            <h2 class="modal-dataTitle modal-title">Prenotazione</h2>
+            <h2 id="newB-dataTitle" class="modal-dataTitle modal-title">Prenotazione</h2>
             <a id="enable-btn" class="btn btn-warning modify-btn" href="javascript:enableEditing(0);">Modifica</a>
             <button id="top-close-btn" class="btn btn-default" data-dismiss="modal">Chiudi</button>
           </div>
@@ -916,7 +916,7 @@
             $('#error-alert').hide();
             $('.modal-errfooter').hide();
 
-            $('.modal-dataTitle').text("Prenotazione");
+            $('#newB-dataTitle').text("Prenotazione");
             $('#newB_Modal form')[0].reset();
             $('#modgest').prop('disabled', '' );
             $('#modgest').prop('checked', '' );
@@ -947,7 +947,7 @@
             $('#finderror-alert').hide();
             $('.modal-errfooter').hide();
             
-            $('.modal-dataTitle').text("Cerca");
+            $('#find-dataTitle').text("Cerca");
             $('.modal-databox').show();
             $('.modal-resultbox').hide();
             $('#findresults tr').remove();
