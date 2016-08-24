@@ -555,7 +555,7 @@
           <div class="modal-header center">
             <h2 class="loadingTitle modal-title" style='display:none;'>Caricamento...</h2>
             <h2 id="newB-dataTitle" class="modal-dataTitle modal-title">Prenotazione</h2>
-            <a id="enable-btn" class="btn btn-warning modify-btn" href="javascript:enableEditing(0);">Modifica</a>
+            <a id="enable-btn" class="btn btn-warning " href="javascript:enableEditing(0);">Modifica</a>
             <button id="top-close-btn" class="btn btn-default" data-dismiss="modal">Chiudi</button>
           </div>
 
@@ -946,6 +946,16 @@
             $('#findmessage-alert').hide();
             $('#finderror-alert').hide();
             $('.modal-errfooter').hide();
+            
+            $('#cercaid').val(""),
+            $('#cercanome').val(""),
+            $('#cercatel').val(""),
+            $('#cercaarrivo').val(""),
+            $('#cercaprov').val(""),
+            $('#cercadurata').val(""),
+            $('#cercaposti').val(""),
+            $('#cercaresp').val(""),
+            $('#cercanote').val(""),
             
             $('#find-dataTitle').text("Cerca");
             $('.modal-databox').show();

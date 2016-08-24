@@ -105,6 +105,21 @@ function openNewBModal(fillme, prenid, gestione){
 }
 
 
+function toggleGestione(){
+    if($('#modgest').prop('readonly') == false){
+        $('#line-posti').toggle();
+        
+        var text = $('#newB-dataTitle').text(function(index,text){
+            if($('#modgest').prop('checked') == true){
+                return text.replace("Prenotazione", "Gestione");
+            }
+            return text.replace("Gestione", "Prenotazione");
+        });
+        $('#newB-dataTitle').text(text.text() );
+    }
+}
+
+
 function renderError(Exception, gotData){
     $('.loading').hide();
     $('.loadingTitle').hide();
@@ -125,21 +140,6 @@ function renderFindError(Exception, gotData){
     $('.modal-dataTitle').text("ERRORE");
 }
 
-
-
-function toggleGestione(){
-    if($('#modgest').prop('readonly') == false){
-        $('#line-posti').toggle();
-        
-        var text = $('#newB-dataTitle').text(function(index,text){
-            if($('#modgest').prop('checked') == true){
-                return text.replace("Prenotazione", "Gestione");
-            }
-            return text.replace("Gestione", "Prenotazione");
-        });
-        $('#newB-dataTitle').text(text.text() );
-    }
-}
 
 
 function findBooking(){
