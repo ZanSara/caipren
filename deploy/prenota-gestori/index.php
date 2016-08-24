@@ -55,7 +55,7 @@
                 errorContainer: $("#message-alert"),
                 errorPlacement: function(error) {
                   $("#message-alert").show();
-                    $("#message-alert").append(error);
+                  $("#message-alert").append(error);
                 }
             });
 
@@ -355,7 +355,7 @@
           <div class="modal-body center">
             
             <p>Questo sito è online da Aprile 2016 si trova attualmente alla sua versione</p>
-            <h3>2.3</h3>
+            <h3>2.4</h3>
             <p><br>Se avete riscontrato dei problemi nell'utilizzo di questo sito 
             siete pregati di contattare il webmaster dei CAI Sovico all'indirizzo:</p>
             <p><b>webmaster@caisovico.it</b></p>
@@ -451,7 +451,8 @@
 
           <div class="modal-body">
                       
-          <!-- Find Interface -->      
+          <!-- Find Interface -->  
+          <!--form id='find-form' class='form-horizontal' method='GET'-->    
             <div class="modal-databox" >
               <div class="row" >
                 <label class="col-sm-3 control-label">Numero Pren.</label>
@@ -510,10 +511,11 @@
                   <div class="row">
                     <label class="col-sm-3 control-label">Note</label>
                     <div class="col-sm-9" >
-                        <textarea id="cercanote" type="textarea" rows="3" class="mod-note form-control" name="note" placeholder="Note... PER ORA NON VA"></textarea>
+                        <textarea id="cercanote" type="textarea" rows="3" class="mod-note form-control" name="note" placeholder="Note..."></textarea>
                     </div>
                   </div>
-              </div>
+                </div>
+              
                 
               </div> <!-- modal-databox -->
               
@@ -538,6 +540,7 @@
                 <button class="btn btn-danger" data-dismiss="modal">Chiudi</button>
               </div>
 
+          <!--/form-->
           </div>
           
         </div>
@@ -774,6 +777,30 @@
             default:
                 $monthname = 'ERR';
         endswitch;
+        
+        switch ($weekday):
+            case '1':
+                $weekdayname = 'L';
+                break;
+            case '2':
+            case '3':
+                $weekdayname = 'M';
+                break;
+            case '4':
+                $weekdayname = 'G';
+                break;
+            case '5':
+                $weekdayname = 'V';
+                break;
+            case '6':
+                $weekdayname = 'S';
+                break;
+            case '7':
+                $weekdayname = 'D';
+                break;
+            default:
+                $weekdayname = '?';
+        endswitch;
 
         // Building tr
         echo("<tr id='".$day."-0".$month."'");
@@ -788,7 +815,7 @@
             if( $weekday == 7 ) echo("style='color:red;'");
             if( $month == 8 and $day==15 ) echo("style=color:red;text-decoration:underline;");
         echo(">");
-            echo($day." ".$monthname);//." / ".$absday);
+            echo($day." ".$monthname." ".$weekdayname );//." / ".$absday);
         echo("</td>");
 
 

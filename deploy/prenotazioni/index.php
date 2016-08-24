@@ -142,6 +142,30 @@
             default:
                 $monthname = 'ERR';
         endswitch; 
+        
+        switch ($weekday):
+            case '1':
+                $weekdayname = 'L';
+                break;
+            case '2':
+            case '3':
+                $weekdayname = 'M';
+                break;
+            case '4':
+                $weekdayname = 'G';
+                break;
+            case '5':
+                $weekdayname = 'V';
+                break;
+            case '6':
+                $weekdayname = 'S';
+                break;
+            case '7':
+                $weekdayname = 'D';
+                break;
+            default:
+                $weekdayname = '?';
+        endswitch;
 
         // Building tr
         echo("<tr id='".$day."-".$month."'");
@@ -155,7 +179,7 @@
             if( $weekday == 7 ) echo("style='color:red;'");
             if( $month == 8 and $day==15 ) echo("style=color:red;");
         echo(">");
-            echo($day." ".$monthname);//." / ".$absday);
+            echo($day." ".$monthname." ".$weekdayname);//." / ".$absday);
         echo("</td>");
 
         // Filling the rest of the table

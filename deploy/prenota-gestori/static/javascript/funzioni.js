@@ -20,9 +20,11 @@ function enableEditing(fillme){
 
 
 function prepareDelete(){
-    $('#moddel').prop('checked', 'checked');
-    $('#modnew').prop('checked', '');
-    $('#booking-form').submit();
+    if (confirm('Sei sicuro di voler cancellare questa prenotazione?')) {
+        $('#moddel').prop('checked', 'checked');
+        $('#modnew').prop('checked', '');
+        $('#booking-form').submit();
+    }
 }
 
 function openNewBModal(fillme, prenid, gestione){
@@ -109,7 +111,7 @@ function renderError(Exception, gotData){
     $(".modal-dataTitle").show();
     $(".modal-errfooter").show();
     $('#error-alert').show();
-    $('#error-alert').html('<h4>ERRORE INTERNO.</h4><p>Contatta il webmaster (Codice RE).<p>' + gotData); // + " ## " + Exception);
+    $('#error-alert').html('<h4>ERRORE INTERNO.</h4><p>Contatta il webmaster (Codice RE).<p>');// + gotData); // + " ## " + Exception);
     $('.modal-dataTitle').text("ERRORE");
 }
 
@@ -119,7 +121,7 @@ function renderFindError(Exception, gotData){
     $(".modal-dataTitle").show();
     $(".modal-errfooter").show();
     $('#finderror-alert').show();
-    $('#finderror-alert').html('<h4>ERRORE INTERNO.</h4><p>Contatta il webmaster (Codice RE).<p>' + gotData); // + " ## " + Exception);
+    $('#finderror-alert').html('<h4>ERRORE INTERNO.</h4><p>Contatta il webmaster (Codice RE).<p>');// + gotData); // + " ## " + Exception);
     $('.modal-dataTitle').text("ERRORE");
 }
 

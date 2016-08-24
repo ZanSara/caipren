@@ -2,14 +2,14 @@
 // Server-side PHP for the AJAX "find" calls
 
 // Raccoglie i dati dalla chiamata GET e inizia a queryzzarli
-$formdata['id'] =             "=".$_GET['prenid'];
-$formdata['nome'] =           " LIKE '%".$_GET['nome']."%'";
-$formdata['tel'] =            " LIKE '%".$_GET['tel']."%'";
-$formdata['provincia'] =      " LIKE '%".$_GET['prov']."%'";
-$formdata['durata'] =         "=".$_GET['durata'];
-$formdata['posti'] =          "=".$_GET['posti'];
-$formdata['responsabile'] =   " LIKE '%".$_GET['resp']."%'";
-$formdata['note'] =           " LIKE '%".$_GET['note']."%'";
+$formdata['id'] =             (int)$_GET['prenid'];
+$formdata['nome'] =           "'%".$_GET['nome']."%'";
+$formdata['tel'] =            "'%".$_GET['tel']."%'";
+$formdata['provincia'] =      "'%".$_GET['prov']."%'";
+$formdata['durata'] =         (int)$_GET['durata'];
+$formdata['posti'] =          (int)$_GET['posti'];
+$formdata['responsabile'] =   "'%".$_GET['resp']."%'";
+$formdata['note'] =           "'%".$_GET['note']."%'";
 
 // Converte la data in formato database
 $year = (new DateTime)->format("Y");
@@ -18,7 +18,7 @@ if (!(substr($replaced, -4)== $year)){
     $replaced .= "-".$year;
 }
 $absdate = date('z', strtotime($replaced)-1);
-$formdata['giorno_inizio'] =  "=".$absdate;
+$formdata['giorno_inizio'] =  $absdate;
 
 
 $username = "6786_utentesql";
@@ -38,13 +38,13 @@ $firstloop = true;
 reset($formdata);
 while (list($name, $field) = each($formdata)) {
     
-    if($field != " LIKE '%%'" && $field != "=" && $field != null){
+    if($field != "'%%'" && $field != null){
         
         if($firstloop){
             $query .= " AND ";
             $firstloop = false;
         }
-        $query .= $name.$field." OR ";
+        $query .= $name." LIKE ".$field." OR ";
     }
 }
 // Se esiste almeno un valore, firstloop e' falso e devo togliere un OR alla fine
@@ -52,6 +52,7 @@ if(!$firstloop){
     $query = substr($query, 0, -3);
 }
 
+// echo $query;
 
 // Esegue la query
 $dbdata = mysqli_query($dbhandle, $query);
