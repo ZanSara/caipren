@@ -145,6 +145,7 @@ function renderFindError(Exception, gotData){
 function findBooking(){
 
     $('#find-dataTitle').hide();
+    $('#findwarning').hide();
     $('.modal-databox').hide();
     $('.modal-footer').hide();
     $('.loading').show();
@@ -220,6 +221,13 @@ function findBooking(){
                 
             });
             $('#nresults').text(nresults);
+            
+            
+            if(nresults==0){
+                $('#findresults').hide();
+            } else {
+                $('#findresults').show();
+            }
             
             $('#find-dataTitle').text("Risultati");
             $('#find-dataTitle').show();

@@ -12,14 +12,17 @@ $formdata['responsabile'] =   "'%".$_GET['resp']."%'";
 $formdata['note'] =           "'%".$_GET['note']."%'";
 
 // Converte la data in formato database
-$year = (new DateTime)->format("Y");
-$replaced = str_replace("/", "-", $_GET['arrivo']);
-if (!(substr($replaced, -4)== $year)){
-    $replaced .= "-".$year;
-}
-$absdate = date('z', strtotime($replaced)-1);
-$formdata['giorno_inizio'] =  $absdate;
 
+$year = (new DateTime)->format("Y");
+if( $_GET['arrivo']!="" && $_GET['arrivo']!=null ){
+
+    $replaced = str_replace("/", "-", $_GET['arrivo']);
+    if (!(substr($replaced, -4)== $year)){
+        $replaced .= "-".$year;
+    }
+    $absdate = date('z', strtotime($replaced)-1);
+    $formdata['giorno_inizio'] =  $absdate;
+}
 
 $username = "6786_utentesql";
 $password = "databasecai";
@@ -52,7 +55,7 @@ if(!$firstloop){
     $query = substr($query, 0, -3);
 }
 
-// echo $query;
+//echo $query;
 
 // Esegue la query
 $dbdata = mysqli_query($dbhandle, $query);

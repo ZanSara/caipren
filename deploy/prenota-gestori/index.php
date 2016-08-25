@@ -452,7 +452,10 @@
           <div class="modal-body">
                       
           <!-- Find Interface -->  
-          <!--form id='find-form' class='form-horizontal' method='GET'-->    
+          <!--form id='find-form' class='form-horizontal' method='GET'-->
+            <div id="findwarning" class="alert alert-warning" role="alert" style="padding-left:10%;padding-right:10%;">
+              <p>Attenzione! Se non compili nessun campo, ti verranno mostrate tutte le prenotazioni di questa stagione.</p>
+            </div>
             <div class="modal-databox" >
               <div class="row" >
                 <label class="col-sm-3 control-label">Numero Pren.</label>
@@ -525,7 +528,7 @@
 
 
               <!-- Results Interface -->
-              <div class="modal-resultbox" style='display:none;'>
+              <div class="modal-resultbox center" style='display:none;'>
                   <p>Ho trovato <b><span id="nresults"></span></b> prenotazioni che corrispondono ai tuoi criteri di ricerca.<p>
                   
                   <table id="findresults" class="table table-hover center">
@@ -958,9 +961,11 @@
             $('#cercanote').val(""),
             
             $('#find-dataTitle').text("Cerca");
+            $('#findwarning').show();
             $('.modal-databox').show();
             $('.modal-resultbox').hide();
             $('#findresults tr').remove();
+            $('#findresults').hide();
             $('.modal-footer').show();
             $('#find-btn').show();
         });
