@@ -102,8 +102,6 @@
             or die("Impossibile connettersi al server. Contatta il webmaster (Codice C1))");
         $selected = mysqli_select_db($dbhandle, "6786_prenotazioni")
             or die("Errore di connessione al server. Contatta il webmaster (Codice D1)");
-            
-        print_r($_POST);
 
         try{
             if (isset($_POST['delbooking'])){
