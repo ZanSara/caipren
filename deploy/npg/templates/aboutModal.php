@@ -1,7 +1,7 @@
     <!-- ABOUT ALERT -->
     <div class="modal fade" id="About_Modal" tabindex="-1" role="dialog" aria-labelledby="About_ModalLabel">
       <div class="modal-dialog" role="document">
-        <div class="modal-content">
+        <div class="modal-content text-center">
           <div class="modal-header center">
             <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             <h2 class="modal-title">CAI Prenota</h2>

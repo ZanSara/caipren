@@ -14,7 +14,7 @@
 
           </div>
 
-          <form class='form-horizontal' method='POST'>
+          <form id="nBM-mainform" class='form-horizontal' method='POST'>
             <div class="modal-body">
               
               <!-- main form -->
@@ -53,7 +53,10 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Data di Arrivo</label>
                   <div class="col-sm-9">
-                      <label id="nBM-arrivoLbl" class="control-label"><i>inserisci una data</i></label>
+                      <label id="nBM-arrivoLbl" class="control-label">Javascript not working...</label>
+                      <script> 
+                          $("#nBM-arrivoLbl").text( getToday() ); 
+                      </script> 
                       <input id="nBM-arrivo" class="form-control hidden" type="text" name="arrivo" readonly="readonly"
                       data-rule-required="true" data-msg-required="Inserire una data di arrivo"
                       data-rule-customData="true">
@@ -64,10 +67,16 @@
                             $day = 0;
                             for($row = 0; $row < 4 ;$row++){
                                 
-                                echo '<div class="btn-group btn-group-justified" role="group" aria-label="...">';
+                                echo '<div class="btn-group btn-group-justified" role="group" aria-label="..." style="margin-bottom:-1px;">';
                                 for($num = 0; $num < 8 ;$num++){
                                     $day++;
-                                    echo '<a href="#" id="btnDay-'.$day.'" class="btn btn-default" role="button" onclick="javascript:setDay('.$day.')">'.$day.'</a>';
+                                    
+                                    $day2digits = $day;
+                                    if ($day < 10) { 
+                                        $day2digits = "0".$day; 
+                                    }
+                                    
+                                    echo '<a href="#" id="btnDay-'.$day2digits.'" class="btn btn-default" role="button" onclick="javascript:setDay('.$day2digits.')">'.$day2digits.'</a>';
                                 }
                                 echo "</div>";
                             }
@@ -75,10 +84,10 @@
                       </div>
                       <div class="col-sm-3" style="padding-left:2%; padding-top:2%;">
                         <div class="btn-group btn-group-vertical" role="group" aria-label="...">
-                          <a href="#" id="btnMonth-Giu" class="btn btn-default" role="button" onclick="javascript:setMonth('6')">Giugno</a>
-                          <a href="#" id="btnMonth-Lug" class="btn btn-default" role="button" onclick="javascript:setMonth('7')">Luglio</a>
-                          <a href="#" id="btnMonth-Ago" class="btn btn-default" role="button" onclick="javascript:setMonth('8')">Agosto</a>
-                          <a href="#" id="btnMonth-Set" class="btn btn-default" role="button" onclick="javascript:setMonth('9')">Settembre</a>
+                          <a href="#" id="btnMonth-Giu" class="btn btn-default" role="button" onclick="javascript:setMonth(6)">Giugno</a>
+                          <a href="#" id="btnMonth-Lug" class="btn btn-default" role="button" onclick="javascript:setMonth(7)">Luglio</a>
+                          <a href="#" id="btnMonth-Ago" class="btn btn-default" role="button" onclick="javascript:setMonth(8)">Agosto</a>
+                          <a href="#" id="btnMonth-Set" class="btn btn-default" role="button" onclick="javascript:setMonth(9)">Settembre</a>
                         </div>
                       </div>
                   </div>
@@ -99,7 +108,7 @@
                 <div class="form-group" id="nBM-linePosti">
                   <label class="col-sm-3 control-label">Posti Prenotati</label>
                   <div class="col-sm-9" >
-                      <label id="nBM-postiLbl" class="control-label"><i>Inserisci il numero di posti</i></label>
+                      <label id="nBM-postiLbl" class="control-label">0</label>
                       <input id="nBM-posti" type="text" class="form-control hidden" name="posti" placeholder="Posti Prenotati" readonly="readonly"
                       data-rule="true" data-msg-required="Inserire il numero di posti letto prenotati"
                       data-rule-digits="true" data-msg-digits="Inserire un numero di posti letto valido"
@@ -135,12 +144,12 @@
                       <textarea id="nBM-note" type="textarea" rows="3" class="form-control" name="note" placeholder="Note..." readonly="readonly"></textarea>
                   </div>
                 </div>
-                <div class="hidden checkbox">
+                <!--div class="hidden checkbox">
                   <input id="nBM-newChk" name='newbooking' type="checkbox" checked="checked" readonly="readonly">
                 </div>
                 <div class="hidden checkbox">
                   <input id="nBM-delChk" name='delbooking' type="checkbox" readonly="readonly">
-                </div>
+                </div-->
                 <div class="hidden">
                   <input id="nBM-prenid" name='prenid' type="text" readonly="readonly">
                 </div>
@@ -170,3 +179,51 @@
         </div>
       </div>
     </div>
+    
+    
+    <script type="text/javascript">
+
+        // Reset NewB_Modal when closed
+        $("#newBookingModal").on("hidden.bs.modal", function (event) {
+            
+            // Reset titles
+            $("#nBM-dataTitle").show();
+            $("#nBM-dataTitle").text("Prenotazione");
+            $("#nBM-loadingTitle").hide();
+            $("#nBM-errorTitle").hide();
+            
+            // Reset Top Buttons
+            $("#nBM-ChiudiTopBtn").hide();
+            $("#nBM-ModificaBtn").hide();
+            
+            // Reset body
+            $("#nBM-errorBox").hide();
+            $("#nBM-spinningWheel").hide();
+            $("#nBM-mainForm").show();
+            $("#newBookingModal form")[0].reset();
+            $("#newBookingModal input").prop("readonly", true);
+            $("#newBookingModal textarea").prop("readonly", true);
+            $("#nBM-gestioneChk").prop("disabled", "" );
+            $("#nBM-gestioneChk").prop("checked", "" );
+            $("#nBM-linePosti").show();
+            
+            // Reset labels
+            $("#nBM-arrivoLbl").text( getToday() );
+            $("#nBM-postiLbl").text("0");
+            
+            // Reset hidden checks
+            $("#nBM-newChk").prop("disabled", "disabled");
+            $("#nBM-newChk").prop("checked", true );
+            $("#nBM-delChk").prop("disabled", "disabled");
+            $("#nBM-delChk").prop("checked", "" );
+            
+            // Show buttons
+            $("#nBM-arrivoBtn").hide();
+            $("#nBM-postiBtn").hide();
+
+            // Reset footer
+            $("nBM-SalvaBtn").hide();
+            $("nBM-EliminaBtn").hide();
+        });
+        
+    </script>

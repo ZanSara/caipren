@@ -1,4 +1,7 @@
 
+
+// ******************* MODAL LAYOUT MANAGEMENT **********************************
+
 // Called by the footer button NuovaPrenotazione and
 // by any non empty cell in the calendar
 function openNewBookingModal(fillme, prenid, gestione){
@@ -147,7 +150,7 @@ function nBM_showClean(){
 }
 
 
-// Called when the Gestione chackbox of NewBookingModal is clicked
+// Called when the Gestione checkbox of NewBookingModal is clicked
 // Hides linePosti and changes the modal title
 function toggleGestione(){
     if($("#nBM-gestioneChk").prop("readonly") == false){
@@ -161,21 +164,6 @@ function toggleGestione(){
         });
         $("#nBM-dataTitle").text(text.text() );
     }
-}
-
-
-// Utilities that manages the buttons on the modal
-function setDay(day){
-    $("#nBM-arrivoLbl").text(day);
-    $("#nBM-arrivo").val(day);
-}
-function setMonth(month){
-    $("#nBM-arrivoLbl").text(month);
-    $("#nBM-arrivo").val(month);
-}
-function setPosti(posti){
-    $("#nBM-postiLbl").text(posti);
-    $("#nBM-posti").val(posti);
 }
 
 
@@ -221,8 +209,77 @@ function renderFindError(Exception, gotData){
 
 function prepareDelete(){
     if (confirm("Sei sicuro di voler cancellare questa prenotazione?")) {
-        $("#moddel").prop("checked", "checked");
-        $("#modnew").prop("checked", "");
-        $("#booking-form").submit();
+        //$("#moddel").prop("checked", "checked");
+        //$("#modnew").prop("checked", "");
+        prenid = "-" + $("#nBM-prenid").val();
+        $("#nBM-prenid").val(prenid);
+        $("#nBM-mainform").submit();
     }
 }
+
+
+
+// ******************* DATE MANAGEMENT STUFF **********************************
+
+// Return's today's date in a readable format
+function getToday(){
+    var today = new Date();
+    var day = today.getDate();
+    var mm = today.getMonth()+1; // January is 0!
+    var year = today.getFullYear();
+
+    if(day<10) {
+        day='0'+day
+    } 
+    var month = convertMonth(mm);
+    return day+" "+month+" "+year;
+}
+
+// Convert the month number into month name
+function convertMonth(mm){
+    switch(mm){
+        case 6:
+            return 'Giugno';
+        case 7:
+            return 'Luglio';
+        case 8:
+            return 'Agosto';
+        case 9:
+            return 'Settembre';
+        default:
+            return 'FuoriStagione';
+    }
+    return "Errore";
+}
+
+
+// ******************* BUTTONS MANAGEMENT STUFF ******************************
+
+// Utilities that manages the Date buttons on the modal
+function setDay(day){
+    return setDateLabel(day, 0);
+}
+function setMonth(month){
+    return setDateLabel(convertMonth(month), 1);
+}
+
+// Merges the common code of updating the Date label
+function setDateLabel(value, position){
+
+    var oldDate = $("#nBM-arrivoLbl").text();
+    var splittedDate = oldDate.split(" ");
+    console.log(splittedDate);
+    
+    splittedDate[position] = value;
+    
+    var newDate = splittedDate.join(" ");
+    $("#nBM-arrivoLbl").text(newDate);
+    $("#nBM-arrivo").val(newDate);
+}
+
+// Set Posti label
+function setPosti(posti){
+    $("#nBM-postiLbl").text(posti);
+    $("#nBM-posti").val(posti);
+}
+

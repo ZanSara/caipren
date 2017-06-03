@@ -19,5 +19,19 @@ abstract class Model {
 	public function __destruct() {
 		$this->mysqli->close();
 	}
+	
+	
+	// *************** Utilities **********************************************
+	
+	// Correct the strtotime output for leap years
+	// Input: date MUST STRICTLY BE in DD-MM-YYYY format
+	// Output: unless specified otherwhise, date in "z" format: "day number", db-friendly
+	public function correct_date($date, $year, $format="z"){
+        if($year % 4 == 0){
+            return date($format, strtotime($date)-1); //   ONLY dd-mm-yyyy OR mm/dd/yyyy are recognized correctly
+        }else{
+            return date($format, strtotime($date));
+        }
+	}
 }
 ?>

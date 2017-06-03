@@ -19,15 +19,15 @@ class FrontController {
 	private $params = array();
 
 	public function __construct() {
-		$this->parseUrl();
+	    $this->parseUrl();
 	}
 
 	private function parseUrl() {
 		$path = trim(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), "/");
         $basePath = str_replace("/", "\/", trim(ROOT, "/")) . "\/";
 		$path = preg_replace("/^" . $basePath . "(.*)/", "$1", $path);
-		
-		/*echo " path: ".$path;
+		/*
+		echo " path: ".$path;
 		echo "<br>";
 		echo " basePath: ".$basePath;
 		echo "<br>";
@@ -37,6 +37,8 @@ class FrontController {
 			$components = explode("/", $path, 3);
 			
 			if(isset($components[0])) {
+			    //print("<br>Comp0: ".$components[0]);
+			
 				if(class_exists(ucfirst(strtolower($components[0])) . "Controller")) {
 					$this->controller = ucfirst(strtolower($components[0])) . "Controller";
 				} else {
@@ -47,6 +49,8 @@ class FrontController {
 				}
 			}			
 			if(isset($components[1])) {
+			    //print("<br>Comp1: ".$components[1]);
+			
 				if(class_exists(ucfirst(strtolower($components[0])) . "Controller")) {
 					$controllerName = ucfirst(strtolower($components[0])) . "Controller";
 					if(method_exists(new $controllerName(array()), $components[1] . "Action")) {
@@ -66,6 +70,8 @@ class FrontController {
 				
 			}
 			if(isset($components[2])) {
+			    //print("<br>Comp2: ".$components[2]);
+			
 				$paramArray = explode("/", $components[2]);
 
 				foreach ($paramArray as $param) {

@@ -61,7 +61,7 @@
                         
                         $absday = $fulldate[0];
                         $day = $fulldate[1];
-                        $monthname = $fulldate[2];
+                        $monthname = $fulldate[2][0].$fulldate[2][1].$fulldate[2][2]; // fix me
                         $monthnum = $fulldate[3];
                         $weekday = $fulldate[4];
                   
@@ -143,47 +143,8 @@
         </table>
         
         
+        <!-- Move me somewhere else! -->
         <script type="text/javascript">
-
-            // Reset NewB_Modal when closed
-            $("#newBookingModal").on("hidden.bs.modal", function (event) {
-                
-                // Reset titles
-                $("#nBM-dataTitle").show();
-                $("#nBM-dataTitle").text("Prenotazione");
-                $("#nBM-loadingTitle").hide();
-                $("#nBM-errorTitle").hide();
-                
-                // Reset Top Buttons
-                $("#nBM-ChiudiTopBtn").hide();
-                $("#nBM-ModificaBtn").hide();
-                
-                //Reset body
-                $("#nBM-errorBox").hide();
-                $("#nBM-spinningWheel").hide();
-                $("#nBM-mainForm").show();
-                $("#newBookingModal form")[0].reset();
-                $("#newBookingModal input").prop("readonly", true);
-                $("#newBookingModal textarea").prop("readonly", true);
-                $("#nBM-gestioneChk").prop("disabled", "" );
-                $("#nBM-gestioneChk").prop("checked", "" );
-                $("#nBM-linePosti").show();
-                
-                // Reset hidden checks
-                $("#nBM-newChk").prop("disabled", "disabled");
-                $("#nBM-newChk").prop("checked", true );
-                $("#nBM-delChk").prop("disabled", "disabled");
-                $("#nBM-delChk").prop("checked", "" );
-                
-                // Show buttons
-                $("#nBM-arrivoBtn").hide();
-                $("#nBM-postiBtn").hide();
-    
-                // Reset footer
-                $("nBM-SalvaBtn").hide();
-                $("nBM-EliminaBtn").hide();
-            });
-
 
             // ************* STILL TO DO **************************************************************
             

@@ -43,17 +43,19 @@ class CalendarController extends Controller {
 	    print_r($_POST);
 	        
         try{
-            if (isset($_POST['delbooking'])){
-                echo "<br>delbookig!<br>";
-                $this->model->deleteReservation((int)$_POST['prenid']);
+            
+            if ( $_POST['prenid'] == null ||  $_POST['prenid'] == "" ||  $_POST['prenid'] == 0 ){
+                echo "<br>makeReservation!<br>";
+                $this->model->makeReservation();
+                //$open = 1;
                 
             }else{
-                if ( $_POST['prenid'] == null ||  $_POST['prenid'] == "" ||  $_POST['prenid'] == 0 ){
-                    echo "<br>makeReservation!<br>";
-                    $this->model->makeReservation();
-                    //$open = 1;
+                
+                if($_POST['prenid'] < 0){
+                    echo "<br>delbookig!<br>";
+                    $this->model->deleteReservation((int)$_POST['prenid']);
                     
-                }else{
+                } else {
                     echo "<br>updateReservation!<br>";
                     $this->model->updateReservation((int)$_POST['prenid']);
                     //$last_prenid = (int)$_POST['prenid'];

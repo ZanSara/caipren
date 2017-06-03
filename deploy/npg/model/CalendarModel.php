@@ -11,16 +11,11 @@
 
 	        $this->year = date('Y');
 	        
-	        // Correct the strtotime output for leap years
-            if($this->year % 4 == 0){
-                $this->firstday = date('z', strtotime('01-06-'.$this->year)-1); //   ONLY dd-mm-yyyy OR mm/dd/yyyy are recognized correctly
-                $this->lastday = date('z', strtotime('1-10-'.$this->year)-1);
-            }else{
-                $this->firstday = date('z', strtotime('01-06-'.$this->year));
-                $this->lastday = date('z', strtotime('1-10-'.$this->year));
-              }
-            
+	        $this->firstday = self::correct_date('01-06-'.$this->year, $this->year);
+            $this->lastday = self::correct_date('01-10-'.$this->year, $this->year);
+           
             $this->today = date('z') - $this->firstday;
+            
             $last_prenid = 0;
 	    }
 	    
@@ -71,52 +66,79 @@
                 $weekday = $absdate->format('N');
                 $month = $absdate->format('n');
 
-                switch ($month):
-                    case '6':
-                        $monthname = 'Giu';
-                        break;
-                    case '7':
-                        $monthname = 'Lug';
-                        break;
-                    case '8':
-                        $monthname = 'Ago';
-                        break;
-                    case '9':
-                        $monthname = 'Set';
-                        break;
-                    default:
-                        $monthname = 'ERR';
-                endswitch;
-                
-                switch ($weekday):
-                    case '1':
-                        $weekdayname = 'L';
-                        break;
-                    case '2':
-                    case '3':
-                        $weekdayname = 'M';
-                        break;
-                    case '4':
-                        $weekdayname = 'G';
-                        break;
-                    case '5':
-                        $weekdayname = 'V';
-                        break;
-                    case '6':
-                        $weekdayname = 'S';
-                        break;
-                    case '7':
-                        $weekdayname = 'D';
-                        break;
-                    default:
-                        $weekdayname = '?';
-                endswitch;
+                $monthname = self::convert_month($month);
+                $weekdayname = self::convert_weekday($weekday);
                 
                 $dateColumn[] = array($absday, $day, $monthname, $month, $weekdayname);
             }
             return $dateColumn;
         }
-             
+        
+        
+        // Convert month number into month name
+	    public function convert_month($monthnum){
+
+            switch ($monthnum):
+                case '6':
+                    return 'Giugno';
+                case '7':
+                    return 'Luglio';
+                case '8':
+                    return 'Agosto';
+                case '9':
+                    return 'Settembre';
+                default:
+                    return 'FuoriStagione';
+            endswitch;
+            
+            return "Errore";
+        } 
+        
+         // Convert month name into month number
+	    public function decode_month($monthname){
+
+            switch ($monthname):
+                case 'Giugno':
+                    return '06';
+                case 'Luglio':
+                    return '07';
+                case 'Agosto':
+                    return '08';
+                case 'Settembre':
+                    return '09';
+                default:
+                    return 'ERRORE';
+            endswitch;
+            
+            return "Errore";
+        } 
+        
+        
+        // Convert weekday number into weekday name
+	    public function convert_weekday($weekdaynum){
+            
+            switch ($weekdaynum):
+                case '1':
+                    return 'L';
+                case '2':
+                case '3':
+                    return 'M';
+                case '4':
+                    return 'G';
+                case '5':
+                    return 'V';
+                case '6':
+                    return 'S';
+                case '7':
+                    return 'D';
+                default:
+                    return '?';
+            endswitch;
+            
+            return "?";
+        }
+        
+        
         
         // Output the gestori list for the second column of the table.
         // Builds an entry for each day, so Template does not need to process anything.
@@ -215,13 +237,7 @@
             return $bookingsList;
         }
         
-        
-        
-        
-    
-    
-    
-    
+     
     
     
         // *************** RESERVATIONS MANAGEMENT *******************************
@@ -325,8 +341,6 @@
 	            }
             }
             
-            
-            echo "Run everything!";
         }
 
 
@@ -334,7 +348,7 @@
         // Update a reservation into DB
         public function updateReservation($prenid){
 
-            $validData = self::validate();
+           $validData = self::validate();
             
             // Update reservation in DB
            $query = "  UPDATE 
@@ -356,13 +370,15 @@
             if(!$result) {
                 throw new Exception("Errore interno:<br>L'aggiornamento NON è stato effettuato.<br>Avverti il webmaster."); // . $this->mysqli->error);
             }
-            
+            // attenzione: se prenid non esiste nel DB, fallisce silenziosamente.
+
         }
 
 
         // Delete reservation into DB
         public function deleteReservation($prenid){
-        
+            $prenid = -1*$prenid;
+            
             $query = "  DELETE FROM 
                             Pernottamenti 
                         WHERE 
@@ -372,6 +388,7 @@
             if(!$result) {
 	            throw new Exception("Errore interno al server.<br>La prenotazione NON è stata cancellata.<br>Avverti il webmaster."); // . $this->mysqli->error);
             }
+            // attenzione: se prenid non esiste nel DB, fallisce silenziosamente.
         }
 
 
@@ -383,13 +400,21 @@
 
         public function validate() {
         
-            // FIX THI FUNCTION!!
-             if ($_POST['arrivo']== '')  throw new Exception("Data di arrivo non valida");
+            // Convert the date in a db-friendly number
+            // VALIDATE PLS!
+            $replaced_date = str_replace("-", " ", $_POST['arrivo']);
+            
+            $absdate = self::correct_date($_POST['arrivo'], $this->year);
+            
+        
+            // FIX THIS FUNCTION!!
+            if ($_POST['arrivo']== '')  throw new Exception("Data di arrivo non valida");
             $replaced = str_replace("/", "-", $_POST['arrivo']);
             if (!(substr($replaced, -4)== $this->year)){
                 $replaced .= "-".$this->year;
             }
-            $absdate = date('z', strtotime($replaced)-1);
+            
+            $absdate = self::correct_date($replaced, $this->year);
             
             $gestione = 0;
             if (isset($_POST['gestione'])) {
