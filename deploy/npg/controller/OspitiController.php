@@ -14,12 +14,16 @@ class OspitiController extends Controller {
 		$this->model = new OspitiModel();
 		
         // Pass here what's needed into the View/Template rendering
-		$params = array("Year" => ($this->model->getYear())	);
+		$params = array("Year" => ($this->model->getYear()),
+		                "Titolo"=> "Lista Ospiti al Rifugio Del Grande - Stagione ".$this->model->getYear()
+		                );
 		     
 		// Process an eventual POST call
 		if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+		
 		    $params = array_merge($params, array("METHOD" => "POST"));
 		    self::processCall();
+		    
 		} else {
 		    $params = array_merge($params, array("METHOD" => "GET"));
 		}

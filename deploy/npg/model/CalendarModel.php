@@ -3,16 +3,14 @@
 
 	class CalendarModel extends Model {
 	
-	    private $year, $firstday, $lastday, $today, $last_prenid, $error_flag, $error_msg;
+	    private $firstday, $lastday, $today, $last_prenid, $error_flag, $error_msg;
 	    
 	    
 	    // Sets some date variables reused later in the class.
 	    public function customConstructor(){
 
-	        $this->year = date('Y');
-	        
-	        $this->firstday = self::correct_date('01-06-'.$this->year, $this->year);
-            $this->lastday = self::correct_date('01-10-'.$this->year, $this->year);
+	        $this->firstday = self::correct_date('01-06-'.$this->getYear(), $this->getYear());
+            $this->lastday = self::correct_date('01-10-'.$this->getYear(), $this->getYear());
            
             $this->today = date('z') - $this->firstday;
             
@@ -21,9 +19,6 @@
 	    
 	    
 	    // Some utility getters
-	    public function getYear(){
-	        return $this->year;
-	    }
 	    public function getFirstDay(){
 	        return $this->firstday;
 	    }
@@ -75,45 +70,6 @@
         }
         
         
-        // Convert month number into month name
-	    public function convert_month($monthnum){
-
-            switch ($monthnum):
-                case '6':
-                    return 'Giugno';
-                case '7':
-                    return 'Luglio';
-                case '8':
-                    return 'Agosto';
-                case '9':
-                    return 'Settembre';
-                default:
-                    return 'FuoriStagione';
-            endswitch;
-            
-            return "Errore";
-        } 
-        
-         // Convert month name into month number
-	    public function decode_month($monthname){
-
-            switch ($monthname):
-                case 'Giugno':
-                    return '06';
-                case 'Luglio':
-                    return '07';
-                case 'Agosto':
-                    return '08';
-                case 'Settembre':
-                    return '09';
-                default:
-                    return 'ERRORE';
-            endswitch;
-            
-            return "Errore";
-        } 
-        
-        
         // Convert weekday number into weekday name
 	    public function convert_weekday($weekdaynum){
             
@@ -151,7 +107,7 @@
                 $query = "  SELECT  * 
                             FROM    Pernottamenti 
                             WHERE 
-                                    stagione = {$this->year}
+                                    stagione = {$this->getYear()}
                                 AND
                                     gestione = 1 
                                 AND 
@@ -204,7 +160,7 @@
                                 ON  
                                     p.colore = c.ID
                             WHERE 
-                                    stagione = {$this->year}
+                                    stagione = {$this->getYear()}
                                 AND
 
                                     gestione = 0
@@ -212,7 +168,7 @@
                                     giorno_inizio= {$absday}";
                 $result = $this->mysqli->query($query);
 		        if(!$result) {
-			        throw new Exception("Errore inatteso durante il caricamento dei dati della gestione del giorno ".$absday-$this->firstday."."); // . $this->mysqli->error);
+			        throw new Exception("Errore inatteso durante il caricamento dei dati delle prenotazioni del giorno ".$absday-$this->firstday."."); // . $this->mysqli->error);
 		        }
 		        
                 while ($row = $result->fetch_array()) {
@@ -287,7 +243,7 @@
                         $validData['telefono']."', '".
                         $validData['provincia']."', '".
                         $validData['arrivo']."', '".
-                        $this->year."', '".
+                        $this->getYear()."', '".
                         $validData['durata']."', '".
                         $validData['posti']."', '".
                         $validData['note']."', '".
@@ -404,17 +360,17 @@
             // VALIDATE PLS!
             $replaced_date = str_replace("-", " ", $_POST['arrivo']);
             
-            $absdate = self::correct_date($_POST['arrivo'], $this->year);
+            $absdate = self::correct_date($_POST['arrivo'], $this->getYear());
             
         
             // FIX THIS FUNCTION!!
             if ($_POST['arrivo']== '')  throw new Exception("Data di arrivo non valida");
             $replaced = str_replace("/", "-", $_POST['arrivo']);
-            if (!(substr($replaced, -4)== $this->year)){
-                $replaced .= "-".$this->year;
+            if (!(substr($replaced, -4)== $this->getYear())){
+                $replaced .= "-".$this->getYear();
             }
             
-            $absdate = self::correct_date($replaced, $this->year);
+            $absdate = self::correct_date($replaced, $this->getYear());
             
             $gestione = 0;
             if (isset($_POST['gestione'])) {

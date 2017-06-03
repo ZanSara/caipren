@@ -3,24 +3,13 @@
 
 	class OspitiModel extends Model {
 	
-	    private $year, $giornoInizio, $giornoFine;
-	    
-	    // Sets some date variables reused later in the class.
-	    public function customConstructor(){
-            $this->year = date('Y');
-	    }
-	    
-	    
-	    // Some utility getters
-	    public function getYear(){
-	        return $this->year;
-	    }
+	    private $giornoInizio, $giornoFine;
 	    
 	    public function setInizio($dataInizio){
-	        $this->giornoInizio = self::correct_date($dataInizio, $this->year);
+	        $this->giornoInizio = self::correct_date($dataInizio, $this->getYear());
 	    }
 	    public function setFine($dataFine){
-	        $this->giornoFine = self::correct_date($dataFine, $this->year);
+	        $this->giornoFine = self::correct_date($dataFine, $this->getYear());
 	    }
 	    
 	    
@@ -29,7 +18,7 @@
             $query = "  SELECT  COUNT(*) 
                         FROM    Pernottamenti
                         WHERE 
-                                stagione = {$this->year}
+                                stagione = {$this->getYear()}
                             AND 
                             NOT (
                                 giorno_inizio+durata-1 <  {$this->giornoInizio}
@@ -47,7 +36,7 @@
 	        $query = "  SELECT  COUNT(*) 
                         FROM    Pernottamenti
                         WHERE
-                                stagione = {$this->year}
+                                stagione = {$this->getYear()}
                             AND 
                                 gestione = 1 
                             AND 
@@ -67,7 +56,7 @@
 	        $query = "  SELECT  * 
                         FROM    Pernottamenti
                         WHERE
-                                stagione = {$this->year}
+                                stagione = {$this->getYear()}
                             AND 
                             NOT (
                                 giorno_inizio+durata-1 <  {$this->giornoInizio}

@@ -1,5 +1,5 @@
 <?php
-	class OspitiView extends View {
+	class PrenotazioniView extends View {
 		public function show() {
 		
 			$this->title = "Tabella Ospiti - CAI Sovico";
@@ -8,7 +8,7 @@
             include("templates/headSmallTemplate.php");
             
             if(parent::__get("METHOD") == "POST" ){
-                include("templates/tabellaOspitiPOSTTemplate.php");
+                include("templates/tabellaPrenotazioniPOSTTemplate.php");
             } else {
                 include("templates/tabellaRiassuntivaGETTemplate.php");
             }

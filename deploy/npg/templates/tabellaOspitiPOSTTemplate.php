@@ -1,5 +1,5 @@
     
-    <h2>Lista Ospiti al Rifugio Del Grande - Stagione <?echo $this->Year?> </h2>
+    <h2> <?echo $this->Titolo?> </h2>
     <hr>
     
     <p>In questa stagione ci sono state in totale <b><? echo $this->NumPrenotazioni ?> </h2> prenotazioni</b>, di cui <? echo $this->NumGestioni ?> </h2> gestioni.</p>

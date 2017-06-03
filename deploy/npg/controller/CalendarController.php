@@ -39,24 +39,24 @@ class CalendarController extends Controller {
 	// Operates on bookings, depending on the type of incoming data
 	public function processBooking() {
 	    	    
-	    echo "<br>POST!<br>";
-	    print_r($_POST);
+	    //echo "<br>POST!<br>";
+	    //print_r($_POST);
 	        
         try{
             
             if ( $_POST['prenid'] == null ||  $_POST['prenid'] == "" ||  $_POST['prenid'] == 0 ){
-                echo "<br>makeReservation!<br>";
+                //echo "<br>makeReservation!<br>";
                 $this->model->makeReservation();
                 //$open = 1;
                 
             }else{
                 
                 if($_POST['prenid'] < 0){
-                    echo "<br>delbookig!<br>";
+                    //echo "<br>delbookig!<br>";
                     $this->model->deleteReservation((int)$_POST['prenid']);
                     
                 } else {
-                    echo "<br>updateReservation!<br>";
+                    //echo "<br>updateReservation!<br>";
                     $this->model->updateReservation((int)$_POST['prenid']);
                     //$last_prenid = (int)$_POST['prenid'];
                 }

@@ -3,7 +3,7 @@
 function getBookingData(prenid, gestione){
 
     var decoded = 0;
-    $.get('services/dati.php', {
+    $.get('dati', {
             prenid: prenid,
             gestione : gestione
         }).done(function(gotData) {

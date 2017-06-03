@@ -22,7 +22,7 @@
         });
     </script>
     
-    <h2>Lista Ospiti al Rifugio Del Grande - Stagione <?echo $this->Year?> </h2>
+    <h2><? echo($this->Titolo) ?></h2>
     <hr>
 
       <form id='booking-form' class='form-horizontal' method='POST'>

@@ -12,7 +12,7 @@
 
             <div style="padding-left:5%;padding-right:5%;" >
               <div class="row">
-                <a class="col-sm-3 btn btn-info" href="services/gen-tabella-prenotazioni.php">Calendario</a>
+                <a class="col-sm-3 btn btn-info" href="prenotazioni">Calendario</a>
                 <p class="col-sm-8 ">Genera una tabella stampabile delle prenotazioni di ogni gestore.</p>
               </div>
               <hr>
@@ -22,7 +22,7 @@
               </div>
               <!--hr>
               <div class="row">
-                <a class="col-sm-3 btn btn-danger" href="services/erase-database-stage1.php">Svuota Database</a>
+                <a class="col-sm-3 btn btn-danger" href="erase-database-stage1">Svuota Database</a>
                 <p class="col-sm-8">Svuota completamente il database delle prenotazioni.<br>ATTENZIONE! Questa operazione è IRREVERSIBILE!</p>
               </div-->
             </div>
