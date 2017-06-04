@@ -27,6 +27,7 @@ class CalendarController extends Controller {
 		    "Gestori" => ($this->model->getGestori()),
 		    "Bookings" => ($this->model->getBookings()),
 		    "LastPrenID" => ($this->model->getLastPrenid()),
+		    "NextRow" => ($this->model->getNextRow()),
 		    "ErrorFlag" => ($this->model->getErrorFlag()),
 		    "ErrorMsg" => ($this->model->getErrorMsg()),
 		     );
@@ -38,34 +39,56 @@ class CalendarController extends Controller {
 	
 	// Operates on bookings, depending on the type of incoming data
 	public function processBooking() {
-	    	    
-	    //echo "<br>POST!<br>";
-	    //print_r($_POST);
-	        
-        try{
-            
-            if ( $_POST['prenid'] == null ||  $_POST['prenid'] == "" ||  $_POST['prenid'] == 0 ){
+	
+	    if(!isset($_POST['prenid'] ) ){
+	        throw new Exception("ID della prenotazione non ricevuto.");
+	    }
+	    $prenid = (int)$_POST['prenid'];
+	    
+	    try{
+	    
+	        if($prenid < 0){
+                //echo "<br>delbookig!<br>";
+                $this->model->deleteReservation($prenid);
+                return;
+            }
+	
+	        // Preprocess POST data
+	        if(isset($_POST['gestione'])){
+                $gestione = 1;
+                $posti = 0;
+            } else {
+                $gestione = 0;
+                $posti = (int)$_POST['posti'];
+            }
+            if(isset($_POST['provincia'])){
+                $provincia = $_POST['provincia'];
+            } else {
+                $provincia = "";
+            }
+            $dati = array(  "nome" => $_POST['nome'],
+                            "telefono" => $_POST['telefono'],
+                            "provincia" => $provincia,
+                            "arrivo" => $_POST['arrivo'],
+                            "durata" => $_POST['durata'],
+                            "posti" => $posti,
+                            "note" => $_POST['note'],
+                            "gestione" => $gestione,
+                            "responsabile" => $_POST['responsabile']);
+                            
+            if ( $prenid == null ||  $prenid == "" ||  $prenid == 0 ){
                 //echo "<br>makeReservation!<br>";
-                $this->model->makeReservation();
+                $this->model->makeReservation($dati);
                 //$open = 1;
                 
-            }else{
-                
-                if($_POST['prenid'] < 0){
-                    //echo "<br>delbookig!<br>";
-                    $this->model->deleteReservation((int)$_POST['prenid']);
-                    
-                } else {
-                    //echo "<br>updateReservation!<br>";
-                    $this->model->updateReservation((int)$_POST['prenid']);
-                    //$last_prenid = (int)$_POST['prenid'];
-                }
+            } else {
+                //echo "<br>updateReservation!<br>";
+                $this->model->updateReservation($prenid, $dati);
+                //$last_prenid = (int)$_POST['prenid'];
             }
         }catch (Exception $e){
-            $this->model->setError("Operazione non riconosciuta");
             
-            // Fix me once popups are ready
-            echo $e;
+            $this->view->addParams( array( "EXCEPTION" => $e->getMessage() ));
         }
           
 	}

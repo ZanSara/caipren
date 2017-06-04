@@ -20,6 +20,10 @@ abstract class Model {
 	}
 	
 	public function customConstructor(){}
+	
+	public function real_escape_string($string){
+	    return $this->mysqli->real_escape_string($string);
+	}
 
 	public function __destruct() {
 		$this->mysqli->close();
@@ -56,10 +60,11 @@ abstract class Model {
             case '9':
                 return 'Settembre';
             default:
-                return 'FuoriStagione';
+                throw new Exception("Il numero corrisponde a un mese non incluso nel periodo di gestione (giugno-settembre)");
+                //return 'FuoriStagione';
         endswitch;
-        
-        return "Errore";
+        throw new Exception("Il numero corrisponde a un mese non incluso nel periodo di gestione (giugno-settembre)");
+        //return "Errore";
     } 
     
      // Convert month name into month number
@@ -75,10 +80,11 @@ abstract class Model {
             case 'Settembre':
                 return '09';
             default:
-                return 'ERRORE';
+                throw new Exception("Il nome corrisponde a un mese non incluso nel periodo di gestione (giugno-settembre)");
+                //return 'ERRORE';
         endswitch;
-        
-        return "Errore";
+        throw new Exception("Il nome corrisponde a un mese non incluso nel periodo di gestione (giugno-settembre)");
+        //return "Errore";
     } 
 }
 ?>

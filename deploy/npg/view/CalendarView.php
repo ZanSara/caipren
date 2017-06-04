@@ -7,8 +7,26 @@
             include("templates/headTemplate.php");
 			include("templates/bannerTemplate.php");
 			
-			include("templates/errorAlert.php");
-			include("templates/bookingIDAlert.php");
+			// In case of Exception raised at processing time, EXCEPTION is set
+			if(parent::__get("EXCEPTION") != "Missing parameter" ){
+			    echo '<script> 
+			                $().ready(function() { 
+			                    $("#ErrorModal").modal("show"); 
+			                });
+			          </script>';
+			    include("templates/errorAlert.php");
+			}
+		    
+		    
+			if(parent::__get("LastPrenID") != 0 ){
+			    echo '<script> 
+			                $().ready(function() { 
+			                    $("#BookingIDModal").modal("show"); 
+			                });
+			          </script>';
+			    include("templates/bookingIDAlert.php");
+			}
+			
 			include("templates/aboutModal.php");
 			include("templates/advancedModal.php");
 			include("templates/findModal.php");

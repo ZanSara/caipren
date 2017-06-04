@@ -3,7 +3,7 @@
 
 	class CalendarModel extends Model {
 	
-	    private $firstday, $lastday, $today, $last_prenid, $error_flag, $error_msg;
+	    private $firstday, $lastday, $today, $last_prenid, $next_row, $error_flag, $error_msg;
 	    
 	    
 	    // Sets some date variables reused later in the class.
@@ -15,6 +15,7 @@
             $this->today = date('z') - $this->firstday;
             
             $last_prenid = 0;
+            $next_row = "#";
 	    }
 	    
 	    
@@ -30,6 +31,9 @@
 	    }
 	    public function getLastPrenid(){
 	        return $this->last_prenid;
+	    }
+	    public function getNextRow(){
+	        return $this->next_row;
 	    }
 	    public function getErrorFlag(){
 	        return $this->error_flag;
@@ -183,7 +187,7 @@
                     }
                     
                     if ($booking['giorno_inizio']+ $booking['durata']-1 <= $absday){
-                        $key = array_search($pren, $bag);  // need to look for it, because the index is not normalized...
+                        $key = array_search($booking, $bag);  // need to look for it, because the index is not normalized...
                         unset($bag[$key]);  // pop from array
                         $bag = array_values($bag); // fix indices
                     }
@@ -199,12 +203,11 @@
         // *************** RESERVATIONS MANAGEMENT *******************************
 
         // Perform a reservation into DB
-        public function makeReservation(){
+        public function makeReservation($dati){
         
-            echo "Making reservation...";
-
-            $validData = self::validate();
-
+            $validData = self::validate($dati);
+            self::checkFreeBeds(0, $validData);
+            
             // Retrieve last color used
             $query = "  SELECT ID 
                         FROM Colori 
@@ -233,10 +236,8 @@
             }else{
                 $new_color = $last_color+1;
             }
-            
-	       
-	       // Actually write reservation in DB
-	       
+           
+           // Actually write reservation in DB
 	       // Fix this
 	       $values = "(NULL, '".
 	                    $validData['nome']."', '".
@@ -248,7 +249,7 @@
                         $validData['posti']."', '".
                         $validData['note']."', '".
                         $validData['gestione']."', '".
-                        $validData['resp']."', '".
+                        $validData['responsabile']."', '".
                         $new_color."')";
                         
 	       $query = "  INSERT INTO 
@@ -274,8 +275,12 @@
                
             } else {
                 
-                // FIX ME
-                // $prenid = mysqli_insert_id($dbhandle);
+                $this->last_prenid = $this->mysqli->insert_id;
+                
+                $absdate = DateTime::createFromFormat('z', ($validData['arrivo']));
+                $this->next_row = "#".$absdate->format('j-m');
+        
+	            
                 
                 // Update Last Color: the field 'last' should be bigger for the last used color
                 $query = "  SELECT MAX(last) 
@@ -302,9 +307,10 @@
 
 
         // Update a reservation into DB
-        public function updateReservation($prenid){
+        public function updateReservation($prenid, $dati){
 
-           $validData = self::validate();
+           $validData = self::validate($dati);
+           self::checkFreeBeds($prenid, $validData);
             
             // Update reservation in DB
            $query = "  UPDATE 
@@ -318,7 +324,7 @@
                             `posti` = '{$validData['posti']}',
                             `note` = '{$validData['note']}',
                             `gestione` = '{$validData['gestione']}',
-                            `responsabile` = '{$validData['resp']}'
+                            `responsabile` = '{$validData['responsabile']}'
                         WHERE 
                             `ID` = '{$prenid}'";
                             
@@ -354,111 +360,129 @@
     // *************** SERVER-SIDE DATA VALIDATION ****************************
     // Throws errors only if js validation failed to spot bad data.
 
-        public function validate() {
+        public function validate($dati) {
         
-            // Convert the date in a db-friendly number
-            // VALIDATE PLS!
-            $replaced_date = str_replace("-", " ", $_POST['arrivo']);
-            
-            $absdate = self::correct_date($_POST['arrivo'], $this->getYear());
-            
-        
-            // FIX THIS FUNCTION!!
-            if ($_POST['arrivo']== '')  throw new Exception("Data di arrivo non valida");
-            $replaced = str_replace("/", "-", $_POST['arrivo']);
-            if (!(substr($replaced, -4)== $this->getYear())){
-                $replaced .= "-".$this->getYear();
+            // Validate Nome Cliente
+            $dati['nome'] = trim($dati['nome']);
+            if ($dati['nome'] == '' or !preg_match('/^[\w,\s]+$/', $dati['nome'])){
+                throw new Exception("Nome del cliente non valido");
             }
             
-            $absdate = self::correct_date($replaced, $this->getYear());
-            
-            $gestione = 0;
-            if (isset($_POST['gestione'])) {
-               $gestione = 1;
+            // Validate Telefono
+            $dati['telefono'] = trim($dati['telefono']);
+            if ($dati['telefono'] == '' or !preg_match('/^[+]?([0-9]|[\s]|[-]|[(]|[)]){4,50}$/', $dati['telefono'])){
+                throw new Exception("Numero di telefono non valido");
             }
             
-            return array(
-                'nome' => $_POST['nome'],
-                'telefono' => $_POST['telefono'],
-                'provincia' => $_POST['provincia'],
-                'arrivo' => $absdate,
-                'durata' => $_POST['durata'],
-                'posti' => $_POST['posti'],
-                'note' => $_POST['note'],
-                'gestione' => $gestione,
-                'resp' => $_POST['responsabile'],
-            );
-        
-        
-            /*
-            if ($_POST['nome']== '')  throw new Exception("Nome del cliente non valido");
-            if ($_POST['telefono']== '')  throw new Exception("Numero di telefono non valido");
-            if ((int)($_POST['durata'])<= 0 or (int)($_POST['durata'])>= 122) throw new Exception("Durata della prenotazione non valida");
+            // "Validate Provincia" (this field can be empty)
+            $dati['provincia'] = trim($dati['provincia']);
             
-            if ($_POST['arrivo']== '')  throw new Exception("Data di arrivo non valida");
-            $replaced = str_replace("/", "-", $_POST['arrivo']);
-            if (!(substr($replaced, -4)== $year)){
-                $replaced .= "-".$year;
+            // Validate Arrivo date and convert the date in a db-friendly number
+            $exploded = explode(" ", $dati['arrivo']);
+            
+            if(count($exploded) != 3){
+                throw new Exception("La data inserita non e' valida.");
             }
-            $absdate = mysqli_real_escape_string($dbhandle, date('z', strtotime($replaced)-1));
-
-	        $gestione = 0;
-            if (isset($_POST['gestione'])) {
-               $gestione = 1;
+            if( $exploded[2] != $this->getYear() ){
+                throw new Exception("La data inserita non appartiene a questa stagione.");
             }
-            if (!$gestione && ( (int)($_POST['posti'])<= 0 or (int)($_POST['posti'])> 16) ) throw new Exception("Numero di posti prenotati non valido!");
             
-            if ($_POST['responsabile']== '') throw new Exception("Nome del responsabile non valido!");
-
-            return array(
-                'nome' => mysqli_real_escape_string($dbhandle, $_POST['nome']),
-                'telefono' => mysqli_real_escape_string($dbhandle, $_POST['telefono']),
-                'provincia' => mysqli_real_escape_string($dbhandle, $_POST['provincia']),
-                'arrivo' => (int)mysqli_real_escape_string($dbhandle, $absdate),
-                'durata' => (int)mysqli_real_escape_string($dbhandle, $_POST['durata']),
-                'posti' => mysqli_real_escape_string($dbhandle, $_POST['posti']),
-                'note' => mysqli_real_escape_string($dbhandle, $_POST['note']),
-                'gestione' => $gestione,
-                'resp' => mysqli_real_escape_string($dbhandle, $_POST['responsabile']),
-            );
-            */
+            $exploded[1] = self::decode_month($exploded[1]); // Se non e' un mese valido, l'eccezione viene lanciata all'interno
+            if( (int)$exploded[0] > 31 or ((int)$exploded[0] > 30 and ( $exploded[1] != "06" and $exploded[1] != "09") ) ){
+                throw new Exception("Il giorno del mese inserito non e' valido.");
+            }
+            $imploded = implode("-", $exploded);
+            $absdate = self::correct_date($imploded, $this->getYear());
             
-            //checkAssertions($validData);
+            // Validate Durata (no longer than the whole season)
+            $dati['durata'] = (int)$dati['durata'];
+            if ($dati['durata'] <= 0 or $dati['durata']>= 122){
+                throw new Exception("Durata della prenotazione non valida");
+            }
+            
+            // Validate Posti (no more than the available beds, and only for clients)
+            $dati['posti'] = (int)$dati['posti'];
+            if (!$dati['gestione'] and ( $dati['posti'] <= 0 or $dati['posti'] > 16) ){
+                echo $dati['gestione'];
+                echo "<br>";
+                echo $dati['posti'];
+                throw new Exception("Numero di posti prenotati non valido");
+            }
+            
+            // Validate Nome Responsabile
+            if ($dati['responsabile']== '' or !preg_match('/^[\w,\s]+$/', $dati['responsabile'])){
+                throw new Exception("Nome del responsabile non valido");
+            }
+            
+            
+            $validData = array( 'nome' => ($this->real_escape_string($dati['nome'])),
+                                'telefono' => ($this->real_escape_string($dati['telefono'])),
+                                'provincia' => ($this->real_escape_string($dati['provincia'])),
+                                'arrivo' => $absdate,
+                                'durata' => $dati['durata'],
+                                'posti' => $dati['posti'],
+                                'note' => ($this->real_escape_string($dati['note'])),
+                                'gestione' => $dati['gestione'],
+                                'responsabile' => ($this->real_escape_string($dati['responsabile']))
+                              );
+            return $validData;
         }
+        
 
     // *************** DB ASSERTIONS ****************************************
 
-        public function checkAssertions($data){
-            // Notice: here I assume that no booking will have ID = 0, because 0 means basically "do not check"
+        public function checkFreeBeds($prenid, $data){
             
+            // Per ogni giorno in cui sto cercando di prenotare, controlla se il numero dei posti
+            // occupati supera 16 (o se ci sono piu' di 0 gestori) e se trova riscontro,
+            // aggiunge il giorno incriminato a dayslist
             $dayslist = array();
             for($giorno=$data['arrivo']; $giorno < ($data['arrivo']+$data['durata']); $giorno++ ){
-                if(!$data['gestione']){
-                    $what2Do = "SUM(posti)";
-                }else{
+            
+                if($data['gestione']){
                     $what2Do = "COUNT(*)";
-                }
-                $string = "SELECT ".$what2Do." FROM Pernottamenti
-                            WHERE stagione = ".$year." AND ( giorno_inizio <= ".$giorno." AND (giorno_inizio + durata) > ".$giorno.")
-                            AND gestione = ".$data['gestione']." AND id <> ".$prenid;
-                $result = mysqli_fetch_array(mysqli_query($dbhandle, $string));
-                if(!$data['gestione']){
-                    if($result[0] + $data['posti'] > 16){
-                        $dayslist[] = DateTime::createFromFormat('z', $giorno);
-                    }            
                 }else{
-                    if($result[0] > 0){
+                    $what2Do = "SUM(posti)";
+                }
+                
+                
+                $query = "  SELECT  {$what2Do} 
+                            FROM    Pernottamenti 
+                            WHERE 
+                                    stagione = {$this->getYear()}
+                                AND 
+                                    id <> {$prenid}
+                                AND  
+                                    giorno_inizio <= {$giorno} 
+                                AND 
+                                    (giorno_inizio + durata) > {$giorno}
+                                AND 
+                                    gestione = {$data['gestione']}";
+                $result = $this->mysqli->query($query);
+		        if(!$result) {
+			        throw new Exception("Errore inatteso durante il caricamento dei dati delle prenotazioni del giorno ".$giorno."."); // . $this->mysqli->error);
+		        }
+		        $prenotazioni = $result->fetch_array();
+		        
+                if($data['gestione']){
+                    if($prenotazioni[0] > 0){
                         $dayslist[] = DateTime::createFromFormat('z', $giorno);
                     }
+                }else{
+                    if($prenotazioni[0] + $data['posti'] > 16){
+                        $dayslist[] = DateTime::createFromFormat('z', $giorno);
+                    } 
                 }
             }
-
+            
+            // Se ho collezionato almeno un giorno in cui e' impossibile prenotare,
+            // fa scattare l'eccezione.
             if(count($dayslist) > 0){
                 $errorstring = "";
                 foreach ($dayslist as $day){
                     $errorstring = $errorstring.'<br><br>'.(string)$day->format('d-m-Y');
                 }
-                mysqli_close($dbhandle);
+                
                 if (!$data['gestione']){
                     throw new Exception("Impossibile prenotare!<br>Il Rifugio è già pieno nelle date:".$errorstring."<br><br>NON è stata registrata nessuna modifica: ripetere l'operazione.");
                 }else{
@@ -467,6 +491,9 @@
             }
        
         }
+        
+        
+        
         
     }
 ?>

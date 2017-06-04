@@ -10,7 +10,7 @@
     </div>
 
     <div class="mobile-title">
-        <h3>Prenotazioni <? echo $year ?></h3>
+        <h3>Prenotazioni <? echo $this->Year ?></h3>
         <a href="http://www.caisovico.it/rifugio/rifugio.html">
           <img class='mobile-back' src='static/images/nav-home-green.png'>
         </a>

@@ -14,7 +14,7 @@
 
           </div>
 
-          <form id="nBM-mainform" class='form-horizontal' method='POST'>
+          <form id="nBM-form" class='form-horizontal' method='POST' onsubmit="return validate();">
             <div class="modal-body">
               
               <!-- main form -->
@@ -30,16 +30,13 @@
                 <div class="form-group" >
                   <label class="col-sm-3 control-label">Nome Cliente</label>
                   <div class="col-sm-9" >
-                      <input id="nBM-nome" type="text" class="form-control" name="nome" placeholder="Nome Cliente" readonly="readonly"
-                      data-rule-required="true" data-msg-required="Inserire il nome del cliente">
+                      <input id="nBM-nome" type="text" class="form-control" name="nome" placeholder="Nome Cliente" readonly="readonly">
                   </div>
                 </div>
                 <div class="form-group">
                   <label class="col-sm-3 control-label">№ Telefono</label>
                   <div class="col-sm-9" >
-                      <input id="nBM-tel" type="text" class="form-control" name="telefono" placeholder="№ Telefono" readonly="readonly"
-                      data-rule-required="true" data-msg-required="Inserire un numero di telefono"
-                      data-rule-customPhone="true">
+                      <input id="nBM-tel" type="text" class="form-control" name="telefono" placeholder="№ Telefono" readonly="readonly"">
                   </div>
                 </div>
                 <div class="form-group">
@@ -55,11 +52,9 @@
                   <div class="col-sm-9">
                       <label id="nBM-arrivoLbl" class="control-label">Javascript not working...</label>
                       <script> 
-                          $("#nBM-arrivoLbl").text( getToday() ); 
+                          $("#nBM-arrivoLbl").text( "Clicca sui bottoni per comporre la data" ); 
                       </script> 
-                      <input id="nBM-arrivo" class="form-control hidden" type="text" name="arrivo" readonly="readonly"
-                      data-rule-required="true" data-msg-required="Inserire una data di arrivo"
-                      data-rule-customData="true">
+                      <input id="nBM-arrivo" class="form-control hidden" type="text" name="arrivo" readonly="readonly">
                  </div>
                  <div id="nBM-arrivoBtn" class="col-sm-9 pull-right" style="padding:0;" style="display:hidden;">
                       <div class="col-sm-9" style="padding-right:2%; padding-top:2%;">
@@ -97,22 +92,19 @@
                   <label class="col-sm-3 control-label">Durata del Soggiorno</label>
                   <div class="col-sm-9" >
                     <div class="input-group">
-                      <input id="nBM-durata" type="text" class="form-control" name="durata" placeholder="Durata del Soggiorno" readonly="readonly"
-                      data-rule-required="true" data-msg-required="Inserire la durata del soggiorno"
-                      data-rule-digits="true" data-msg-digits="Inserire una durata del soggiorno valida"
-                      data-rule-customDurata="true">
-                      <span class="input-group-addon">giorni</span>
+                      <input id="nBM-durata" type="text" class="form-control" name="durata" placeholder="Durata del Soggiorno" readonly="readonly">
+                      <span class="input-group-addon">notti</span>
                     </div>
                   </div>
                 </div>
                 <div class="form-group" id="nBM-linePosti">
                   <label class="col-sm-3 control-label">Posti Prenotati</label>
                   <div class="col-sm-9" >
-                      <label id="nBM-postiLbl" class="control-label">0</label>
-                      <input id="nBM-posti" type="text" class="form-control hidden" name="posti" placeholder="Posti Prenotati" readonly="readonly"
-                      data-rule="true" data-msg-required="Inserire il numero di posti letto prenotati"
-                      data-rule-digits="true" data-msg-digits="Inserire un numero di posti letto valido"
-                      data-rule-customPosti="true">
+                      <label id="nBM-postiLbl" class="control-label">Javascript not working...</label>
+                      <script> 
+                          $("#nBM-postiLbl").text( "Clicca sul numero di posti prenotati" ); 
+                      </script>
+                      <input id="nBM-posti" type="text" class="form-control hidden" name="posti" placeholder="Posti Prenotati" readonly="readonly">
                       <div id="nBM-postiBtn" style="display:hidden; padding-top:2%;" >
                         <?
                             $bed = 0;
@@ -134,8 +126,7 @@
                 <div class="form-group">
                   <label class="col-sm-3 control-label">Responsabile Prenotazione</label>
                   <div class="col-sm-9" >
-                      <input id="nBM-resp" type="text" class="form-control" name="responsabile" placeholder="Responsabile Prenotazione" readonly="readonly"
-                      data-rule-required="true" data-msg-required='Inserisci il tuo nome nel campo "Responsabile della prenotazione"'>
+                      <input id="nBM-resp" type="text" class="form-control" name="responsabile" placeholder="Responsabile Prenotazione" readonly="readonly">
                   </div>
                 </div>
                 <div class="form-group">
@@ -144,17 +135,13 @@
                       <textarea id="nBM-note" type="textarea" rows="3" class="form-control" name="note" placeholder="Note..." readonly="readonly"></textarea>
                   </div>
                 </div>
-                <!--div class="hidden checkbox">
-                  <input id="nBM-newChk" name='newbooking' type="checkbox" checked="checked" readonly="readonly">
-                </div>
-                <div class="hidden checkbox">
-                  <input id="nBM-delChk" name='delbooking' type="checkbox" readonly="readonly">
-                </div-->
                 <div class="hidden">
                   <input id="nBM-prenid" name='prenid' type="text" readonly="readonly">
                 </div>
               </div> <!-- modal-databox -->
               
+              <!-- User feedback -->
+              <div id="nBM-jsFeedback" class="alert alert-danger" role="alert" style="display:none; padding-left:10%;padding-right:10%;"></div>
               
               <!-- Loading box -->
               <img id="nBM-spinningWheel" class="spinningWheel" src="static/images/spinningwheel.gif"style='display:none;' />
@@ -166,7 +153,7 @@
               
               <!-- Footer -->
               <div class="modal-footer center-text">
-                <input id="nBM-SalvaBtn" class="btn btn-primary" disabled="disabled" type="submit" value="Salva" style="display:none;">
+                <input id="nBM-SalvaBtn" class="btn btn-primary" disabled="disabled" type="submit" style="display:none;" value='Salva'>
                 <a id="nBM-EliminaBtn" class="btn btn-danger" href="javascript:prepareDelete()" style="display:none;">Elimina</a>
 
                 <!-- This one should be always visible - thus no ID -->
@@ -208,14 +195,8 @@
             $("#nBM-linePosti").show();
             
             // Reset labels
-            $("#nBM-arrivoLbl").text( getToday() );
-            $("#nBM-postiLbl").text("0");
-            
-            // Reset hidden checks
-            $("#nBM-newChk").prop("disabled", "disabled");
-            $("#nBM-newChk").prop("checked", true );
-            $("#nBM-delChk").prop("disabled", "disabled");
-            $("#nBM-delChk").prop("checked", "" );
+            $("#nBM-arrivoLbl").text("Clicca sui bottoni per comporre la data");
+            $("#nBM-postiLbl").text("Clicca sul numero di posti prenotati");
             
             // Show buttons
             $("#nBM-arrivoBtn").hide();

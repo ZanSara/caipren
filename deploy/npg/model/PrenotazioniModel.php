@@ -104,7 +104,7 @@
                     }
                     
                     if ($booking['giorno_inizio']+ $booking['durata']-1 <= $absday){
-                        $key = array_search($pren, $bag);  // need to look for it, because the index is not normalized...
+                        $key = array_search($booking, $bag);  // need to look for it, because the index is not normalized...
                         unset($bag[$key]);  // pop from array
                         $bag = array_values($bag); // fix indices
                     }

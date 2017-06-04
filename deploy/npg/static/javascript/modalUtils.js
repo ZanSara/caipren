@@ -46,9 +46,17 @@ function renderDecodedData(decoded){
         $("#nBM-gestioneChk").prop("checked", "checked" );
         $("#nBM-linePosti").hide();
     }else{
-        $("#nBM-dataTitle").text("Prenotazione");
+       $("#nBM-dataTitle").text("Prenotazione");
         $("#nBM-gestioneChk").prop("checked", "" );
     }
+    if (decoded.posti == 0){
+        $("#nBM-postiLbl").text("");
+        $("#nBM-posti").val("");
+    } else {
+        $("#nBM-posti").val(decoded.posti);
+        $("#nBM-postiLbl").text(decoded.posti);
+    } 
+    
     $("#nBM-dataTitle").append(" № "+ decoded.prenid);
     $("#nBM-dataTitle").show();
     
@@ -66,8 +74,7 @@ function renderDecodedData(decoded){
     $("#nBM-arrivo").val(decoded.arrivo);
     $("#nBM-arrivoLbl").text(decoded.arrivo);
     $("#nBM-durata").val(decoded.durata);
-    $("#nBM-posti").val(decoded.posti);
-    $("#nBM-postiLbl").text(decoded.posti);
+        // Posti is being set near Gestione-dependend fields
     $("#nBM-resp").val(decoded.resp);
     $("#nBM-note").val(decoded.note);
     $("#nBM-prenid").val(decoded.prenid);
@@ -213,7 +220,7 @@ function prepareDelete(){
         //$("#modnew").prop("checked", "");
         prenid = "-" + $("#nBM-prenid").val();
         $("#nBM-prenid").val(prenid);
-        $("#nBM-mainform").submit();
+        $("#nBM-form").submit();
     }
 }
 
@@ -257,7 +264,12 @@ function convertMonth(mm){
 
 // Utilities that manages the Date buttons on the modal
 function setDay(day){
-    return setDateLabel(day, 0);
+    if (day<10){
+        d = "0"+day;
+    } else {
+        d = day
+    }
+    return setDateLabel(d, 0);
 }
 function setMonth(month){
     return setDateLabel(convertMonth(month), 1);
@@ -268,7 +280,12 @@ function setDateLabel(value, position){
 
     var oldDate = $("#nBM-arrivoLbl").text();
     var splittedDate = oldDate.split(" ");
-    console.log(splittedDate);
+    
+    if (splittedDate.length > 3){
+        newText = "Giorno Mese " + new Date().getFullYear();
+        $("#nBM-arrivoLbl").text(newText);
+        splittedDate = newText.split(" ");;
+    }
     
     splittedDate[position] = value;
     
