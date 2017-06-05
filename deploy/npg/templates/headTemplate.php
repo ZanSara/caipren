@@ -15,6 +15,7 @@
     <script src="static/javascript/jQuery/jquery-1.11.2.min.js"></script>
     <script src="static/bootstrap/js/bootstrap.min.js"></script>
     <script src="static/javascript/modalUtils.js"></script>
+    <script src="static/javascript/findUtils.js"></script>
     <script src="static/javascript/ajax.js"></script>
     <script src="static/javascript/validator.js"></script>
 

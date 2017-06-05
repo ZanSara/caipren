@@ -180,7 +180,14 @@ function renderError(Exception, gotData, msg){
     // Merge it with the PHP error rendering and the other modal"s errors!
 
     // need to close all modals before running??
-    //$("#newBookingModal").modal("hide");
+    
+    /*$('.modal').on('show.bs.modal', function () { 
+        $('.modal').not($(this)).each(function () { 
+            $(this).modal('hide'); 
+        });
+    }); */
+    
+    
     
     $("#nBM-dataTitle").hide();
     $("#nBM-loadingTitle").hide();
@@ -257,6 +264,23 @@ function convertMonth(mm){
             return 'FuoriStagione';
     }
     return "Errore";
+}
+
+// Convert the month name into month number
+function decodeMonth(mm){
+    switch(mm){
+        case 'Giugno':
+            return 6;
+        case 'Luglio':
+            return 7;
+        case 'Agosto':
+            return 8;
+        case 'Settembre':
+            return 9;
+        default:
+            return 0;
+    }
+    return 0;
 }
 
 

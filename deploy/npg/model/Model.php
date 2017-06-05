@@ -49,15 +49,15 @@ abstract class Model {
 	
 	// Convert month number into month name
     public function convert_month($monthnum){
-
-        switch ($monthnum):
-            case '6':
+        
+        switch ((int)$monthnum):
+            case 6:
                 return 'Giugno';
-            case '7':
+            case 7:
                 return 'Luglio';
-            case '8':
+            case 8:
                 return 'Agosto';
-            case '9':
+            case 9:
                 return 'Settembre';
             default:
                 throw new Exception("Il numero corrisponde a un mese non incluso nel periodo di gestione (giugno-settembre)");

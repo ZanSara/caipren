@@ -149,38 +149,17 @@
             // ************* STILL TO DO **************************************************************
             
             // Open Error_Modal in case of PHP errors (like "No more beds on these days")
-            if( $("#ErrorModal").data("error") ){
-                $("#ErrorModal").modal("show");
-            }
+            //if( $("#ErrorModal").data("error") ){
+            //    $("#ErrorModal").modal("show");
+            //}
             // Open Id_Modal in case of success of the registration
-            if( $("#IdModal").data("open") ){
-                $("#IdModal").modal("show");
-            }
+            //if( $("#IdModal").data("open") ){
+            //    $("#IdModal").modal("show");
+            //}
             
             // Reset Find_Modal when closed
-            $("#Find_Modal").on("hidden.bs.modal", function (event) {
-                $("#findmessage-alert").hide();
-                $("#finderror-alert").hide();
-                $(".modal-errfooter").hide();
-                
-                $("#cercaid").val(""),
-                $("#cercanome").val(""),
-                $("#cercatel").val(""),
-                $("#cercaarrivo").val(""),
-                $("#cercaprov").val(""),
-                $("#cercadurata").val(""),
-                $("#cercaposti").val(""),
-                $("#cercaresp").val(""),
-                $("#cercanote").val(""),
-                
-                $("#find-dataTitle").text("Cerca");
-                $("#findwarning").show();
-                $(".modal-databox").show();
-                $(".modal-resultbox").hide();
-                $("#findresults tr").remove();
-                $("#findresults").hide();
-                $(".modal-footer").show();
-                $("#find-btn").show();
+            $("#FindModal").on("hidden.bs.modal", function (event) {
+                resetFindModal();
             });
 
         </script>

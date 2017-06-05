@@ -12,7 +12,7 @@ class DatiController extends Controller {
 	public function baseAction() {
 	    
 	    $this->model = new DatiModel();
-	    $this->view = new DatiView();
+	    $this->view = new JSONView();
 	    
 	    if(!isset($_GET['gestione']) || !isset($_GET['prenid'])){
 	        echo "ERRORE: uno dei due parametri non e' settato.";

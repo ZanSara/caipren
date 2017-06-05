@@ -15,7 +15,7 @@
           </div>
 
           <div class="modal-footer center">
-              <button type="button" class="btn btn-default" data-dismiss="modal" onclick="javascript:$('<? echo parent::__get('NextRow'); ?>').scrollIntoView(true);">Ok</button>
+              <button type="button" class="btn btn-default" data-dismiss="modal">Ok</button>
           </div>
 
         </div>

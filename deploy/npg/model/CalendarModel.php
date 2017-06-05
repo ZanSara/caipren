@@ -15,7 +15,7 @@
             $this->today = date('z') - $this->firstday;
             
             $last_prenid = 0;
-            $next_row = "#";
+            $next_row = 0;
 	    }
 	    
 	    
@@ -217,6 +217,8 @@
                                       )";
             $result1 = $this->mysqli->query($query);
 	        if(!$result1) {
+
+
 		        throw new Exception("Errore inatteso durante il caricamento dei dati relativi all'ultimo colore."); // . $this->mysqli->error);
 	        }
 	        $last_color = $result1->fetch_array()[0];
@@ -278,7 +280,7 @@
                 $this->last_prenid = $this->mysqli->insert_id;
                 
                 $absdate = DateTime::createFromFormat('z', ($validData['arrivo']));
-                $this->next_row = "#".$absdate->format('j-m');
+                $this->next_row = $absdate->format('j-m');
         
 	            
                 
@@ -333,7 +335,10 @@
                 throw new Exception("Errore interno:<br>L'aggiornamento NON è stato effettuato.<br>Avverti il webmaster."); // . $this->mysqli->error);
             }
             // attenzione: se prenid non esiste nel DB, fallisce silenziosamente.
-
+            
+            $absdate = DateTime::createFromFormat('z', ($validData['arrivo']));
+            $this->next_row = $absdate->format('j-m');
+            
         }
 
 
@@ -480,13 +485,16 @@
             if(count($dayslist) > 0){
                 $errorstring = "";
                 foreach ($dayslist as $day){
-                    $errorstring = $errorstring.'<br><br>'.(string)$day->format('d-m-Y');
+                    $dateNumerical = explode("-", (string)$day->format('d-m-Y'));
+                    $dateNumerical[1] = self::convert_month( $dateNumerical[1] );
+                    $date = implode(" ", $dateNumerical);
+                    $errorstring = $errorstring.'<br>'.$date;
                 }
                 
                 if (!$data['gestione']){
-                    throw new Exception("Impossibile prenotare!<br>Il Rifugio è già pieno nelle date:".$errorstring."<br><br>NON è stata registrata nessuna modifica: ripetere l'operazione.");
+                    throw new Exception("Impossibile prenotare!<br>Non ci sono abbastanza posti disponibili nelle date:<br>".$errorstring."<br><br>NON è stata registrata nessuna modifica: ripetere l'operazione.");
                 }else{
-                    throw new Exception("Attenzione!<br>C'è già un gestore in queste date: ".$errorstring."<br><br>NON è stata registrata nessuna modifica: ripetere l'operazione.");
+                    throw new Exception("Attenzione!<br>C'è già un gestore in queste date:<br>".$errorstring."<br><br>NON è stata registrata nessuna modifica: ripetere l'operazione.");
                 }
             }
        

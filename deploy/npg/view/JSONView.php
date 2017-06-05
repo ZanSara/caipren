@@ -1,8 +1,8 @@
 <?php
-	class DatiView extends View {
+	class JSONView extends View {
 		public function show() {
 		
-			$this->title = "Dati Service - CAI Sovico";
+			$this->title = "JSON Service - CAI Sovico";
 			$this->scripts = array();
 			
             echo parent::__get("JSON");

@@ -14,9 +14,8 @@
 			                    $("#ErrorModal").modal("show"); 
 			                });
 			          </script>';
-			    include("templates/errorAlert.php");
 			}
-		    
+		    include("templates/errorAlert.php"); // Required also for JS errors. Must always be there.
 		    
 			if(parent::__get("LastPrenID") != 0 ){
 			    echo '<script> 
@@ -25,6 +24,14 @@
 			                });
 			          </script>';
 			    include("templates/bookingIDAlert.php");
+			}
+			
+			if(parent::__get("NextRow") != 0 ){
+			    echo "<script> 
+			                $().ready(function() { 
+			                    document.getElementById('".parent::__get('NextRow')."').scrollIntoView(true); 
+			                });
+			          </script>";
 			}
 			
 			include("templates/aboutModal.php");
