@@ -61,6 +61,7 @@
                 <table class="calendario">
                     <tr>
                         <td class='giorno' style="border: 1px solid #fff;">Data</td>
+                        <td class='gestore' style='border: 1px solid #fff;'>Gestore</td>
                         <td class='letto'></td>
                         <td class='letto'></td>
                         <td class='letto'></td>
@@ -86,6 +87,7 @@
                 <table class="calendario grid">
                   <colgroup>
                         <col class='giorno'>
+                        <col class='gestore'>
                         <col class='letto'>
                         <col class='letto'>
                         <col class='letto'>
@@ -181,6 +183,30 @@
         echo(">");
             echo($day." ".$monthname." ".$weekdayname);//." / ".$absday);
         echo("</td>");
+        
+        // Building Gestore td
+        $gestdb =  mysqli_query($dbhandle, "SELECT * FROM Pernottamenti WHERE stagione = ".$year." AND (gestione=1 AND giorno_inizio=".$absday.")");
+        while ($row = mysqli_fetch_array($gestdb)) {
+            $gest[] = $row;
+        }
+        if (sizeOf($gest) == 0){
+            echo("<td class='nogestore'>Nessuno!</td>");
+        }else{
+            echo("<td class='P".$gest[0]['id']."' ");
+            if(sizeOf($gest) > 1){
+                echo(" style='border:4px solid red;'");
+            }
+            echo(">");
+            echo("<div>".$gest[0]['nome']."</div>");
+            echo("</td>");
+            foreach($gest as $g){
+                if ($g['giorno_inizio']+ $g['durata']-1 <= $absday){
+                    $key = array_search($g, $gest);
+                    unset($gest[$key]);
+                    $gest = array_values($gest);
+                }
+            }
+        }
 
         // Filling the rest of the table
         $listadb = mysqli_query($dbhandle, "SELECT *
