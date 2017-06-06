@@ -1,5 +1,10 @@
  
  function validate(){
+ 
+    // Se submitto per cancellare, salta la validazione
+    if( $("#nBM-prenid").val() < 0 ){
+        return true;
+    }
     
     var now     = new Date();//(2017, 01, 01);
     var year    = now.getFullYear();
