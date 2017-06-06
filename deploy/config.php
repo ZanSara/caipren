@@ -1,11 +1,11 @@
 <?php
 
     // General purpose constants
-	const ROOT = "/caipren/deploy/npg/";
+	const ROOT = "/caipren/";
 	const TEST = false;
 	
 	// FrontController constants
-	const DEFAULT_CONTROLLER = "CalendarController";
+	const DEFAULT_CONTROLLER = "PublicController";
 	const DEFAULT_ACTION = "baseAction";
 	
 	// Database constants

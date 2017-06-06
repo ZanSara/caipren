@@ -1,18 +1,15 @@
 <?php
-	include("Model.php");
+	include("PublicModel.php");
 
-	class CalendarModel extends Model {
+	class CalendarModel extends PublicModel {
 	
-	    private $firstday, $lastday, $today, $last_prenid, $next_row, $error_flag, $error_msg;
-	    
+	    //private $firstday, $lastday, $today, $last_prenid, $next_row, $error_flag, $error_msg;
+	    private $last_prenid, $next_row, $error_flag, $error_msg;
 	    
 	    // Sets some date variables reused later in the class.
 	    public function customConstructor(){
-
-	        $this->firstday = self::correct_date('01-06-'.$this->getYear(), $this->getYear());
-            $this->lastday = self::correct_date('01-10-'.$this->getYear(), $this->getYear());
-           
-            $this->today = date('z') - $this->firstday;
+            
+            parent::customConstructor();
             
             $last_prenid = 0;
             $next_row = 0;
@@ -20,15 +17,6 @@
 	    
 	    
 	    // Some utility getters
-	    public function getFirstDay(){
-	        return $this->firstday;
-	    }
-	    public function getLastDay(){
-	        return $this->lastday;
-	    }
-	    public function getToday(){
-	        return $this->today;
-	    }
 	    public function getLastPrenid(){
 	        return $this->last_prenid;
 	    }
@@ -52,13 +40,12 @@
 	        $this->error_msg = "[Nessun errore]";
 	    }
 	    
-	    
 	    // Output a list of user-friendly date that fits the first column of the table
 	    public function buildDates(){
 
             $dateColumn = array();
             
-            for($absday = $this->firstday; $absday<$this->lastday; $absday++){
+            for($absday = $this->getFirstDay(); $absday<$this->getLastDay(); $absday++){
                 $absdate = DateTime::createFromFormat('z', $absday);
                
                 $day = $absdate->format('j');
@@ -107,7 +94,7 @@
             $listaGestori = array();
             $gestori = array();
             
-            for($absday = $this->firstday; $absday<$this->lastday; $absday++){
+            for($absday = $this->getFirstDay(); $absday<$this->getLastDay(); $absday++){
                 $query = "  SELECT  * 
                             FROM    Pernottamenti 
                             WHERE 
@@ -155,7 +142,7 @@
             $bookingsList = array();
             $bag = array();
             
-            for($absday = $this->firstday; $absday<$this->lastday; $absday++){
+            for($absday = $this->getFirstDay(); $absday<$this->getLastDay(); $absday++){
                 $query = "  SELECT  * 
 
                             FROM    Pernottamenti AS p 
@@ -217,6 +204,7 @@
                                       )";
             $result1 = $this->mysqli->query($query);
 	        if(!$result1) {
+
 
 
 		        throw new Exception("Errore inatteso durante il caricamento dei dati relativi all'ultimo colore."); // . $this->mysqli->error);

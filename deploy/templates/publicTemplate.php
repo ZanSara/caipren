@@ -1,13 +1,14 @@
- <!-- MAIN TABLE -->
+<!-- MAIN TABLE -->
     <div class="row">
         <div id="calendario-box" class="calendario-outer-box shadow2">
+          
           <table id="tableid" style="overflow:hidden;">
               <tr><td>
                 <div class='scrollable'>
                 <table class="calendario">
                     <tr>
                         <td class='giorno' style="border: 1px solid #fff;">Data</td>
-                        <td class='gestore' style="border: 1px solid #fff;">Gestore</td>
+                        <td class='gestore' style='border: 1px solid #fff;'>Gestore</td>
                         <td class='letto'></td>
                         <td class='letto'></td>
                         <td class='letto'></td>
@@ -52,8 +53,7 @@
                         <col class="materasso">
                   </colgroup>
                   <tbody>
-                  
-                  <?
+    <?
                     
                     for($d = 0; $d < ($this->LastDay - $this->FirstDay); $d++){
                     
@@ -100,9 +100,9 @@
                                 echo(" style='border:4px solid yellow;'");
                             }
                             echo(">");
-                            echo("<a id='".$absday."-G' onclick='javascript:openNewBookingModal(1, ".$idGestore.", 1);' ><div>");
+                            echo("<div>");
                             echo($nomeGestore);
-                            echo("</div></a>");
+                            echo("</div>");
                             echo("</td>");
                         }
                         
@@ -119,9 +119,9 @@
                             }else{
                                 echo("'>");
                             }
-                            echo("<a onclick='javascript:openNewBookingModal(1, ".$cell[0].", 0);' ><div>");//<div style='border: red 1px solid;'>");
+                            echo("<div>");//<div style='border: red 1px solid;'>");
                             echo('<b>P'.$cell[0].'</b>');
-                            echo("</div></a>");
+                            echo("</div>");
                             echo("</td>");
                         }
                         for(;$tot<16; $tot++){
@@ -134,36 +134,13 @@
                     }
                                      
                   ?>
-                  
                   </tbody>
                 </table>
               </div>
             </td></tr>
           </tbody>
         </table>
-        
-        
-        <!-- Move me somewhere else! -->
-        <script type="text/javascript">
 
-            // ************* STILL TO DO **************************************************************
-            
-            // Open Error_Modal in case of PHP errors (like "No more beds on these days")
-            //if( $("#ErrorModal").data("error") ){
-            //    $("#ErrorModal").modal("show");
-            //}
-            // Open Id_Modal in case of success of the registration
-            //if( $("#IdModal").data("open") ){
-            //    $("#IdModal").modal("show");
-            //}
-            
-            // Reset Find_Modal when closed
-            $("#FindModal").on("hidden.bs.modal", function (event) {
-                resetFindModal();
-            });
-
-        </script>
-        
-        
       </div>
     </div>
+
