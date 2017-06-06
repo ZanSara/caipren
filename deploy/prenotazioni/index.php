@@ -16,7 +16,7 @@
     $year = date('Y'); //date('Y', strtotime('01-01-2017'));
     // To test on different year remember to modify this string also in
     // the other php files and inside JS validators
-
+    
     // Obviously, strtotime likes to mess up everything in case of leap years
     if($year % 4 == 0){
         $firstday = date('z', strtotime('01-06-'.$year)-1); //   ONLY dd-mm-yyyy OR mm/dd/yyyy are recognized correctly
