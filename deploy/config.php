@@ -13,4 +13,8 @@
     const DB_PASSWORD = "databasecai";
     const DB_HOSTNAME = "localhost";
     const DB_DBNAME = "6786_prenotazioni";
+    
+    const CAN_REGISTER = "none";
+    const DEFAULT_ROLE = "member";
+ 
 ?>

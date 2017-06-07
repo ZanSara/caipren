@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Login Area Riservata - CAI Sovico</title>
+    <title>Registrazione Area Riservata - CAI Sovico</title>
      
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -31,12 +31,22 @@
       
       
       
-        <? if (parent::__get("FEEDBACK") != "Missing parameter" and parent::__get("SUCCESS") == 0){
-            echo '<div class="alert alert-danger">';
-            echo '<p style="color:#e00;">';
-            echo parent::__get("FEEDBACK");
-            echo "</p>";
-            echo '</div>';
+        <? if (parent::__get("FEEDBACK") != "Missing parameter"){
+            $feedback = parent::__get("FEEDBACK");
+            
+            if ($feedback=="OK"){
+                echo '<div class="alert alert-success">';
+                echo '<p style="color:#2b2;">';
+                echo 'Registrazione avvenuta con successo.<br>Vai al <a href="/caipren/login/">login</a>';
+                echo "</p>";
+                echo '</div>';
+            } else {
+                echo '<div class="alert alert-danger">';
+                echo '<p style="color:#e00;">';
+                echo parent::__get("FEEDBACK");
+                echo "</p>";
+                echo '</div>';
+            }
         } ?>
       
       </form>

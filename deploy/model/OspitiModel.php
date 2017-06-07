@@ -1,5 +1,5 @@
 <?php
-	include("Model.php");
+include("Model.php");
 
 	class OspitiModel extends Model {
 	

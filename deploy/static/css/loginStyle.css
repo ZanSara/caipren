@@ -2,7 +2,7 @@ body {
   padding-top: 40px;
   padding-bottom: 40px;
   background-color: #ccc;
-  background: url("/caipren/static/images/vazzeda.jpg") no-repeat center center fixed; 
+  background: url("/caipren/static/images/vvazzeda.jpg") no-repeat center center fixed; 
   -webkit-background-size: cover;
   -moz-background-size: cover;
   -o-background-size: cover;
@@ -11,17 +11,17 @@ body {
 
 .form-signin {
   max-width: 400px;
-  padding: 15px 50px 30px 50px;
+  padding: 5px 50px 10px 50px;
   margin: 0 auto;
   background:#ccd;
 }
-.form-signin .form-signin-heading,
-.form-signin .checkbox {
+.form-signin-heading{
+    font-size: 14pt;
+}
+.form-signin .form-signin-heading{
   margin-bottom: 10px;
 }
-.form-signin .checkbox {
-  font-weight: normal;
-}
+
 .form-signin .form-control {
   position: relative;
   height: auto;
@@ -45,3 +45,6 @@ body {
   border-top-right-radius: 0;
 }
 
+.btn-primary{
+    margin-bottom: 20px;
+}

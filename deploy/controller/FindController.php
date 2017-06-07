@@ -14,6 +14,8 @@ class FindController extends Controller {
 	    $this->model = new FindModel();
 	    $this->view = new JSONView();
 	    
+	    $this->model->protectPage();
+	    
 	    $formdata = array();
 	    $fields = ['id', 'nome', 'tel', 'provincia', 'giorno_inizio', 'durata', 'posti', 'responsabile', 'note'];
 	    $vals =   ['int', 'string', 'string', 'string', 'int', 'int', 'int', 'string', 'string'];

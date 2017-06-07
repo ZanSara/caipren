@@ -3,7 +3,7 @@
 function getBookingData(prenid, gestione){
 
     var decoded = 0;
-    $.get('dati', {
+    $.get('/caipren/dati', {
             prenid: prenid,
             gestione : gestione
         }).done(function(gotData) {
@@ -28,7 +28,7 @@ function getBookingData(prenid, gestione){
 function findBookings(args){
     
     var decoded = 0;
-    $.get('find', args).done(function(gotData) {
+    $.get('/caipren/find', args).done(function(gotData) {
             
             console.log(args);
             try{

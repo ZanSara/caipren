@@ -1,5 +1,5 @@
 <?php 
-session_start();
+
 include("config.php");
 
 spl_autoload_register(function($controllerName) {
@@ -23,6 +23,8 @@ class FrontController {
 	}
 
 	private function parseUrl() {
+	    
+	
 		$path = trim(parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH), "/");
         $basePath = str_replace("/", "\/", trim(ROOT, "/")) . "\/";
 		$path = preg_replace("/^" . $basePath . "(.*)/", "$1", $path);
@@ -79,6 +81,8 @@ class FrontController {
 				}
 			}
 		}
+		
+		//print_r($_SESSION);
 	}
 
 	public function run() {

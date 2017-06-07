@@ -13,6 +13,8 @@ class PrenotazioniController extends Controller {
 	    $this->view = new PrenotazioniView();
 		$this->model = new PrenotazioniModel();
 		
+		$this->model->protectPage();
+		
         // Pass here what's needed into the View/Template rendering
 		$params = array("Year" => ($this->model->getYear()),
 		                "Titolo"=> "Lista Prenotazioni per Gestore"

@@ -13,6 +13,8 @@ class OspitiController extends Controller {
 	    $this->view = new OspitiView();
 		$this->model = new OspitiModel();
 		
+		$this->model->protectPage();
+		
         // Pass here what's needed into the View/Template rendering
 		$params = array("Year" => ($this->model->getYear()),
 		                "Titolo"=> "Lista Ospiti al Rifugio Del Grande - Stagione ".$this->model->getYear()

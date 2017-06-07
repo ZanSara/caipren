@@ -48,6 +48,6 @@
         </div>
         <div class="form-group col-sm-9 pull-right">
           <input class="btn btn-default" type="submit" value="Invia">
-          <a class="btn btn-default" href="index.php#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
+          <a class="btn btn-default" href="/caipren/calendar/#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
         </div>
       </form>

@@ -1,4 +1,5 @@
 <?php
+
 	class PrenotazioniView extends View {
 		public function show() {
 		

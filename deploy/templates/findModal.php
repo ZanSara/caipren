@@ -82,7 +82,7 @@
                 
               </div> <!-- modal-databox -->
               
-              <img id="FM_spinningWheel" class="loading" src="static/images/spinningwheel.gif" style='width:40%; margin-left:30%;margin-right:30%; display:none;' />
+              <img id="FM_spinningWheel" class="loading" src="/caipren/static/images/spinningwheel.gif" style='width:40%; margin-left:30%;margin-right:30%; display:none;' />
               <div id="FM_errorAlert" class="alert alert-danger" role="alert" style='display:none; text-align:center;'></div>
               <!--div id="FM_message-alert" class="alert alert-danger" role="alert" style='display:none; padding-left:10%;padding-right:10%;'></div-->
 

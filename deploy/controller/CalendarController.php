@@ -5,13 +5,15 @@ class CalendarController extends Controller {
 	private $model, $view;
 
 	public function __construct($params) {
-		$this->params = $params;
+	    $this->params = $params;
 	}
 
 	public function baseAction() {
 	    
 	    $this->view = new CalendarView();
 		$this->model = new CalendarModel();
+		
+		$this->model->protectPage();
 		
 		// Process an eventual POST call
 		if ($_SERVER['REQUEST_METHOD'] == 'POST'){

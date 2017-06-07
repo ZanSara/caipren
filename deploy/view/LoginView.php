@@ -5,7 +5,11 @@
 			$this->title = "Login - CAI Sovico";
 			$this->scripts = array();
 			
-            include("templates/loginTemplate.php");
+			if(self::__get("SUCCESS") == 1){
+			    header("Location: /caipren/calendar/#".(string)date('j-m', strtotime('yesterday')) );
+			} else {
+			   include("templates/loginTemplate.php");
+            }
 		}
 		
 	}

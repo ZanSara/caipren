@@ -1,4 +1,5 @@
 <?php
+
 	class CalendarView extends View {
 		public function show() {
 			$this->title = "Prenotazioni - CAI Sovico";

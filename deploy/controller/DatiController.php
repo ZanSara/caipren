@@ -14,6 +14,8 @@ class DatiController extends Controller {
 	    $this->model = new DatiModel();
 	    $this->view = new JSONView();
 	    
+	    $this->model->protectPage();
+	    
 	    if(!isset($_GET['gestione']) || !isset($_GET['prenid'])){
 	        echo "ERRORE: uno dei due parametri non e' settato.";
 	        return;

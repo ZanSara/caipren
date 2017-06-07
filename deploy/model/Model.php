@@ -86,5 +86,85 @@ abstract class Model {
         throw new Exception("Il nome corrisponde a un mese non incluso nel periodo di gestione (giugno-settembre)");
         //return "Errore";
     } 
+
+
+    // ************* Login management *******************************
+    
+    public function protectPage(){
+        //session_start(); 
+        if (!isset($_SESSION['username']) or !isset($_SESSION['login_string'])) {
+            header("Location: /caipren/login/" );
+        }
+    }
+    
+/*   
+    function sec_session_start() {
+        $session_name = 'sec_session_id';   // Set a custom session name
+        
+        // Sets the session name. 
+        // This must come before session_set_cookie_params due to an undocumented bug/feature in PHP.
+        session_name($session_name);
+     
+        $secure = true;
+        $httponly = true;   // This stops JavaScript being able to access the session id.
+        
+        // Forces sessions to only use cookies.
+        if (ini_set('session.use_only_cookies', 1) === FALSE) {
+            header("Location: /caipren/login"); // Do something better...
+            exit();
+        }
+        // Gets current cookies params.
+        $cookieParams = session_get_cookie_params();
+        session_set_cookie_params(
+            $cookieParams["lifetime"],
+            $cookieParams["path"], 
+            $cookieParams["domain"], 
+            $secure,
+            $httponly);
+     
+        session_start();            // Start the PHP session 
+        session_regenerate_id(true);    // regenerated the session, delete the old one. 
+    }
+
+
+
+    public function login_check() {
+        // Check if all session variables are set 
+        if (isset($_SESSION['username']) and isset($_SESSION['login_string']) ) {
+        
+        //return true;
+        
+            
+            $login_string = $_SESSION['login_string'];
+            $username = $_SESSION['username'];
+     
+            // Get the user-agent string of the user.
+            $user_browser = $_SERVER['HTTP_USER_AGENT'];
+     
+            if ($stmt = $this->mysqli->prepare(   "SELECT password 
+                                                  FROM Utenti
+                                                  WHERE username = ? LIMIT 1")) {
+                // Bind "$user_id" to parameter. 
+                $stmt->bind_param('i', $username);
+                $stmt->execute();   // Execute the prepared query.
+                $stmt->store_result();
+     
+                if ($stmt->num_rows == 1) {
+                    // If the user exists get variables from result.
+                    $stmt->bind_result($password);
+                    $stmt->fetch();
+                    $login_check = hash('sha512', $password . $user_browser);
+     
+                    if (hash_equals($login_check, $login_string) ){
+                        // Logged In!!!! 
+                        return true;
+                    } 
+                } 
+            }
+        }
+        // Not logged in
+        return false;
+    }
+*/
 }
 ?>

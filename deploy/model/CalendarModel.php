@@ -1,5 +1,6 @@
 <?php
-	include("PublicModel.php");
+
+include("PublicModel.php");
 
 	class CalendarModel extends PublicModel {
 	
