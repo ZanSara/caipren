@@ -8,7 +8,7 @@
       <a class="btn btn-default" href="javascript:window.print()">Stampa la pagina</a>
       <!-- CHANGE ME WHEN DEPLOYING!!! -->
       <a class="btn btn-default" href="prenotazioni">Cambia Date</a>
-      <a class="btn btn-default" href="/caipren/calendar/#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
+      <a class="btn btn-default" href="<? echo ROOT ?>/calendar/#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
     </div>
 
     <h3>Calendario:</h3>
@@ -86,5 +86,5 @@
         
     </table>
     
-    <a class="btn btn-default" href="/caipren/calendar/#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
+    <a class="btn btn-default" href="<? echo ROOT ?>/calendar/#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
     

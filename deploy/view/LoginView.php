@@ -6,7 +6,7 @@
 			$this->scripts = array();
 			
 			if(self::__get("SUCCESS") == 1){
-			    header("Location: /caipren/calendar/#".(string)date('j-m', strtotime('yesterday')) );
+			    header("Location: ".ROOT."/calendar/#".(string)date('j-m', strtotime('yesterday')) );
 			} else {
 			   include("templates/loginTemplate.php");
             }

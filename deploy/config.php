@@ -1,7 +1,8 @@
 <?php
 
     // General purpose constants
-	const ROOT = "/caipren/";
+	const ROOT = "/caiprenota";
+	const STATICS = ROOT."/static";
 	const TEST = false;
 	
 	// FrontController constants

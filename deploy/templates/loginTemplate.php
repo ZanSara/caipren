@@ -6,12 +6,12 @@
      
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="/caipren/static/bootstrap/css/bootstrap.min.css" rel="stylesheet">
-    <link href="/caipren/static/css/loginStyle.css" rel="stylesheet">
-    <link href="/caipren/static/css/calendarStyle.css" rel="stylesheet">
+    <link href="<? echo STATICS ?>/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="<? echo STATICS ?>/css/loginStyle.css" rel="stylesheet">
+    <link href="<? echo STATICS ?>/css/calendarStyle.css" rel="stylesheet">
     
-    <script src="/caipren/static/javascript/jQuery/jquery-1.11.2.min.js"></script>
-    <script src="/caipren/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="<? echo STATICS ?>/javascript/jQuery/jquery-1.11.2.min.js"></script>
+    <script src="<? echo STATICS ?>/bootstrap/js/bootstrap.min.js"></script>
 
   </head>
 

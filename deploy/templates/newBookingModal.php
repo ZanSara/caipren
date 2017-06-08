@@ -144,7 +144,7 @@
               <div id="nBM-jsFeedback" class="alert alert-danger" role="alert" style="display:none; padding-left:10%;padding-right:10%;"></div>
               
               <!-- Loading box -->
-              <img id="nBM-spinningWheel" class="spinningWheel" src="static/images/spinningwheel.gif"style='display:none;' />
+              <img id="nBM-spinningWheel" class="spinningWheel" src="<? echo STATICS ?>/images/spinningwheel.gif"style='display:none;' />
               
               <!-- Error reporting elements-->
               <div id="nBM-errorBox" style='display:none;'>

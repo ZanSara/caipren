@@ -14,6 +14,8 @@ class RegisterController extends Controller {
 	    $this->model = new RegisterModel();
 	    $this->view = new RegisterView();
 	    
+	    $this->model->protectPage();
+		
 	    // Process an eventual POST call
 		if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 		    self::processRegister();

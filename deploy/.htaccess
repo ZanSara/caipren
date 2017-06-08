@@ -1,11 +1,11 @@
 RewriteEngine on
 
 RewriteCond %{DOCUMENT_ROOT}/static/$1 -f
-RewriteRule ^(.*)$ /caipren/static/$1 [L]
+RewriteRule ^(.*)$ /caiprenota/static/$1 [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ /caipren/
+RewriteRule ^(.*)$ /caiprenota/
 
 
 

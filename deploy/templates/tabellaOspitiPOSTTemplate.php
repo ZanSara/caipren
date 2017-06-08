@@ -4,7 +4,7 @@
     
     <p>In questa stagione ci sono state in totale <b><? echo $this->NumPrenotazioni ?> </h2> prenotazioni</b>, di cui <? echo $this->NumGestioni ?> </h2> gestioni.</p>
     
-    <a class="btn btn-default" href="/caipren/calendar/#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
+    <a class="btn btn-default" href="<? echo ROOT ?>/calendar/#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
     <hr>
 
     <table class="table table-bordered">
@@ -71,5 +71,5 @@
 
         </table>
     
-    <a class="btn btn-default" href="/caipren/calendar/#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
+    <a class="btn btn-default" href="<? echo ROOT ?>/calendar/#<? echo date('j-n', strtotime('yesterday')); ?>">Torna Indietro</a>
     

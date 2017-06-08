@@ -56,7 +56,7 @@
          },
          {  name:'Posti',
             type:'range',
-            required:1, 
+            required:0,  // FIX ME
             max:16,
             min:1,
             errRequired:"Inserisci il numero di posti letto prenotati dal cliente.", 

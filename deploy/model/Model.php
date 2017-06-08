@@ -93,7 +93,7 @@ abstract class Model {
     public function protectPage(){
         //session_start(); 
         if (!isset($_SESSION['username']) or !isset($_SESSION['login_string'])) {
-            header("Location: /caipren/login/" );
+            header("Location: ".ROOT."/login/" );
         }
     }
     
