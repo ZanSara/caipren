@@ -12,12 +12,12 @@
 
             <div style="padding-left:5%;padding-right:5%;" >
               <div class="row">
-                <a class="col-sm-3 btn btn-info" href="/caipren/prenotazioni/">Calendario</a>
+                <a class="col-sm-3 btn btn-info" href=<? echo ROOT; ?>"/prenotazioni/">Calendario</a>
                 <p class="col-sm-8 ">Genera una tabella stampabile delle prenotazioni di ogni gestore.</p>
               </div>
               <hr>
               <div class="row">
-                <a class="col-sm-3 btn btn-success" href="/caipren/ospiti/">Tabella Ospiti</a>
+                <a class="col-sm-3 btn btn-success" href=<? echo ROOT; ?>"/ospiti/">Tabella Ospiti</a>
                 <p class="col-sm-8">Genera una tabella stampabile di tutti gli ospiti che hanno pernottato al rifugio durate questa stagione.</p>
               </div>
               <!--hr>

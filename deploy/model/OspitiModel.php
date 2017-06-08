@@ -68,7 +68,11 @@ include("Model.php");
 	        if(!$result) {
 		        throw new Exception("Errore inatteso durante il caricamento dei dati degli ospiti."); // . $this->mysqli->error);
 	        }
-	        return $result->fetch_all(MYSQLI_ASSOC) ;
+	        //$data = $result->fetch_all(MYSQLI_ASSOC); // Crashes on server, for some reason.
+			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+                $data[] = $row; 
+            }
+	        return $data ;
 	    }
 	    
         

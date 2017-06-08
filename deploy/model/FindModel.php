@@ -24,7 +24,8 @@ include("Model.php");
                 $formdata['giorno_inizio'][1] = self::correct_date($imploded, $this->getYear());
                 //echo "x".$formdata['giorno_inizio'][1];
             }
-            
+
+		    
             //print_r($formdata);
             //echo(count($formdata));
             //echo "<br>";
@@ -53,7 +54,6 @@ include("Model.php");
                 //$query = substr($query, 0, -3);
             }
             
-            
             //echo $query;
             //echo "<br>";
             
@@ -61,15 +61,12 @@ include("Model.php");
 	        if(!$result) {
 		        throw new Exception("Errore inatteso durante il caricamento dei dati della ricerca."); // . $this->mysqli->error);
 	        }
-            $data = $result->fetch_all(MYSQLI_ASSOC);
-            
-            //print_r($data);
-            //echo "<br>**************<br>";
-            //echo"<pre>";
-            //print_r($data);
-            //echo"</pre>";
-            
-            
+
+            //$data = $result->fetch_all(MYSQLI_ASSOC); // Crashes on server, for some reason.
+			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
+                $data[] = $row; 
+            }
+           
             // Corregge nuovamente la data in output
             for($i=0; $i<count($data); $i++){
                 $datetime = DateTime::createFromFormat('z', $data[$i]['giorno_inizio']);
