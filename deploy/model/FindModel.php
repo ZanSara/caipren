@@ -63,6 +63,7 @@ include("Model.php");
 	        }
 
             //$data = $result->fetch_all(MYSQLI_ASSOC); // Crashes on server, for some reason.
+            $data = [];
 			while ($row = $result->fetch_array(MYSQLI_ASSOC)) {
                 $data[] = $row; 
             }
