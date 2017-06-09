@@ -20,7 +20,8 @@ class PublicController extends Controller {
 		    "LastDay" => ($this->model->getLastDay()),
 		    "Dates" => ($this->model->buildDates()),
 		    "Gestori" => ($this->model->getGestori()),
-		    "Bookings" => ($this->model->getBookings())
+		    "Bookings" => ($this->model->getBookings()),
+			"Private" => 0,
 		     );
 			
 		$this->view->addParams($params);

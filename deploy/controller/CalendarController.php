@@ -28,6 +28,7 @@ class CalendarController extends Controller {
 		    "Dates" => ($this->model->buildDates()),
 		    "Gestori" => ($this->model->getGestori()),
 		    "Bookings" => ($this->model->getBookings()),
+		    "Private" => 1,
 		    "LastPrenID" => ($this->model->getLastPrenid()),
 		    "NextRow" => ($this->model->getNextRow()),
 		    "ErrorFlag" => ($this->model->getErrorFlag()),
