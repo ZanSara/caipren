@@ -10,7 +10,7 @@
           <div class="modal-body center">
             
             <p>Questo sito è online da Aprile 2016 si trova attualmente alla sua versione</p>
-            <h3>3.0</h3>
+            <h3>3.0.1</h3>
             <p><br>Se avete riscontrato dei problemi nell'utilizzo di questo sito 
             siete pregati di contattare il webmaster dei CAI Sovico all'indirizzo:</p>
             <p><b>webmaster@caisovico.it</b></p>
