@@ -63,7 +63,9 @@ include("Model.php");
                             NOT (
                                 giorno_inizio+durata-1 <  {$this->giornoInizio}
                             OR 
-                                giorno_inizio > {$this->giornoFine} )";
+                                giorno_inizio > {$this->giornoFine} )
+                            ORDER BY 
+                                giorno_inizio";
             $result = $this->mysqli->query($query);
 	        if(!$result) {
 		        throw new Exception("Errore inatteso durante il caricamento dei dati degli ospiti."); // . $this->mysqli->error);
