@@ -99,7 +99,7 @@
                                 echo(" style='border:4px solid yellow;'");
                             }
                             echo(">");
-                            echo("<a id='".$absday."-G' onclick='javascript:openNewBookingModal(1, ".$idGestore.", 1);' ><div>");
+                            echo("<a id='".$absday."-G' onclick='javascript:openNewBookingModal(1, ".$idGestore.", 1);' ><div class='gestore-div'>");
                             echo($nomeGestore);
                             echo("</div></a>");
                             echo("</td>");
@@ -118,8 +118,8 @@
                             }else{
                                 echo("'>");
                             }
-                            echo("<a onclick='javascript:openNewBookingModal(1, ".$cell[0].", 0);' ><div>");//<div style='border: red 1px solid;'>");
-                            echo('<b>P'.$cell[0].'</b>');
+                            echo("<a onclick='javascript:openNewBookingModal(1, ".$cell[0].", 0);' ><div class='booking-div'>");//<div style='border: red 1px solid;'>");
+                            echo('P'.$cell[0]);
                             echo("</div></a>");
                             echo("</td>");
                         }
