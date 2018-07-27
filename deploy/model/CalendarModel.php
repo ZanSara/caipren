@@ -382,7 +382,7 @@ include("PublicModel.php");
             }
 
             $exploded[1] = self::decode_month($exploded[1]); // Se non e' un mese valido, l'eccezione viene lanciata all'interno
-            if( (int)$exploded[0] > 31 or ((int)$exploded[0] > 30 and ( $exploded[1] != "06" and $exploded[1] != "09") ) ){
+            if( (int)$exploded[0] > 31 or ((int)$exploded[0] > 30 and ( $exploded[1] == "06" and $exploded[1] == "09") ) ){
                 throw new Exception("Il giorno del mese inserito non e' valido.");
             }
             $imploded = implode("-", $exploded);

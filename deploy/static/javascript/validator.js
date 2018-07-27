@@ -35,7 +35,7 @@
          {  name:'Arrivo',
             type:'regex',
             required:1,
-            regex:"^(((0[1-9]|1[0-9]|2[0-9]|30)\\s(Giugno|Luglio|Agosto|Settembre))|((31)-(Luglio|Agosto)))\\s"+year+"$",
+            regex:"^(((0[1-9]|1[0-9]|2[0-9]|30)\\s(Giugno|Luglio|Agosto|Settembre))|((31)\\s(Luglio|Agosto)))\\s"+year+"$",
             errRequired:"Inserisci la data di arrivo del cliente.",
             errNoMatch:"Inserire una data di arrivo valida (compresa tra 01 Giugno "+year+" e 30 Settembre "+year+")."
          },
