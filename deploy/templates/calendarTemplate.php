@@ -11,19 +11,19 @@
                         <td class='letto'></td>
                         <td class='letto'></td>
                         <td class='letto'></td>
-                        <td class='letto'>Letto</td>
+                        <td class='letto'></td>
+                        <td class='letto'>Letti</td>
                         <td class='letto'></td>
                         <td class='letto'></td>
-                        <td class='bivacco' style="border-left: 1px solid #fff;"></td>
-                        <td class='bivacco'>Bivacco</td>
-                        <td class='bivacco'></td>
-                        <td class='bivacco'></td>
-                        <td class="brandina" style="border-left: 1px solid #fff;">Brandina</td>
-                        <td class="brandina"></td>
-                        <td class="materasso" style="border-left: 1px solid #fff;"></td>
-                        <td class="materasso">Materasso</td>
-                        <td class="materasso"></td>
-                        <td class="materasso"></td>
+                        <td class='letto'></td>
+                        <td class='letto'></td>
+                        <td class='letto'></td>
+                        <td class="emergenza" style="border-left: 1px solid #fff;"></td>
+                        <td class="emergenza">Emergenza</td>
+                        <td class="emergenza"></td>
+                        <td class="emergenza"></td>
+                        <td class="emergenza"></td>
+                        <td class="emergenza"></td>
                     </tr>
                 </table>
                 </div>
@@ -40,16 +40,16 @@
                         <col class='letto'>
                         <col class='letto'>
                         <col class='letto'>
-                        <col class="bivacco">
-                        <col class="bivacco">
-                        <col class="bivacco">
-                        <col class="bivacco">
-                        <col class="brandina">
-                        <col class="brandina">
-                        <col class="materasso">
-                        <col class="materasso">
-                        <col class="materasso">
-                        <col class="materasso">
+                        <col class="letto">
+                        <col class="letto">
+                        <col class="letto">
+                        <col class="letto">
+                        <col class="emergenza">
+                        <col class="emergenza">
+                        <col class="emergenza">
+                        <col class="emergenza">
+                        <col class="emergenza">
+                        <col class="emergenza">
                   </colgroup>
                   <tbody>
                   
